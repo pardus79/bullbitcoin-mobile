@@ -138,11 +138,14 @@ class Wallet with _$Wallet {
   }
 
   List<Address> addressesWithBalanceAndActive() {
-    return myAddressBook
+    final List<Address> list = myAddressBook
         .where(
           (addr) => addr.calculateBalanceLocal() > 0 && addr.state == AddressStatus.active,
         )
         .toList();
+    print(' ----- addressesWithBalanceAndActive');
+    list.map((e) => print('${e.address}: ${e.utxos?.length}'));
+    return list;
   }
 
   List<Address> addressesWithoutBalance({bool isUsed = false}) {

@@ -45,6 +45,9 @@ class Address with _$Address {
   factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
 
   int calculateBalance() {
+    // if (address == 'tb1qyfye20zcmtyfjuzc57km8aeway6ce5lv9uz99k') {
+    print('$address utxos.length: ${utxos?.length}');
+    // }
     return utxos?.fold(
           0,
           (amt, tx) => tx.isSpent ? amt : (amt ?? 0) + tx.txout.value,

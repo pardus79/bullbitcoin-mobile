@@ -41,9 +41,15 @@ class SendState with _$SendState {
   }
 
   int calculateTotalSelected() {
+    print('calculateTotalSelected : ${selectedAddresses.length}');
     return selectedAddresses.fold<int>(
       0,
-      (previousValue, element) => previousValue + element.calculateBalance(),
+      (previousValue, element) {
+        print(
+          'calculateTotalSelected : $previousValue ${element.address}: ${element.calculateBalance()}',
+        );
+        return previousValue + element.calculateBalance();
+      },
     );
   }
 

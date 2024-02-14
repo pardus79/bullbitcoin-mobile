@@ -171,10 +171,13 @@ class AddressSelectionPopUp extends StatelessWidget {
     final addresses =
         context.select((WalletBloc _) => _.state.wallet!.addressesWithBalanceAndActive());
     final amount = context.select((CurrencyCubit _) => _.state.amount);
+    final total = context.select((SendCubit x) => x.state.calculateTotalSelected());
 
     final amt = context.select(
       (CurrencyCubit x) => x.state.getAmountInUnits(amount),
     );
+
+    print('AddressSelectionPopUp.build $amount, $total');
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -264,11 +267,14 @@ class AdvancedOptionAdress extends StatelessWidget {
         '...' +
         address.address.substring(address.address.length - 5);
 
+    print('AdvancedOptionAdress.build: $addessStr : $amt : $isSelected');
+
     return AnimatedOpacity(
       opacity: isFrozen ? 0.5 : 1,
       duration: const Duration(milliseconds: 300),
       child: InkWell(
         onTap: () {
+          print('$addessStr : onTap : ${address.utxos?.length}');
           if (!isFrozen) context.read<SendCubit>().utxoAddressSelected(address);
         },
         child: Container(
@@ -327,6 +333,8 @@ class _SelectedAddressesTotal extends StatelessWidget {
     final amt = context.select(
       (CurrencyCubit x) => x.state.getAmountInUnits(total),
     );
+
+    print('SelectedAddressesTotal.build $total');
 
     return BBText.body(
       'Amount Selected\n$amt',

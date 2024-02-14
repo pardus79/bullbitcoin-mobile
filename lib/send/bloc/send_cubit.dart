@@ -166,12 +166,15 @@ class SendCubit extends Cubit<SendState> {
   }
 
   void utxoAddressSelected(Address address) {
+    print('utxiAddressSelected: ${address.address} : ${address.utxos?.length}');
     var selectedAddresses = state.selectedAddresses.toList();
 
     if (selectedAddresses.containsAddress(address))
       selectedAddresses = selectedAddresses.removeAddress(address);
     else
       selectedAddresses.add(address);
+
+    print('selectedAddresses.legnth: ${selectedAddresses.length}');
 
     emit(state.copyWith(selectedAddresses: selectedAddresses));
 
