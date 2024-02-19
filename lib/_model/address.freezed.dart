@@ -25,6 +25,7 @@ mixin _$Address {
   AddressKind get kind => throw _privateConstructorUsedError;
   AddressStatus get state => throw _privateConstructorUsedError;
   String? get label => throw _privateConstructorUsedError;
+  List<String>? get labels => throw _privateConstructorUsedError;
   String? get spentTxId => throw _privateConstructorUsedError;
   bool get spendable => throw _privateConstructorUsedError;
   int get highestPreviousBalance => throw _privateConstructorUsedError;
@@ -46,6 +47,7 @@ abstract class $AddressCopyWith<$Res> {
       AddressKind kind,
       AddressStatus state,
       String? label,
+      List<String>? labels,
       String? spentTxId,
       bool spendable,
       int highestPreviousBalance,
@@ -70,6 +72,7 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
     Object? kind = null,
     Object? state = null,
     Object? label = freezed,
+    Object? labels = freezed,
     Object? spentTxId = freezed,
     Object? spendable = null,
     Object? highestPreviousBalance = null,
@@ -96,6 +99,10 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
           ? _value.label
           : label // ignore: cast_nullable_to_non_nullable
               as String?,
+      labels: freezed == labels
+          ? _value.labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       spentTxId: freezed == spentTxId
           ? _value.spentTxId
           : spentTxId // ignore: cast_nullable_to_non_nullable
@@ -129,6 +136,7 @@ abstract class _$$AddressImplCopyWith<$Res> implements $AddressCopyWith<$Res> {
       AddressKind kind,
       AddressStatus state,
       String? label,
+      List<String>? labels,
       String? spentTxId,
       bool spendable,
       int highestPreviousBalance,
@@ -151,6 +159,7 @@ class __$$AddressImplCopyWithImpl<$Res>
     Object? kind = null,
     Object? state = null,
     Object? label = freezed,
+    Object? labels = freezed,
     Object? spentTxId = freezed,
     Object? spendable = null,
     Object? highestPreviousBalance = null,
@@ -177,6 +186,10 @@ class __$$AddressImplCopyWithImpl<$Res>
           ? _value.label
           : label // ignore: cast_nullable_to_non_nullable
               as String?,
+      labels: freezed == labels
+          ? _value._labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       spentTxId: freezed == spentTxId
           ? _value.spentTxId
           : spentTxId // ignore: cast_nullable_to_non_nullable
@@ -206,11 +219,13 @@ class _$AddressImpl extends _Address {
       required this.kind,
       required this.state,
       this.label,
+      final List<String>? labels,
       this.spentTxId,
       this.spendable = true,
       this.highestPreviousBalance = 0,
       this.balance = 0})
-      : super._();
+      : _labels = labels,
+        super._();
 
   factory _$AddressImpl.fromJson(Map<String, dynamic> json) =>
       _$$AddressImplFromJson(json);
@@ -225,6 +240,16 @@ class _$AddressImpl extends _Address {
   final AddressStatus state;
   @override
   final String? label;
+  final List<String>? _labels;
+  @override
+  List<String>? get labels {
+    final value = _labels;
+    if (value == null) return null;
+    if (_labels is EqualUnmodifiableListView) return _labels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   final String? spentTxId;
   @override
@@ -239,7 +264,7 @@ class _$AddressImpl extends _Address {
 
   @override
   String toString() {
-    return 'Address(address: $address, index: $index, kind: $kind, state: $state, label: $label, spentTxId: $spentTxId, spendable: $spendable, highestPreviousBalance: $highestPreviousBalance, balance: $balance)';
+    return 'Address(address: $address, index: $index, kind: $kind, state: $state, label: $label, labels: $labels, spentTxId: $spentTxId, spendable: $spendable, highestPreviousBalance: $highestPreviousBalance, balance: $balance)';
   }
 
   @override
@@ -252,6 +277,7 @@ class _$AddressImpl extends _Address {
             (identical(other.kind, kind) || other.kind == kind) &&
             (identical(other.state, state) || other.state == state) &&
             (identical(other.label, label) || other.label == label) &&
+            const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.spentTxId, spentTxId) ||
                 other.spentTxId == spentTxId) &&
             (identical(other.spendable, spendable) ||
@@ -263,8 +289,18 @@ class _$AddressImpl extends _Address {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, address, index, kind, state,
-      label, spentTxId, spendable, highestPreviousBalance, balance);
+  int get hashCode => Object.hash(
+      runtimeType,
+      address,
+      index,
+      kind,
+      state,
+      label,
+      const DeepCollectionEquality().hash(_labels),
+      spentTxId,
+      spendable,
+      highestPreviousBalance,
+      balance);
 
   @JsonKey(ignore: true)
   @override
@@ -287,6 +323,7 @@ abstract class _Address extends Address {
       required final AddressKind kind,
       required final AddressStatus state,
       final String? label,
+      final List<String>? labels,
       final String? spentTxId,
       final bool spendable,
       final int highestPreviousBalance,
@@ -305,6 +342,8 @@ abstract class _Address extends Address {
   AddressStatus get state;
   @override
   String? get label;
+  @override
+  List<String>? get labels;
   @override
   String? get spentTxId;
   @override

@@ -27,6 +27,7 @@ mixin _$Transaction {
   int? get fee => throw _privateConstructorUsedError;
   int? get height => throw _privateConstructorUsedError;
   String? get label => throw _privateConstructorUsedError;
+  List<String>? get labels => throw _privateConstructorUsedError;
   String? get toAddress => throw _privateConstructorUsedError;
   String? get psbt => throw _privateConstructorUsedError;
   bool get rbfEnabled => throw _privateConstructorUsedError;
@@ -61,6 +62,7 @@ abstract class $TransactionCopyWith<$Res> {
       int? fee,
       int? height,
       String? label,
+      List<String>? labels,
       String? toAddress,
       String? psbt,
       bool rbfEnabled,
@@ -98,6 +100,7 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
     Object? fee = freezed,
     Object? height = freezed,
     Object? label = freezed,
+    Object? labels = freezed,
     Object? toAddress = freezed,
     Object? psbt = freezed,
     Object? rbfEnabled = null,
@@ -139,6 +142,10 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
           ? _value.label
           : label // ignore: cast_nullable_to_non_nullable
               as String?,
+      labels: freezed == labels
+          ? _value.labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       toAddress: freezed == toAddress
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
@@ -227,6 +234,7 @@ abstract class _$$TransactionImplCopyWith<$Res>
       int? fee,
       int? height,
       String? label,
+      List<String>? labels,
       String? toAddress,
       String? psbt,
       bool rbfEnabled,
@@ -264,6 +272,7 @@ class __$$TransactionImplCopyWithImpl<$Res>
     Object? fee = freezed,
     Object? height = freezed,
     Object? label = freezed,
+    Object? labels = freezed,
     Object? toAddress = freezed,
     Object? psbt = freezed,
     Object? rbfEnabled = null,
@@ -305,6 +314,10 @@ class __$$TransactionImplCopyWithImpl<$Res>
           ? _value.label
           : label // ignore: cast_nullable_to_non_nullable
               as String?,
+      labels: freezed == labels
+          ? _value._labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       toAddress: freezed == toAddress
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
@@ -364,6 +377,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       this.fee,
       this.height,
       this.label,
+      final List<String>? labels,
       this.toAddress,
       this.psbt,
       this.rbfEnabled = true,
@@ -375,7 +389,8 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       this.isSwap = false,
       this.swapIndex,
       this.swapTx})
-      : _outAddrs = outAddrs,
+      : _labels = labels,
+        _outAddrs = outAddrs,
         super._();
 
   factory _$TransactionImpl.fromJson(Map<String, dynamic> json) =>
@@ -395,6 +410,16 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
   final int? height;
   @override
   final String? label;
+  final List<String>? _labels;
+  @override
+  List<String>? get labels {
+    final value = _labels;
+    if (value == null) return null;
+    if (_labels is EqualUnmodifiableListView) return _labels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   final String? toAddress;
   @override
@@ -433,7 +458,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, label: $label, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
+    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, label: $label, labels: $labels, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
   }
 
   @override
@@ -448,6 +473,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('fee', fee))
       ..add(DiagnosticsProperty('height', height))
       ..add(DiagnosticsProperty('label', label))
+      ..add(DiagnosticsProperty('labels', labels))
       ..add(DiagnosticsProperty('toAddress', toAddress))
       ..add(DiagnosticsProperty('psbt', psbt))
       ..add(DiagnosticsProperty('rbfEnabled', rbfEnabled))
@@ -475,6 +501,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
             (identical(other.fee, fee) || other.fee == fee) &&
             (identical(other.height, height) || other.height == height) &&
             (identical(other.label, label) || other.label == label) &&
+            const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.toAddress, toAddress) ||
                 other.toAddress == toAddress) &&
             (identical(other.psbt, psbt) || other.psbt == psbt) &&
@@ -494,26 +521,28 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      timestamp,
-      txid,
-      received,
-      sent,
-      fee,
-      height,
-      label,
-      toAddress,
-      psbt,
-      rbfEnabled,
-      oldTx,
-      broadcastTime,
-      const DeepCollectionEquality().hash(_outAddrs),
-      bdkTx,
-      wallet,
-      isSwap,
-      swapIndex,
-      swapTx);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        timestamp,
+        txid,
+        received,
+        sent,
+        fee,
+        height,
+        label,
+        const DeepCollectionEquality().hash(_labels),
+        toAddress,
+        psbt,
+        rbfEnabled,
+        oldTx,
+        broadcastTime,
+        const DeepCollectionEquality().hash(_outAddrs),
+        bdkTx,
+        wallet,
+        isSwap,
+        swapIndex,
+        swapTx
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -538,6 +567,7 @@ abstract class _Transaction extends Transaction {
       final int? fee,
       final int? height,
       final String? label,
+      final List<String>? labels,
       final String? toAddress,
       final String? psbt,
       final bool rbfEnabled,
@@ -569,6 +599,8 @@ abstract class _Transaction extends Transaction {
   int? get height;
   @override
   String? get label;
+  @override
+  List<String>? get labels;
   @override
   String? get toAddress;
   @override

@@ -21,6 +21,7 @@ class Transaction with _$Transaction {
     int? fee,
     int? height,
     String? label,
+    List<String>? labels,
     String? toAddress,
     String? psbt,
     @Default(true) bool rbfEnabled,

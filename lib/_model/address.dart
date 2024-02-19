@@ -27,6 +27,7 @@ class Address with _$Address {
     required AddressKind kind,
     required AddressStatus state,
     String? label,
+    List<String>? labels,
     String? spentTxId,
     @Default(true) bool spendable,
     @Default(0) int highestPreviousBalance,

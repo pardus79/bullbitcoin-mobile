@@ -15,6 +15,8 @@ _$TransactionImpl _$$TransactionImplFromJson(Map<String, dynamic> json) =>
       fee: json['fee'] as int?,
       height: json['height'] as int?,
       label: json['label'] as String?,
+      labels:
+          (json['labels'] as List<dynamic>?)?.map((e) => e as String).toList(),
       toAddress: json['toAddress'] as String?,
       psbt: json['psbt'] as String?,
       rbfEnabled: json['rbfEnabled'] as bool? ?? true,
@@ -43,6 +45,7 @@ Map<String, dynamic> _$$TransactionImplToJson(_$TransactionImpl instance) =>
       'fee': instance.fee,
       'height': instance.height,
       'label': instance.label,
+      'labels': instance.labels,
       'toAddress': instance.toAddress,
       'psbt': instance.psbt,
       'rbfEnabled': instance.rbfEnabled,
