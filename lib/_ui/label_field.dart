@@ -1,19 +1,13 @@
 import 'package:bb_mobile/_ui/components/chip_input.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
+import 'package:bb_mobile/styles.dart';
 import 'package:flutter/material.dart';
 
-const List<String> _combinedLabels = <String>[
-  'grocery',
-  'travel',
-  'services',
-  'food',
-  'income:business',
-  'income:payouts',
-  'income:rent',
-];
-
 class LabelField extends StatefulWidget {
-  const LabelField({super.key});
+  const LabelField({super.key, required this.combinedLabels, required this.onChanged});
+
+  final List<String> combinedLabels;
+  final Function onChanged;
 
   @override
   LabelFieldState createState() {
@@ -23,7 +17,7 @@ class LabelField extends StatefulWidget {
 
 class LabelFieldState extends State<LabelField> {
   final FocusNode _chipFocusNode = FocusNode();
-  List<String> _labels = <String>[_combinedLabels.first];
+  List<String> _labels = <String>[];
   List<String> _suggestions = <String>[];
 
   @override
@@ -73,22 +67,29 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _selectSuggestion(String label) {
+    print('Suggestion selected: $label');
     setState(() {
       _labels.add(label);
       _suggestions = <String>[];
     });
+    widget.onChanged(_labels);
   }
 
-  void _onChipTapped(String label) {}
+  void _onChipTapped(String label) {
+    print('Chip tapped: $label');
+  }
 
   void _onChipDeleted(String label) {
+    print('Chip deleted: $label');
     setState(() {
       _labels.remove(label);
       _suggestions = <String>[];
     });
+    widget.onChanged(_labels);
   }
 
   void _onSubmitted(String text) {
+    print('Submitted: $text');
     if (text.trim().isNotEmpty) {
       setState(() {
         _labels = <String>[..._labels, text.trim()];
@@ -99,9 +100,11 @@ class LabelFieldState extends State<LabelField> {
         _labels = <String>[];
       });
     }
+    widget.onChanged(_labels);
   }
 
   void _onChanged(List<String> data) {
+    print('Changed: $data');
     setState(() {
       _labels = data;
     });
@@ -109,7 +112,7 @@ class LabelFieldState extends State<LabelField> {
 
   Future<List<String>> _suggestionCallback(String text) async {
     if (text.isNotEmpty) {
-      return _combinedLabels.where((String label) {
+      return widget.combinedLabels.where((String label) {
         return label.toLowerCase().contains(text.toLowerCase());
       }).toList();
     }
@@ -155,7 +158,15 @@ class LabelInputChip extends StatelessWidget {
         onDeleted: () => onDeleted(label),
         onSelected: (bool value) => onSelected(label),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        deleteIconColor: context.colour.surface,
         padding: const EdgeInsets.all(2),
+        backgroundColor: Colors.brown,
+        selectedColor: Colors.blue,
+        shape: const StadiumBorder(side: BorderSide(color: Colors.red, width: 2, strokeAlign: 2.0)),
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.all(Radius.circular(2.0)),
+        //   side: BorderSide(color: Colors.red, width: 1.5),
+        // ),
       ),
     );
   }
