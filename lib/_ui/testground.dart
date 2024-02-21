@@ -4,10 +4,14 @@ import 'package:bb_mobile/settings/bloc/lighting_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Testground extends StatelessWidget {
+class Testground extends StatefulWidget {
   const Testground();
+  @override
+  State<Testground> createState() => _TestgroundState();
+}
 
-  static const List<String> _combinedLabels = <String>[
+class _TestgroundState extends State<Testground> {
+  final List<String> _combinedLabels = <String>[
     'grocery',
     'travel',
     'services',
@@ -17,13 +21,26 @@ class Testground extends StatelessWidget {
     'income:rent',
   ];
 
-  static const List<String> labels = <String>[];
-  // final _formKey = GlobalKey<FormState>();
+  List<String> labels = <String>[];
 
-  // create a const function to pass to the onChanged callback
-  static void _onChanged(List<String> list) {
+  void _onChanged(List<String> list) {
     print(list);
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   context.read<Lighting>().toggle(ThemeLighting.light);
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       title: const BBText.title('Label field sample'),
+  //     ),
+  //     body: LabelField(
+  //       key: const Key('labelField'),
+  //       combinedLabels: _combinedLabels,
+  //       onChanged: _onChanged,
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +49,20 @@ class Testground extends StatelessWidget {
       appBar: AppBar(
         title: const BBText.title('Label field sample'),
       ),
-      body: const LabelField(
-        key: Key('labelField'),
-        combinedLabels: _combinedLabels,
-        onChanged: _onChanged,
-        // labels: labels,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              height: 200,
+              child: LabelField(
+                key: const Key('labelFieldTest'),
+                combinedLabels: _combinedLabels,
+                onChanged: _onChanged,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/_ui/components/text_input.dart';
 import 'package:bb_mobile/_ui/headers.dart';
+import 'package:bb_mobile/_ui/label_field.dart';
 import 'package:bb_mobile/currency/amount_input.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/locator.dart';
@@ -468,7 +469,7 @@ class CreateInvoice extends StatelessWidget {
 }
 
 class RenameLabel extends StatelessWidget {
-  const RenameLabel({super.key});
+  RenameLabel({super.key});
 
   static Future openPopUp(BuildContext context) async {
     final receiveCubit = context.read<ReceiveCubit>();
@@ -483,14 +484,24 @@ class RenameLabel extends StatelessWidget {
           listener: (context, state) {
             context.pop();
           },
-          child: const Padding(
-            padding: EdgeInsets.all(30),
+          child: Padding(
+            padding: const EdgeInsets.all(30),
             child: RenameLabel(),
           ),
         ),
       ),
     );
   }
+
+  // create a const function to pass to the onChanged callback
+  void _onChanged(List<String> list) {
+    print(list);
+  }
+
+  final List<String> _combinedLabels = <String>[
+    'Vegeta',
+    'Naruto',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -503,6 +514,10 @@ class RenameLabel extends StatelessWidget {
         const Gap(40),
         const BBText.title('Address Label (Optional)'),
         const Gap(4),
+        Container(
+          height: 200,
+          child: LabelField(combinedLabels: _combinedLabels, onChanged: _onChanged),
+        ),
         BBTextInput.big(
           value: label,
           hint: 'Enter Private Label',
