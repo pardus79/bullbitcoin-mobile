@@ -29,6 +29,7 @@ class WalletState with _$WalletState {
     @Default(0) int syncErrCount,
     // Address? newAddress,
     Address? firstAddress,
+    List<String>? labels,
   }) = _WalletState;
   const WalletState._();
 

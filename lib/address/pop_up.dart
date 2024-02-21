@@ -110,6 +110,8 @@ class Title extends StatelessWidget {
   Widget build(BuildContext context) {
     final _ = context.select((AddressCubit cubit) => cubit.state.address!);
     final label = context.select((AddressCubit cubit) => cubit.state.address!.label ?? '');
+    final labels =
+        context.select((AddressCubit cubit) => cubit.state.address!.labels?.join(', ') ?? '');
     final address = context.select((AddressCubit cubit) => cubit.state.address!.miniString());
 
     final walletName = context.select((WalletBloc cubit) => cubit.state.wallet!.name ?? '');
@@ -122,7 +124,7 @@ class Title extends StatelessWidget {
       child: Column(
         children: [
           BBText.body(
-            label.isEmpty ? address : label,
+            labels.isEmpty ? address : labels,
           ),
           const Gap(8),
           BBText.title(
@@ -176,6 +178,7 @@ class AddressDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final address = context.select((AddressCubit cubit) => cubit.state.address!);
     final label = address.label ?? '';
+    final labels = address.labels?.join(', ') ?? '';
     final isReceive = address.kind == AddressKind.deposit;
     final balance = address.balance;
     final amt = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(balance));
@@ -192,7 +195,11 @@ class AddressDetails extends StatelessWidget {
         InlineLabel(title: 'Balance', body: amt),
         if (label.isNotEmpty) ...[
           const Gap(8),
-          InlineLabel(title: 'Label', body: label),
+          InlineLabel(title: 'Labelss', body: label),
+        ],
+        if (labels.isNotEmpty) ...[
+          const Gap(8),
+          InlineLabel(title: 'Labelsss', body: labels),
         ],
         const Gap(8),
         InlineLabel(

@@ -127,6 +127,7 @@ class AddressDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = context.select((ReceiveCubit x) => x.state.privateLabel);
+    final labels = context.select((ReceiveCubit x) => x.state.privateLabels.join(', '));
     final amount = context.select((ReceiveCubit x) => x.state.savedInvoiceAmount);
     final description = context.select((ReceiveCubit x) => x.state.savedDescription);
     final amountStr = context.select(
@@ -138,9 +139,9 @@ class AddressDetails extends StatelessWidget {
     );
     return Column(
       children: [
-        if (label.isNotEmpty) ...[
+        if (labels.isNotEmpty) ...[
           _DetailRow(
-            text: label,
+            text: labels,
             onTap: () {
               RenameLabel.openPopUp(context);
             },
@@ -493,11 +494,6 @@ class RenameLabel extends StatelessWidget {
     );
   }
 
-  // create a const function to pass to the onChanged callback
-  void _onChanged(List<String> list) {
-    print(list);
-  }
-
   final List<String> _combinedLabels = <String>[
     'Vegeta',
     'Naruto',
@@ -516,7 +512,13 @@ class RenameLabel extends StatelessWidget {
         const Gap(4),
         Container(
           height: 200,
-          child: LabelField(combinedLabels: _combinedLabels, onChanged: _onChanged),
+          child: LabelField(
+            combinedLabels: _combinedLabels,
+            onChanged: (List<String> lbls) {
+              print('labels changed: $lbls');
+              context.read<ReceiveCubit>().privateLabelsChanged(lbls);
+            },
+          ),
         ),
         BBTextInput.big(
           value: label,

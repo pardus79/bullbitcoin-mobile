@@ -162,6 +162,10 @@ class ReceiveCubit extends Cubit<ReceiveState> {
     emit(state.copyWith(privateLabel: privateLabel));
   }
 
+  void privateLabelsChanged(List<String> privateLabels) {
+    emit(state.copyWith(privateLabels: privateLabels));
+  }
+
   void clearLabelField() {
     emit(state.copyWith(privateLabel: ''));
   }
@@ -177,6 +181,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       address: (state.defaultAddress!.index, state.defaultAddress!.address),
       wallet: state.walletBloc!.state.wallet!,
       label: state.privateLabel,
+      labels: state.privateLabels,
       kind: state.defaultAddress!.kind,
       state: state.defaultAddress!.state,
       spendable: state.defaultAddress!.spendable,
