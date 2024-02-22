@@ -54,10 +54,11 @@ class _TestgroundState extends State<Testground> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
-              height: 200,
+              height: 400,
               child: LabelField(
                 key: const Key('labelFieldTest'),
                 combinedLabels: _combinedLabels,
+                labels: const ['grocery', 'travel'],
                 onChanged: _onChanged,
               ),
             ),

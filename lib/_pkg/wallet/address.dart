@@ -6,18 +6,23 @@ import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 
 class WalletAddress {
-  Future<String?> getLabel({required Wallet wallet, required String address}) async {
+  Future<(String?, List<String>?)> getLabel({
+    required Wallet wallet,
+    required String address,
+  }) async {
     final addresses = wallet.myAddressBook;
 
     String? label;
+    List<String>? labels;
     if (addresses.any((element) => element.address == address)) {
       final x = addresses.firstWhere(
         (element) => element.address == address,
       );
       label = x.label;
+      labels = x.labels;
     }
 
-    return label;
+    return (label, labels);
   }
 
   Future<(Wallet?, Err?)> loadAddresses({

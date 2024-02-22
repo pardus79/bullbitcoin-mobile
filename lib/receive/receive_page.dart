@@ -483,7 +483,7 @@ class RenameLabel extends StatelessWidget {
           listenWhen: (previous, current) =>
               previous.defaultAddress?.label != current.defaultAddress?.label,
           listener: (context, state) {
-            context.pop();
+            // context.pop();
           },
           child: Padding(
             padding: const EdgeInsets.all(30),
@@ -501,12 +501,19 @@ class RenameLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = context.select((ReceiveCubit _) => _.state.privateLabel);
+    final labels = context.select((ReceiveCubit _) => _.state.privateLabels);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const BBHeader.popUpCenteredText(text: 'Address Label'),
+        BBHeader.popUpCenteredText(
+          text: 'Address Label',
+          onBack: () {
+            print('onBack');
+            context.read<ReceiveCubit>().loadAddress();
+            Navigator.of(context).pop();
+          },
+        ),
         const Gap(40),
         const BBText.title('Address Label (Optional)'),
         const Gap(4),
@@ -514,24 +521,28 @@ class RenameLabel extends StatelessWidget {
           height: 200,
           child: LabelField(
             combinedLabels: _combinedLabels,
+            labels: labels,
             onChanged: (List<String> lbls) {
               print('labels changed: $lbls');
               context.read<ReceiveCubit>().privateLabelsChanged(lbls);
             },
           ),
         ),
-        BBTextInput.big(
-          value: label,
-          hint: 'Enter Private Label',
-          onChanged: (txt) {
-            context.read<ReceiveCubit>().privateLabelChanged(txt);
-          },
-        ),
+        // BBTextInput.big(
+        //   value: label,
+        //   hint: 'Enter Private Label',
+        //   onChanged: (txt) {
+        //     context.read<ReceiveCubit>().privateLabelChanged(txt);
+        //   },
+        // ),
         const Gap(40),
         BBButton.bigRed(
           label: 'Save',
-          onPressed: () {
+          onPressed: () async {
             context.read<ReceiveCubit>().saveDefaultAddressLabel();
+            await Future.delayed(const Duration(seconds: 1));
+            context.read<ReceiveCubit>().loadAddress();
+            context.pop();
           },
         ),
         const Gap(40),

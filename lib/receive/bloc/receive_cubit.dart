@@ -47,6 +47,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
         walletBloc: walletBloc,
         defaultAddress: null,
         privateLabel: '',
+        privateLabels: [],
         savedDescription: '',
         description: '',
       ),
@@ -72,13 +73,19 @@ class ReceiveCubit extends Cubit<ReceiveState> {
         defaultAddress: address,
       ),
     );
-    final label = await walletAddress.getLabel(
+    final (label, labels) = await walletAddress.getLabel(
       address: address!.address,
       wallet: state.walletBloc!.state.wallet!,
     );
-    final labelUpdated = address.copyWith(label: label);
+    final labelUpdated = address.copyWith(label: label, labels: labels);
 
-    if (label != null) emit(state.copyWith(privateLabel: label, defaultAddress: labelUpdated));
+    if (labels != null)
+      emit(
+        state.copyWith(privateLabels: labels, defaultAddress: labelUpdated),
+      );
+
+    print('loadAddress');
+    print(labels);
 
     emit(
       state.copyWith(
@@ -173,7 +180,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
   void saveDefaultAddressLabel() async {
     if (state.walletBloc == null) return;
 
-    if (state.privateLabel == (state.defaultAddress?.label ?? '')) return;
+    // if (state.privateLabel == (state.defaultAddress?.label ?? '')) return;
 
     emit(state.copyWith(savingLabel: true, errSavingLabel: ''));
 

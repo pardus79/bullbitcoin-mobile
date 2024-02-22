@@ -4,10 +4,11 @@ import 'package:bb_mobile/styles.dart';
 import 'package:flutter/material.dart';
 
 class LabelField extends StatefulWidget {
-  const LabelField({super.key, required this.combinedLabels, required this.onChanged});
+  const LabelField({super.key, required this.combinedLabels, required this.onChanged, this.labels});
 
   final List<String> combinedLabels;
   final Function onChanged;
+  final List<String>? labels;
 
   @override
   LabelFieldState createState() {
@@ -17,8 +18,15 @@ class LabelField extends StatefulWidget {
 
 class LabelFieldState extends State<LabelField> {
   final FocusNode _chipFocusNode = FocusNode();
-  List<String> _labels = <String>[];
+  late List<String> _labels = <String>[];
   List<String> _suggestions = <String>[];
+
+  @override
+  void initState() {
+    super.initState();
+    //  _labels = widget.labels ?? [];
+    _labels = widget.labels != null ? List<String>.from(widget.labels!) : [];
+  }
 
   @override
   Widget build(BuildContext context) {

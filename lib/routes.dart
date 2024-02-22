@@ -30,7 +30,7 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: '/testground',
+  initialLocation: '/',
   routes: <RouteBase>[
     GoRoute(
       path: '/testground',
