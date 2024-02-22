@@ -18,7 +18,6 @@ import 'package:bb_mobile/locator.dart';
 import 'package:bb_mobile/network/bloc/network_cubit.dart';
 import 'package:bb_mobile/settings/bloc/settings_cubit.dart';
 import 'package:bb_mobile/styles.dart';
-import 'package:bb_mobile/wallet/bloc/event.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_mobile/wallet_settings/bloc/wallet_settings_cubit.dart';
 import 'package:flutter/material.dart';
@@ -436,7 +435,6 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
               loading: saving,
               onPressed: () {
                 context.read<AddressCubit>().saveAddressName(widget.address, labels);
-                context.read<AddressCubit>().walletBloc.add(AddToGlobalLabels(labels));
               },
               label: 'Save',
             ),

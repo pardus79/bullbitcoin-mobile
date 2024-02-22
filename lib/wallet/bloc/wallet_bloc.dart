@@ -484,9 +484,4 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       await Future.delayed(const Duration(milliseconds: 50));
     }
   }
-
-  void _addToGlobalLabels(AddToGlobalLabels event, Emitter<WalletState> emit) async {
-    final finalList = {...?state.labels, ...event.labels}.toList();
-    emit(state.copyWith(labels: finalList));
-  }
 }
