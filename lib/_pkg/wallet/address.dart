@@ -298,9 +298,10 @@ class WalletAddress {
         addresses.add(updated);
       }
 
+      final finalList = {...wallet.globalLabels, ...?labels}.toList();
       final w = kind == AddressKind.external
-          ? wallet.copyWith(externalAddressBook: addresses)
-          : wallet.copyWith(myAddressBook: addresses);
+          ? wallet.copyWith(externalAddressBook: addresses, globalLabels: finalList)
+          : wallet.copyWith(myAddressBook: addresses, globalLabels: finalList);
 
       return (updated, w);
     } catch (e) {

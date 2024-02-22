@@ -53,6 +53,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<ListTransactions>(_listTransactions);
     on<GetFirstAddress>(_getFirstAddress);
     on<UpdateUtxos>(_updateUtxos);
+    on<AddToGlobalLabels>(_addToGlobalLabels);
 
     add(LoadWallet(saveDir));
   }
@@ -429,6 +430,11 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
               lastGeneratedAddress: eventWallet.lastGeneratedAddress,
             );
 
+          final finalList = {...?storageWallet?.globalLabels, ...eventWallet.globalLabels}.toList();
+          storageWallet = storageWallet!.copyWith(
+            globalLabels: finalList,
+          );
+
         case UpdateWalletTypes.utxos:
           if (eventWallet.utxos.isNotEmpty)
             storageWallet = storageWallet!.copyWith(
@@ -477,5 +483,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       swapBloc.add(WatchInvoiceStatus(walletBloc: this, tx: tx));
       await Future.delayed(const Duration(milliseconds: 50));
     }
+  }
+
+  void _addToGlobalLabels(AddToGlobalLabels event, Emitter<WalletState> emit) async {
+    final finalList = {...?state.labels, ...event.labels}.toList();
+    emit(state.copyWith(labels: finalList));
   }
 }

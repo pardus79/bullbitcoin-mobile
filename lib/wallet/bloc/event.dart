@@ -33,4 +33,9 @@ class GetFirstAddress extends WalletEvent {}
 
 class GetNewAddress extends WalletEvent {}
 
+class AddToGlobalLabels extends WalletEvent {
+  AddToGlobalLabels(this.labels);
+  final List<String> labels;
+}
+
 enum UpdateWalletTypes { load, balance, transactions, addresses, settings, utxos }

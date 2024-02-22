@@ -95,12 +95,12 @@ class AddressCubit extends Cubit<AddressState> {
     );
   }
 
-  void saveAddressName(Address address, String label) async {
+  void saveAddressName(Address address, List<String> labels) async {
     emit(state.copyWith(savingAddressName: true, errSavingAddressName: ''));
 
     final (addr, w) = await walletAddress.addAddressToWallet(
       address: (address.index, address.address),
-      label: label,
+      labels: labels,
       wallet: walletBloc.state.wallet!,
       kind: address.kind,
       state: address.state,

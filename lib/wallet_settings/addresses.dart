@@ -279,9 +279,9 @@ class AddressItem extends StatelessWidget {
           ),
           const Gap(4),
           if (amt.isNotEmpty) InlineLabel(title: 'Balance', body: amt),
-          if (address.label != null && address.label!.isNotEmpty) ...[
+          if (address.labels != null && address.labels!.isNotEmpty) ...[
             const Gap(4),
-            InlineLabel(title: 'Label', body: address.label!),
+            InlineLabel(title: 'Label', body: address.labels!.join(', ')),
             const Gap(8),
           ],
         ],

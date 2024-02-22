@@ -10,6 +10,7 @@ import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/_ui/headers.dart';
 import 'package:bb_mobile/_ui/inline_label.dart';
+import 'package:bb_mobile/_ui/label_field.dart';
 import 'package:bb_mobile/address/bloc/address_cubit.dart';
 import 'package:bb_mobile/address/bloc/address_state.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
@@ -17,6 +18,7 @@ import 'package:bb_mobile/locator.dart';
 import 'package:bb_mobile/network/bloc/network_cubit.dart';
 import 'package:bb_mobile/settings/bloc/settings_cubit.dart';
 import 'package:bb_mobile/styles.dart';
+import 'package:bb_mobile/wallet/bloc/event.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_mobile/wallet_settings/bloc/wallet_settings_cubit.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +111,6 @@ class Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _ = context.select((AddressCubit cubit) => cubit.state.address!);
-    final label = context.select((AddressCubit cubit) => cubit.state.address!.label ?? '');
     final labels =
         context.select((AddressCubit cubit) => cubit.state.address!.labels?.join(', ') ?? '');
     final address = context.select((AddressCubit cubit) => cubit.state.address!.miniString());
@@ -177,7 +178,6 @@ class AddressDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final address = context.select((AddressCubit cubit) => cubit.state.address!);
-    final label = address.label ?? '';
     final labels = address.labels?.join(', ') ?? '';
     final isReceive = address.kind == AddressKind.deposit;
     final balance = address.balance;
@@ -193,10 +193,6 @@ class AddressDetails extends StatelessWidget {
         ),
         const Gap(8),
         InlineLabel(title: 'Balance', body: amt),
-        if (label.isNotEmpty) ...[
-          const Gap(8),
-          InlineLabel(title: 'Labelss', body: label),
-        ],
         if (labels.isNotEmpty) ...[
           const Gap(8),
           InlineLabel(title: 'Labelsss', body: labels),
@@ -390,7 +386,14 @@ class AddressLabelTextField extends StatefulWidget {
 }
 
 class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
-  final _controller = TextEditingController();
+  late List<String> labels;
+
+  @override
+  void initState() {
+    labels = widget.address.labels ?? [];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final saving = context.select((AddressCubit cubit) => cubit.state.savingAddressName);
@@ -398,16 +401,28 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
     final saved = context.select((AddressCubit cubit) => cubit.state.savedAddressName);
     final _ = widget.address.label ?? 'Enter Label';
 
+    final combinedLabels =
+        context.select((AddressCubit _) => _.walletBloc.state.wallet?.globalLabels ?? []);
+
     if (saved) const Center(child: BBText.body('Saved!')).animate(delay: 300.ms).fadeIn();
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: TextField(
-            controller: _controller,
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+            height: 400,
+            child: LabelField(
+              combinedLabels: combinedLabels,
+              labels: labels,
+              onChanged: (List<String> lbls) {
+                setState(() {
+                  labels = lbls;
+                });
+              },
+            ),
           ),
         ),
-        const Gap(60),
+        const Gap(10),
         if (err.isNotEmpty) ...[
           BBText.body(
             err,
@@ -420,9 +435,8 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
             child: BBButton.bigRed(
               loading: saving,
               onPressed: () {
-                if (_controller.text.isEmpty) return;
-                FocusScope.of(context).requestFocus(FocusNode());
-                context.read<AddressCubit>().saveAddressName(widget.address, _controller.text);
+                context.read<AddressCubit>().saveAddressName(widget.address, labels);
+                context.read<AddressCubit>().walletBloc.add(AddToGlobalLabels(labels));
               },
               label: 'Save',
             ),

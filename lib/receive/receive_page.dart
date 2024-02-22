@@ -470,10 +470,11 @@ class CreateInvoice extends StatelessWidget {
 }
 
 class RenameLabel extends StatelessWidget {
-  RenameLabel({super.key});
+  const RenameLabel({super.key});
 
   static Future openPopUp(BuildContext context) async {
     final receiveCubit = context.read<ReceiveCubit>();
+    // final walletBloc = context.read<WalletBloc>();
 
     return showBBBottomSheet(
       context: context,
@@ -485,8 +486,8 @@ class RenameLabel extends StatelessWidget {
           listener: (context, state) {
             // context.pop();
           },
-          child: Padding(
-            padding: const EdgeInsets.all(30),
+          child: const Padding(
+            padding: EdgeInsets.all(30),
             child: RenameLabel(),
           ),
         ),
@@ -494,14 +495,11 @@ class RenameLabel extends StatelessWidget {
     );
   }
 
-  final List<String> _combinedLabels = <String>[
-    'Vegeta',
-    'Naruto',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final labels = context.select((ReceiveCubit _) => _.state.privateLabels);
+    final List<String> combinedLabels =
+        context.select((ReceiveCubit _) => _.state.walletBloc?.state.wallet?.globalLabels ?? []);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -520,7 +518,7 @@ class RenameLabel extends StatelessWidget {
         Container(
           height: 200,
           child: LabelField(
-            combinedLabels: _combinedLabels,
+            combinedLabels: combinedLabels,
             labels: labels,
             onChanged: (List<String> lbls) {
               print('labels changed: $lbls');
@@ -540,7 +538,9 @@ class RenameLabel extends StatelessWidget {
           label: 'Save',
           onPressed: () async {
             context.read<ReceiveCubit>().saveDefaultAddressLabel();
-            await Future.delayed(const Duration(seconds: 1));
+            // context.read<ReceiveCubit>().state.walletBloc?.add(AddToGlobalLabels(labels));
+            // TODO: To Improve
+            await Future.delayed(const Duration(milliseconds: 900));
             context.read<ReceiveCubit>().loadAddress();
             context.pop();
           },
