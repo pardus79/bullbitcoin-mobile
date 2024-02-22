@@ -498,7 +498,7 @@ class RenameLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labels = context.select((ReceiveCubit _) => _.state.privateLabels);
-    final List<String> combinedLabels =
+    final List<String> suggestions =
         context.select((ReceiveCubit _) => _.state.walletBloc?.state.wallet?.globalLabels ?? []);
 
     return Column(
@@ -518,7 +518,7 @@ class RenameLabel extends StatelessWidget {
         Container(
           height: 200,
           child: LabelField(
-            combinedLabels: combinedLabels,
+            suggestions: suggestions,
             labels: labels,
             onChanged: (List<String> lbls) {
               print('labels changed: $lbls');

@@ -1,4 +1,5 @@
 import 'package:bb_mobile/_model/transaction.dart';
+import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_ui/components/indicators.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
@@ -101,7 +102,8 @@ class HomeTxItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = tx.labels?.join(', ') ?? '';
+    final Wallet w = context.select((WalletBloc x) => x.state.wallet!);
+    final labels = tx.getLabels(w).join(', ') ?? '';
 
     final amount = context
         .select((CurrencyCubit x) => x.state.getAmountInUnits(tx.getAmount(sentAsTotal: true)));
@@ -133,9 +135,9 @@ class HomeTxItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BBText.titleLarge(amt),
-                if (label.isNotEmpty) ...[
+                if (labels.isNotEmpty) ...[
                   const Gap(4),
-                  BBText.bodySmall(label),
+                  BBText.bodySmall(labels),
                 ],
               ],
             ),

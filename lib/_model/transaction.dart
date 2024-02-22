@@ -39,7 +39,6 @@ class Transaction with _$Transaction {
     int? swapIndex,
     SwapTx? swapTx,
   }) = _Transaction;
-  const Transaction._();
 
   factory Transaction.fromJson(Map<String, dynamic> json) => _$TransactionFromJson(json);
 
@@ -50,6 +49,22 @@ class Transaction with _$Transaction {
       swapTx: swapTx,
       isSwap: true,
     );
+  }
+  const Transaction._();
+
+  List<String> getLabels(Wallet w) {
+    if (labels != null && labels!.isNotEmpty) return labels!;
+
+    final List<String> lbls = [];
+    for (final outAddr in outAddrs) {
+      for (final addr in w.myAddressBook) {
+        if (outAddr.address == addr.address) {
+          lbls.addAll(addr.labels ?? []);
+        }
+      }
+      // TODO: Should look in external address book?
+    }
+    return Set<String>.from(lbls).toList();
   }
 
   Address? mapOutValueToAddress(int value) {

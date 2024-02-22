@@ -123,6 +123,7 @@ class _Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tx = context.select((TransactionCubit cubit) => cubit.state.tx);
+    final w = context.select((WalletBloc cubit) => cubit.state.wallet!);
 
     final isSwap = tx.swapTx != null;
     if (isSwap) return const SwapTxPage();
@@ -284,7 +285,7 @@ class _Screen extends StatelessWidget {
                 'Change Label',
               ),
               const Gap(4),
-              TxLabelTextField(labels: tx.labels ?? []),
+              TxLabelTextField(labels: tx.getLabels(w)),
               const Gap(24),
               if (err.isNotEmpty) ...[
                 const Gap(32),
@@ -327,7 +328,7 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
       // && storedLabel.isEmpty,
     );
     final label = context.select((TransactionCubit x) => x.state.label);
-    final combinedLabels =
+    final suggestions =
         context.select((TransactionCubit x) => x.walletBloc.state.wallet?.globalLabels ?? []);
 
     return Row(
@@ -336,7 +337,7 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
           child: SizedBox(
             height: 300,
             child: LabelField(
-              combinedLabels: combinedLabels,
+              suggestions: suggestions,
               labels: _labels,
               onChanged: (List<String> lbls) {
                 setState(() {

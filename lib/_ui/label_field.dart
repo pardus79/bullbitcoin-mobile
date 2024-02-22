@@ -4,9 +4,9 @@ import 'package:bb_mobile/styles.dart';
 import 'package:flutter/material.dart';
 
 class LabelField extends StatefulWidget {
-  const LabelField({super.key, required this.combinedLabels, required this.onChanged, this.labels});
+  const LabelField({super.key, required this.suggestions, required this.onChanged, this.labels});
 
-  final List<String> combinedLabels;
+  final List<String> suggestions;
   final Function onChanged;
   final List<String>? labels;
 
@@ -75,7 +75,7 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _selectSuggestion(String label) {
-    print('Suggestion selected: $label');
+    // print('Suggestion selected: $label');
     setState(() {
       _labels.add(label);
       _suggestions = <String>[];
@@ -84,11 +84,11 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _onChipTapped(String label) {
-    print('Chip tapped: $label');
+    // print('Chip tapped: $label');
   }
 
   void _onChipDeleted(String label) {
-    print('Chip deleted: $label');
+    // print('Chip deleted: $label');
     setState(() {
       _labels.remove(label);
       _suggestions = <String>[];
@@ -97,7 +97,7 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _onSubmitted(String text) {
-    print('Submitted: $text');
+    // print('Submitted: $text');
     if (text.trim().isNotEmpty) {
       setState(() {
         _labels = <String>[..._labels, text.trim()];
@@ -112,7 +112,7 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _onChanged(List<String> data) {
-    print('Changed: $data');
+    // print('Changed: $data');
     setState(() {
       _labels = data;
     });
@@ -120,7 +120,7 @@ class LabelFieldState extends State<LabelField> {
 
   Future<List<String>> _suggestionCallback(String text) async {
     if (text.isNotEmpty) {
-      return widget.combinedLabels.where((String label) {
+      return widget.suggestions.where((String label) {
         return label.toLowerCase().contains(text.toLowerCase());
       }).toList();
     }

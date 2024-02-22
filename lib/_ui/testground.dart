@@ -11,7 +11,7 @@ class Testground extends StatefulWidget {
 }
 
 class _TestgroundState extends State<Testground> {
-  final List<String> _combinedLabels = <String>[
+  final List<String> _suggestions = <String>[
     'grocery',
     'travel',
     'services',
@@ -26,21 +26,6 @@ class _TestgroundState extends State<Testground> {
   void _onChanged(List<String> list) {
     print(list);
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   context.read<Lighting>().toggle(ThemeLighting.light);
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const BBText.title('Label field sample'),
-  //     ),
-  //     body: LabelField(
-  //       key: const Key('labelField'),
-  //       combinedLabels: _combinedLabels,
-  //       onChanged: _onChanged,
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +42,7 @@ class _TestgroundState extends State<Testground> {
               height: 400,
               child: LabelField(
                 key: const Key('labelFieldTest'),
-                combinedLabels: _combinedLabels,
+                suggestions: _suggestions,
                 labels: const ['grocery', 'travel'],
                 onChanged: _onChanged,
               ),

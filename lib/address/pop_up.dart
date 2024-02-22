@@ -400,7 +400,7 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
     final saved = context.select((AddressCubit cubit) => cubit.state.savedAddressName);
     final _ = widget.address.label ?? 'Enter Label';
 
-    final combinedLabels =
+    final suggestions =
         context.select((AddressCubit _) => _.walletBloc.state.wallet?.globalLabels ?? []);
 
     if (saved) const Center(child: BBText.body('Saved!')).animate(delay: 300.ms).fadeIn();
@@ -411,7 +411,7 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
           child: Container(
             height: 400,
             child: LabelField(
-              combinedLabels: combinedLabels,
+              suggestions: suggestions,
               labels: labels,
               onChanged: (List<String> lbls) {
                 setState(() {
