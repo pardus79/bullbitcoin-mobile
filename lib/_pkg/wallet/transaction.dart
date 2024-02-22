@@ -140,6 +140,7 @@ class WalletTx {
           bdkTx: tx,
           rbfEnabled: storedTx?.rbfEnabled ?? false,
           outAddrs: storedTx?.outAddrs ?? [],
+          labels: storedTx?.labels ?? [],
         );
         // var outAddrs;
         // var inAddres;

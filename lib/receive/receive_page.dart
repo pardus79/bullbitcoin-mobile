@@ -538,7 +538,6 @@ class RenameLabel extends StatelessWidget {
           label: 'Save',
           onPressed: () async {
             context.read<ReceiveCubit>().saveDefaultAddressLabel();
-            // context.read<ReceiveCubit>().state.walletBloc?.add(AddToGlobalLabels(labels));
             // TODO: To Improve
             await Future.delayed(const Duration(milliseconds: 900));
             context.read<ReceiveCubit>().loadAddress();

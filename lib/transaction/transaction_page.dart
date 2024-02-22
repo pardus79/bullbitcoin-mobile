@@ -17,8 +17,8 @@ import 'package:bb_mobile/_ui/app_bar.dart';
 import 'package:bb_mobile/_ui/bottom_sheet.dart';
 import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
-import 'package:bb_mobile/_ui/components/text_input.dart';
 import 'package:bb_mobile/_ui/headers.dart';
+import 'package:bb_mobile/_ui/label_field.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
 import 'package:bb_mobile/locator.dart';
@@ -34,7 +34,6 @@ import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -285,7 +284,7 @@ class _Screen extends StatelessWidget {
                 'Change Label',
               ),
               const Gap(4),
-              const TxLabelTextField(),
+              TxLabelTextField(labels: tx.labels ?? []),
               const Gap(24),
               if (err.isNotEmpty) ...[
                 const Gap(32),
@@ -302,39 +301,66 @@ class _Screen extends StatelessWidget {
   }
 }
 
-class TxLabelTextField extends HookWidget {
-  const TxLabelTextField({super.key});
+class TxLabelTextField extends StatefulWidget {
+  TxLabelTextField({super.key, required this.labels});
+
+  List<String> labels;
+
+  @override
+  State<TxLabelTextField> createState() => _TxLabelTextFieldState();
+}
+
+class _TxLabelTextFieldState extends State<TxLabelTextField> {
+  late List<String> _labels;
+
+  @override
+  void initState() {
+    _labels = widget.labels;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final storedLabel = context.select((TransactionCubit x) => x.state.tx.label ?? '');
+    // final storedLabel = context.select((TransactionCubit x) => x.state.tx.label ?? '');
     final showButton = context.select(
       (TransactionCubit x) => x.state.showSaveButton(),
       // && storedLabel.isEmpty,
     );
     final label = context.select((TransactionCubit x) => x.state.label);
+    final combinedLabels =
+        context.select((TransactionCubit x) => x.walletBloc.state.wallet?.globalLabels ?? []);
 
     return Row(
       children: [
         Expanded(
           child: SizedBox(
-            height: 45,
-            child: BBTextInput.small(
-              // disabled: storedLabel.isNotEmpty,
-              hint: storedLabel.isNotEmpty ? storedLabel : 'Enter Label',
-              value: label,
-              onChanged: (value) {
-                context.read<TransactionCubit>().labelChanged(value);
+            height: 300,
+            child: LabelField(
+              combinedLabels: combinedLabels,
+              labels: _labels,
+              onChanged: (List<String> lbls) {
+                setState(() {
+                  print(lbls);
+                  _labels = lbls;
+                });
               },
             ),
+            // child: BBTextInput.small(
+            //   // disabled: storedLabel.isNotEmpty,
+            //   hint: storedLabel.isNotEmpty ? storedLabel : 'Enter Label',
+            //   value: label,
+            //   onChanged: (value) {
+            //     context.read<TransactionCubit>().labelChanged(value);
+            //   },
+            // ),
           ),
         ),
         const Gap(8),
         BBButton.smallRed(
-          disabled: !showButton,
+          // disabled: !showButton,
           onPressed: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-            context.read<TransactionCubit>().saveLabelClicked();
+            // FocusScope.of(context).requestFocus(FocusNode());
+            context.read<TransactionCubit>().saveLabelsClicked(_labels);
           },
           label: 'SAVE',
         ),

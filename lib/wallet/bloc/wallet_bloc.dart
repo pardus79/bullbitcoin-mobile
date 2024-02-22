@@ -53,7 +53,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<ListTransactions>(_listTransactions);
     on<GetFirstAddress>(_getFirstAddress);
     on<UpdateUtxos>(_updateUtxos);
-    on<AddToGlobalLabels>(_addToGlobalLabels);
 
     add(LoadWallet(saveDir));
   }
@@ -413,6 +412,11 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
             storageWallet = storageWallet!.copyWith(
               swaps: eventWallet.swaps,
             );
+
+          final finalList = {...?storageWallet?.globalLabels, ...eventWallet.globalLabels}.toList();
+          storageWallet = storageWallet!.copyWith(
+            globalLabels: finalList,
+          );
         case UpdateWalletTypes.addresses:
           if (eventWallet.myAddressBook.isNotEmpty)
             storageWallet = storageWallet!.copyWith(

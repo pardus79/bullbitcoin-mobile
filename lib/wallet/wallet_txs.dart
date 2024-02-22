@@ -101,7 +101,7 @@ class HomeTxItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = tx.label ?? '';
+    final label = tx.labels?.join(', ') ?? '';
 
     final amount = context
         .select((CurrencyCubit x) => x.state.getAmountInUnits(tx.getAmount(sentAsTotal: true)));

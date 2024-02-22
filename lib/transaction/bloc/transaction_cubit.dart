@@ -147,6 +147,42 @@ class TransactionCubit extends Cubit<TransactionState> {
     emit(state.copyWith(label: label));
   }
 
+  void saveLabelsClicked(List<String> labels) async {
+    if (labels.isEmpty) return;
+    emit(state.copyWith(savingLabel: true, errSavingLabel: ''));
+
+    final tx = state.tx.copyWith(
+      labels: labels,
+    );
+
+    final finalList = {...walletBloc.state.wallet!.globalLabels, ...labels}.toList();
+
+    final updateWallet = walletBloc.state.wallet!.copyWith(
+      transactions: [
+        for (final t in walletBloc.state.wallet?.transactions ?? <Transaction>[])
+          if (t.txid == tx.txid) tx else t,
+      ],
+      globalLabels: finalList,
+    );
+
+    walletBloc.add(
+      UpdateWallet(
+        updateWallet,
+        updateTypes: [UpdateWalletTypes.transactions],
+      ),
+    );
+
+    await Future.delayed(const Duration(seconds: 1));
+    // walletBloc.add(ListTransactions());
+
+    emit(
+      state.copyWith(
+        savingLabel: false,
+        tx: tx,
+      ),
+    );
+  }
+
   void saveLabelClicked() async {
     final label = state.tx.label;
     if (label == state.label) return;
