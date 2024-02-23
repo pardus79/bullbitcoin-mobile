@@ -515,16 +515,13 @@ class RenameLabel extends StatelessWidget {
         const Gap(40),
         const BBText.title('Address Label (Optional)'),
         const Gap(4),
-        Container(
-          height: 200,
-          child: LabelField(
-            suggestions: suggestions,
-            labels: labels,
-            onChanged: (List<String> lbls) {
-              print('labels changed: $lbls');
-              context.read<ReceiveCubit>().privateLabelsChanged(lbls);
-            },
-          ),
+        LabelField(
+          suggestions: suggestions,
+          labels: labels,
+          onChanged: (List<String> lbls) {
+            print('labels changed: $lbls');
+            context.read<ReceiveCubit>().privateLabelsChanged(lbls);
+          },
         ),
         // BBTextInput.big(
         //   value: label,

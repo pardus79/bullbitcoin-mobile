@@ -106,6 +106,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> {
     return TextField(
       minLines: 1,
       maxLines: 3,
+      decoration: widget.decoration,
       textInputAction: TextInputAction.done,
       style: widget.style,
       strutStyle: widget.strutStyle,

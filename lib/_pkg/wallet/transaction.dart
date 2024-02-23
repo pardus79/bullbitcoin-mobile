@@ -498,6 +498,7 @@ class WalletTx {
     required double feeRate,
     required bool enableRbf,
     required List<UTXO> selectedUtxos,
+    required List<String> labels,
     String? note,
   }) async {
     try {
@@ -589,6 +590,7 @@ class WalletTx {
         toAddress: address,
         outAddrs: outAddrs,
         psbt: txResult.psbt.psbtBase64,
+        labels: labels,
       );
       return ((tx, feeAmt, txResult.psbt.psbtBase64), null);
     } on Exception catch (e) {

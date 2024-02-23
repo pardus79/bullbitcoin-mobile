@@ -415,17 +415,14 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Container(
-            height: 400,
-            child: LabelField(
-              suggestions: suggestions,
-              labels: labels,
-              onChanged: (List<String> lbls) {
-                setState(() {
-                  labels = lbls;
-                });
-              },
-            ),
+          child: LabelField(
+            suggestions: suggestions,
+            labels: labels,
+            onChanged: (List<String> lbls) {
+              setState(() {
+                labels = lbls;
+              });
+            },
           ),
         ),
         const Gap(10),

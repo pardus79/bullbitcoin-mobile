@@ -24,35 +24,65 @@ class LabelFieldState extends State<LabelField> {
   @override
   void initState() {
     super.initState();
-    //  _labels = widget.labels ?? [];
     _labels = widget.labels != null ? List<String>.from(widget.labels!) : [];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final inputDecoration = InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: const BorderSide(color: Colors.blue),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(
+          color: context.colour.onBackground.withOpacity(0.2),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(
+          color: context.colour.onBackground,
+        ),
+      ),
+    );
+
+    return Stack(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ChipsInput<String>(
-            values: _labels,
-            strutStyle: const StrutStyle(fontSize: 15),
-            onChanged: _onChanged,
-            onSubmitted: _onSubmitted,
-            chipBuilder: _chipBuilder,
-            onTextChanged: _onSearchChanged,
-          ),
+        ChipsInput<String>(
+          values: _labels,
+          strutStyle: const StrutStyle(fontSize: 15),
+          onChanged: _onChanged,
+          onSubmitted: _onSubmitted,
+          chipBuilder: _chipBuilder,
+          onTextChanged: _onSearchChanged,
+          decoration: inputDecoration,
         ),
         if (_suggestions.isNotEmpty)
-          Expanded(
-            child: ListView.builder(
-              itemCount: _suggestions.length,
-              itemBuilder: (BuildContext context, int index) {
-                return LabelSuggestion(
-                  _suggestions[index],
-                  onTap: _selectSuggestion,
-                );
-              },
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 60, 10, 0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.colour.background,
+                  border: Border.all(
+                    width: 2, // Width of the border
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListView.builder(
+                  itemCount: _suggestions.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return LabelSuggestion(
+                      _suggestions[index],
+                      onTap: _selectSuggestion,
+                    );
+                  },
+                ),
+              ),
             ),
           ),
       ],

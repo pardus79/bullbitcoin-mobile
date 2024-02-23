@@ -19,6 +19,12 @@ class _TestgroundState extends State<Testground> {
     'income:business',
     'income:payouts',
     'income:rent',
+    'income:claims',
+    'income:capital_gains',
+    'income:stock_returns',
+    'income:mutual_funds',
+    'income:real_estate',
+    'income:bakery_shop',
   ];
 
   List<String> labels = <String>[];
@@ -38,14 +44,11 @@ class _TestgroundState extends State<Testground> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              height: 400,
-              child: LabelField(
-                key: const Key('labelFieldTest'),
-                suggestions: _suggestions,
-                labels: const ['grocery', 'travel'],
-                onChanged: _onChanged,
-              ),
+            LabelField(
+              key: const Key('labelFieldTest'),
+              suggestions: _suggestions,
+              labels: const ['grocery', 'travel'],
+              onChanged: _onChanged,
             ),
           ],
         ),

@@ -334,26 +334,15 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
     return Row(
       children: [
         Expanded(
-          child: SizedBox(
-            height: 300,
-            child: LabelField(
-              suggestions: suggestions,
-              labels: _labels,
-              onChanged: (List<String> lbls) {
-                setState(() {
-                  print(lbls);
-                  _labels = lbls;
-                });
-              },
-            ),
-            // child: BBTextInput.small(
-            //   // disabled: storedLabel.isNotEmpty,
-            //   hint: storedLabel.isNotEmpty ? storedLabel : 'Enter Label',
-            //   value: label,
-            //   onChanged: (value) {
-            //     context.read<TransactionCubit>().labelChanged(value);
-            //   },
-            // ),
+          child: LabelField(
+            suggestions: suggestions,
+            labels: _labels,
+            onChanged: (List<String> lbls) {
+              setState(() {
+                print(lbls);
+                _labels = lbls;
+              });
+            },
           ),
         ),
         const Gap(8),
