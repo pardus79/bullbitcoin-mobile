@@ -68,9 +68,7 @@ class LabelFieldState extends State<LabelField> {
               child: Container(
                 decoration: BoxDecoration(
                   color: context.colour.background,
-                  border: Border.all(
-                    width: 2, // Width of the border
-                  ),
+                  border: Border.all(),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListView.builder(
@@ -134,9 +132,6 @@ class LabelFieldState extends State<LabelField> {
       });
     } else {
       _chipFocusNode.unfocus();
-      setState(() {
-        _labels = <String>[];
-      });
     }
     widget.onChanged(_labels);
   }
@@ -198,9 +193,11 @@ class LabelInputChip extends StatelessWidget {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         deleteIconColor: context.colour.surface,
         padding: const EdgeInsets.all(2),
-        backgroundColor: Colors.brown,
+        backgroundColor: context.colour.background,
         selectedColor: Colors.blue,
-        shape: const StadiumBorder(side: BorderSide(color: Colors.red, width: 2, strokeAlign: 2.0)),
+        shape: StadiumBorder(
+          side: BorderSide(color: context.colour.surface.withOpacity(0.2), strokeAlign: 0),
+        ),
         // shape: const RoundedRectangleBorder(
         //   borderRadius: BorderRadius.all(Radius.circular(2.0)),
         //   side: BorderSide(color: Colors.red, width: 1.5),

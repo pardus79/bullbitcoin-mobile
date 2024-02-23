@@ -507,7 +507,6 @@ class RenameLabel extends StatelessWidget {
         BBHeader.popUpCenteredText(
           text: 'Address Label',
           onBack: () {
-            print('onBack');
             context.read<ReceiveCubit>().loadAddress();
             Navigator.of(context).pop();
           },
@@ -519,7 +518,6 @@ class RenameLabel extends StatelessWidget {
           suggestions: suggestions,
           labels: labels,
           onChanged: (List<String> lbls) {
-            print('labels changed: $lbls');
             context.read<ReceiveCubit>().privateLabelsChanged(lbls);
           },
         ),

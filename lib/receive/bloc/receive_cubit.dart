@@ -84,9 +84,6 @@ class ReceiveCubit extends Cubit<ReceiveState> {
         state.copyWith(privateLabels: labels, defaultAddress: labelUpdated),
       );
 
-    print('loadAddress');
-    print(labels);
-
     emit(
       state.copyWith(
         loadingAddress: false,

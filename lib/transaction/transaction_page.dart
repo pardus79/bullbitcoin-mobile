@@ -19,6 +19,7 @@ import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/_ui/headers.dart';
 import 'package:bb_mobile/_ui/label_field.dart';
+import 'package:bb_mobile/_ui/toast.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
 import 'package:bb_mobile/locator.dart';
@@ -339,7 +340,6 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
             labels: _labels,
             onChanged: (List<String> lbls) {
               setState(() {
-                print(lbls);
                 _labels = lbls;
               });
             },
@@ -347,9 +347,8 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
         ),
         const Gap(8),
         BBButton.smallRed(
-          // disabled: !showButton,
           onPressed: () {
-            // FocusScope.of(context).requestFocus(FocusNode());
+            ScaffoldMessenger.of(context).showSnackBar(context.showToast('Labels saved'));
             context.read<TransactionCubit>().saveLabelsClicked(_labels);
           },
           label: 'SAVE',
