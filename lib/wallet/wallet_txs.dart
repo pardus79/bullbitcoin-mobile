@@ -103,7 +103,8 @@ class HomeTxItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Wallet w = context.select((WalletBloc x) => x.state.wallet!);
-    final labels = tx.getLabels(w).join(', ') ?? '';
+    // final labels = tx.getLabels(w).join(', ') ?? '';
+    final (labels, labelsInherited) = tx.getLabels(w);
 
     final amount = context
         .select((CurrencyCubit x) => x.state.getAmountInUnits(tx.getAmount(sentAsTotal: true)));
@@ -137,7 +138,8 @@ class HomeTxItem extends StatelessWidget {
                 BBText.titleLarge(amt),
                 if (labels.isNotEmpty) ...[
                   const Gap(4),
-                  BBText.bodySmall(labels),
+                  BBText.bodySmall((labelsInherited ? '[I]' : '') +
+                      (labels.isNotEmpty ? labels.join(', ') : '')),
                 ],
               ],
             ),

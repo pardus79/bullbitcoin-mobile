@@ -29,6 +29,7 @@ class Transaction with _$Transaction {
     int? broadcastTime,
     // String? serializedTx,
     @Default([]) List<Address> outAddrs,
+    @Default([]) List<String> prevTxIds,
     @JsonKey(
       includeFromJson: false,
       includeToJson: false,
@@ -52,8 +53,8 @@ class Transaction with _$Transaction {
   }
   const Transaction._();
 
-  List<String> getLabels(Wallet w) {
-    if (labels != null && labels!.isNotEmpty) return labels!;
+  (List<String>, bool) getLabels(Wallet w) {
+    if (labels != null && labels!.isNotEmpty) return (labels!, false);
 
     final List<String> lbls = [];
     // TODO: Calling this on every build is super inefficient. Ideally have a address / txid map for labels
@@ -65,7 +66,7 @@ class Transaction with _$Transaction {
       }
       // TODO: Should look in external address book?
     }
-    return Set<String>.from(lbls).toList();
+    return (Set<String>.from(lbls).toList(), true);
   }
 
   Address? mapOutValueToAddress(int value) {

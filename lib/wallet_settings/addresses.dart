@@ -263,7 +263,7 @@ class AddressItem extends StatelessWidget {
     final amt = context.select(
       (CurrencyCubit x) => x.state.getAmountInUnits(balance),
     );
-    final labels = address.getLabels(wallet);
+    final (labels, labelsInherited) = address.getLabels(wallet);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -288,7 +288,10 @@ class AddressItem extends StatelessWidget {
           if (amt.isNotEmpty) InlineLabel(title: 'Balance', body: amt),
           if (labels.isNotEmpty) ...[
             const Gap(4),
-            InlineLabel(title: 'Label', body: labels.join(', ')),
+            InlineLabel(
+              title: 'Label',
+              body: (labelsInherited ? '[I]' : '') + (labels.isNotEmpty ? labels.join(', ') : ''),
+            ),
             const Gap(8),
           ],
         ],

@@ -169,6 +169,8 @@ class _Screen extends StatelessWidget {
             ),
           );
 
+    final (labels, labelsInherited) = tx.getLabels(w);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -286,7 +288,7 @@ class _Screen extends StatelessWidget {
                 'Change Label',
               ),
               const Gap(4),
-              TxLabelTextField(labels: tx.getLabels(w)),
+              TxLabelTextField(labels: labels),
               const Gap(24),
               if (err.isNotEmpty) ...[
                 const Gap(32),

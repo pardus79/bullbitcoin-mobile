@@ -130,6 +130,9 @@ class WalletTx {
         if (idxUnsignedTx != -1) {
           if (tx.txid == unsignedTxs[idxUnsignedTx].txid) unsignedTxs.removeAt(idxUnsignedTx);
         }
+
+        final ips = await tx.transaction?.input();
+
         var txObj = Transaction(
           txid: tx.txid,
           received: tx.received,
@@ -141,6 +144,7 @@ class WalletTx {
           rbfEnabled: storedTx?.rbfEnabled ?? false,
           outAddrs: storedTx?.outAddrs ?? [],
           labels: storedTx?.labels ?? [],
+          prevTxIds: ips?.map((e) => e.previousOutput.txid).toList() ?? [],
         );
         // var outAddrs;
         // var inAddres;

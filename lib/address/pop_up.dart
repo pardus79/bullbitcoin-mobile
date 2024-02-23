@@ -179,7 +179,7 @@ class AddressDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final wallet = context.select((WalletBloc bloc) => bloc.state.wallet!);
     final address = context.select((AddressCubit cubit) => cubit.state.address!);
-    final labels = address.getLabels(wallet).join(', ') ?? '';
+    final (labels, labelsInherited) = address.getLabels(wallet);
     final isReceive = address.kind == AddressKind.deposit;
     final balance = address.balance;
     final amt = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(balance));
@@ -196,7 +196,10 @@ class AddressDetails extends StatelessWidget {
         InlineLabel(title: 'Balance', body: amt),
         if (labels.isNotEmpty) ...[
           const Gap(8),
-          InlineLabel(title: 'Labelsss', body: labels),
+          InlineLabel(
+            title: 'Labelsss',
+            body: (labelsInherited ? '[I]' : '') + (labels.isNotEmpty ? labels.join(', ') : ''),
+          ),
         ],
         const Gap(8),
         InlineLabel(
@@ -396,7 +399,8 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
 
   @override
   void initState() {
-    labels = widget.address.getLabels(widget.wallet);
+    final (lbls, labelsInherited) = widget.address.getLabels(widget.wallet);
+    labels = lbls;
     super.initState();
   }
 

@@ -35,6 +35,7 @@ mixin _$Transaction {
   int? get broadcastTime =>
       throw _privateConstructorUsedError; // String? serializedTx,
   List<Address> get outAddrs => throw _privateConstructorUsedError;
+  List<String> get prevTxIds => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.TransactionDetails? get bdkTx => throw _privateConstructorUsedError;
   Wallet? get wallet => throw _privateConstructorUsedError;
@@ -69,6 +70,7 @@ abstract class $TransactionCopyWith<$Res> {
       bool oldTx,
       int? broadcastTime,
       List<Address> outAddrs,
+      List<String> prevTxIds,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.TransactionDetails? bdkTx,
       Wallet? wallet,
@@ -107,6 +109,7 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
     Object? oldTx = null,
     Object? broadcastTime = freezed,
     Object? outAddrs = null,
+    Object? prevTxIds = null,
     Object? bdkTx = freezed,
     Object? wallet = freezed,
     Object? isSwap = null,
@@ -170,6 +173,10 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
           ? _value.outAddrs
           : outAddrs // ignore: cast_nullable_to_non_nullable
               as List<Address>,
+      prevTxIds: null == prevTxIds
+          ? _value.prevTxIds
+          : prevTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       bdkTx: freezed == bdkTx
           ? _value.bdkTx
           : bdkTx // ignore: cast_nullable_to_non_nullable
@@ -241,6 +248,7 @@ abstract class _$$TransactionImplCopyWith<$Res>
       bool oldTx,
       int? broadcastTime,
       List<Address> outAddrs,
+      List<String> prevTxIds,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.TransactionDetails? bdkTx,
       Wallet? wallet,
@@ -279,6 +287,7 @@ class __$$TransactionImplCopyWithImpl<$Res>
     Object? oldTx = null,
     Object? broadcastTime = freezed,
     Object? outAddrs = null,
+    Object? prevTxIds = null,
     Object? bdkTx = freezed,
     Object? wallet = freezed,
     Object? isSwap = null,
@@ -342,6 +351,10 @@ class __$$TransactionImplCopyWithImpl<$Res>
           ? _value._outAddrs
           : outAddrs // ignore: cast_nullable_to_non_nullable
               as List<Address>,
+      prevTxIds: null == prevTxIds
+          ? _value._prevTxIds
+          : prevTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       bdkTx: freezed == bdkTx
           ? _value.bdkTx
           : bdkTx // ignore: cast_nullable_to_non_nullable
@@ -384,6 +397,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       this.oldTx = false,
       this.broadcastTime,
       final List<Address> outAddrs = const [],
+      final List<String> prevTxIds = const [],
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkTx,
       this.wallet,
       this.isSwap = false,
@@ -391,6 +405,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       this.swapTx})
       : _labels = labels,
         _outAddrs = outAddrs,
+        _prevTxIds = prevTxIds,
         super._();
 
   factory _$TransactionImpl.fromJson(Map<String, dynamic> json) =>
@@ -443,6 +458,15 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
     return EqualUnmodifiableListView(_outAddrs);
   }
 
+  final List<String> _prevTxIds;
+  @override
+  @JsonKey()
+  List<String> get prevTxIds {
+    if (_prevTxIds is EqualUnmodifiableListView) return _prevTxIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_prevTxIds);
+  }
+
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bdk.TransactionDetails? bdkTx;
@@ -458,7 +482,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, label: $label, labels: $labels, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
+    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, label: $label, labels: $labels, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, prevTxIds: $prevTxIds, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
   }
 
   @override
@@ -480,6 +504,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('oldTx', oldTx))
       ..add(DiagnosticsProperty('broadcastTime', broadcastTime))
       ..add(DiagnosticsProperty('outAddrs', outAddrs))
+      ..add(DiagnosticsProperty('prevTxIds', prevTxIds))
       ..add(DiagnosticsProperty('bdkTx', bdkTx))
       ..add(DiagnosticsProperty('wallet', wallet))
       ..add(DiagnosticsProperty('isSwap', isSwap))
@@ -511,6 +536,8 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
             (identical(other.broadcastTime, broadcastTime) ||
                 other.broadcastTime == broadcastTime) &&
             const DeepCollectionEquality().equals(other._outAddrs, _outAddrs) &&
+            const DeepCollectionEquality()
+                .equals(other._prevTxIds, _prevTxIds) &&
             (identical(other.bdkTx, bdkTx) || other.bdkTx == bdkTx) &&
             (identical(other.wallet, wallet) || other.wallet == wallet) &&
             (identical(other.isSwap, isSwap) || other.isSwap == isSwap) &&
@@ -537,6 +564,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
         oldTx,
         broadcastTime,
         const DeepCollectionEquality().hash(_outAddrs),
+        const DeepCollectionEquality().hash(_prevTxIds),
         bdkTx,
         wallet,
         isSwap,
@@ -574,6 +602,7 @@ abstract class _Transaction extends Transaction {
       final bool oldTx,
       final int? broadcastTime,
       final List<Address> outAddrs,
+      final List<String> prevTxIds,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final bdk.TransactionDetails? bdkTx,
       final Wallet? wallet,
@@ -613,6 +642,8 @@ abstract class _Transaction extends Transaction {
   int? get broadcastTime;
   @override // String? serializedTx,
   List<Address> get outAddrs;
+  @override
+  List<String> get prevTxIds;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.TransactionDetails? get bdkTx;

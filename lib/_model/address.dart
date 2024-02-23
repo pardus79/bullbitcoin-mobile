@@ -48,22 +48,36 @@ class Address with _$Address {
     // return utxos?.where((tx) => !tx.isSpent).map((tx) => tx.outpoint).toList() ?? [];
   }
 
-  List<String> getLabels(Wallet w) {
-    if (labels != null && labels!.isNotEmpty) return labels!;
+  (List<String>, bool) getLabels(Wallet w) {
+    if (labels != null && labels!.isNotEmpty) return (labels!, false);
 
     final List<String> lbls = [];
     // TODO: Calling this on every build is super inefficient. Ideally have a address / txid map for labels
     for (final tx in w.transactions) {
       if (tx.labels != null && tx.labels!.isNotEmpty) {
+        // TODO: Think about this: if (!tx.isReceived()) {
         for (final outAddr in tx.outAddrs) {
           if (outAddr.address == address) {
             lbls.addAll(tx.labels ?? []);
           }
         }
+
+        // TODO: This is not working!
+        if (!tx.isReceived()) {
+          for (final prevTxId in tx.prevTxIds) {
+            for (final txx in w.transactions) {
+              if (txx.labels != null && txx.labels!.isNotEmpty) {
+                if (prevTxId == tx.txid) {
+                  lbls.addAll(txx.labels ?? []);
+                }
+              }
+            }
+          }
+        }
       }
       // TODO: Should look in external address book?
     }
-    return Set<String>.from(lbls).toList();
+    return (Set<String>.from(lbls).toList(), true);
   }
 
   String miniString() {
