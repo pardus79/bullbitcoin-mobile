@@ -1,4 +1,5 @@
 import 'package:bb_mobile/_model/address.dart';
+import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/clipboard.dart';
 import 'package:bb_mobile/_pkg/launcher.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
@@ -176,8 +177,9 @@ class AddressDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wallet = context.select((WalletBloc bloc) => bloc.state.wallet!);
     final address = context.select((AddressCubit cubit) => cubit.state.address!);
-    final labels = address.labels?.join(', ') ?? '';
+    final labels = address.getLabels(wallet).join(', ') ?? '';
     final isReceive = address.kind == AddressKind.deposit;
     final balance = address.balance;
     final amt = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(balance));
@@ -301,9 +303,10 @@ class _CopyButtonState extends State<CopyButton> {
 }
 
 class AddressLabelFieldPopUp extends StatelessWidget {
-  const AddressLabelFieldPopUp({super.key, required this.address});
+  const AddressLabelFieldPopUp({super.key, required this.address, required this.wallet});
 
   final Address address;
+  final Wallet wallet;
 
   static Future openPopup(
     BuildContext context,
@@ -330,7 +333,7 @@ class AddressLabelFieldPopUp extends StatelessWidget {
 
             context.pop();
           },
-          child: AddressLabelFieldPopUp(address: address),
+          child: AddressLabelFieldPopUp(address: address, wallet: wallet.state.wallet!),
         ),
       ),
     );
@@ -367,7 +370,10 @@ class AddressLabelFieldPopUp extends StatelessWidget {
             ),
           ),
           const Gap(24),
-          AddressLabelTextField(address: address),
+          AddressLabelTextField(
+            address: address,
+            wallet: wallet,
+          ),
           const Gap(80),
         ],
       ),
@@ -376,9 +382,10 @@ class AddressLabelFieldPopUp extends StatelessWidget {
 }
 
 class AddressLabelTextField extends StatefulWidget {
-  const AddressLabelTextField({super.key, required this.address});
+  const AddressLabelTextField({super.key, required this.address, required this.wallet});
 
   final Address address;
+  final Wallet wallet;
 
   @override
   State<AddressLabelTextField> createState() => _AddressLabelTextFieldState();
@@ -389,7 +396,7 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
 
   @override
   void initState() {
-    labels = widget.address.labels ?? [];
+    labels = widget.address.getLabels(widget.wallet);
     super.initState();
   }
 

@@ -56,6 +56,7 @@ class Transaction with _$Transaction {
     if (labels != null && labels!.isNotEmpty) return labels!;
 
     final List<String> lbls = [];
+    // TODO: Calling this on every build is super inefficient. Ideally have a address / txid map for labels
     for (final outAddr in outAddrs) {
       for (final addr in w.myAddressBook) {
         if (outAddr.address == addr.address) {

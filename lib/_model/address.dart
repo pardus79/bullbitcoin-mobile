@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_annotation_target
 
+import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -45,6 +46,24 @@ class Address with _$Address {
         .map((e) => bdk.OutPoint(txid: e.txid, vout: e.txIndex))
         .toList();
     // return utxos?.where((tx) => !tx.isSpent).map((tx) => tx.outpoint).toList() ?? [];
+  }
+
+  List<String> getLabels(Wallet w) {
+    if (labels != null && labels!.isNotEmpty) return labels!;
+
+    final List<String> lbls = [];
+    // TODO: Calling this on every build is super inefficient. Ideally have a address / txid map for labels
+    for (final tx in w.transactions) {
+      if (tx.labels != null && tx.labels!.isNotEmpty) {
+        for (final outAddr in tx.outAddrs) {
+          if (outAddr.address == address) {
+            lbls.addAll(tx.labels ?? []);
+          }
+        }
+      }
+      // TODO: Should look in external address book?
+    }
+    return Set<String>.from(lbls).toList();
   }
 
   String miniString() {
