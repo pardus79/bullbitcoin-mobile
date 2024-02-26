@@ -197,7 +197,7 @@ class AddressDetails extends StatelessWidget {
         if (labels.isNotEmpty) ...[
           const Gap(8),
           InlineLabel(
-            title: 'Labelsss',
+            title: 'Labels',
             body: (labelsInherited ? '[I]' : '') + (labels.isNotEmpty ? labels.join(', ') : ''),
           ),
         ],

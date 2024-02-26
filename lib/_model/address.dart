@@ -62,18 +62,17 @@ class Address with _$Address {
           }
         }
 
-        // TODO: This is not working!
-        if (!tx.isReceived()) {
-          for (final prevTxId in tx.prevTxIds) {
-            for (final txx in w.transactions) {
-              if (txx.labels != null && txx.labels!.isNotEmpty) {
-                if (prevTxId == tx.txid) {
-                  lbls.addAll(txx.labels ?? []);
-                }
-              }
-            }
-          }
-        }
+        // if (!tx.isReceived() && tx.txid.endsWith('316b')) {
+        //   for (final prevTxId in tx.prevTxIds) {
+        //     for (final txx in w.transactions) {
+        //       if (txx.labels != null && txx.labels!.isNotEmpty) {
+        //         if (prevTxId == tx.txid) {
+        //           lbls.addAll(txx.labels ?? []);
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
       // TODO: Should look in external address book?
     }

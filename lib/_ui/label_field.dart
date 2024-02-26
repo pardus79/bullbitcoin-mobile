@@ -105,7 +105,7 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _selectSuggestion(String label) {
-    print('Suggestion selected: $label');
+    // print('Suggestion selected: $label');
     setState(() {
       _labels.add(label);
       _suggestions = <String>[];

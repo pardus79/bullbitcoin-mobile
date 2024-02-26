@@ -65,6 +65,18 @@ class Transaction with _$Transaction {
         }
       }
       // TODO: Should look in external address book?
+
+      if (!isReceived() && txid.endsWith('316b')) {
+        for (final prevTxId in prevTxIds) {
+          for (final txx in w.transactions) {
+            if (txx.labels != null && txx.labels!.isNotEmpty) {
+              if (prevTxId == txx.txid) {
+                lbls.addAll(txx.labels ?? []);
+              }
+            }
+          }
+        }
+      }
     }
     return (Set<String>.from(lbls).toList(), true);
   }
