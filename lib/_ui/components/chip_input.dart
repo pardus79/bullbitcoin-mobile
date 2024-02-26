@@ -38,6 +38,8 @@ class ChipsInputState<T> extends State<ChipsInput<T>> {
   String _previousText = '';
   TextSelection? _previousSelection;
 
+  FocusNode myFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -47,12 +49,21 @@ class ChipsInputState<T> extends State<ChipsInput<T>> {
       widget.chipBuilder,
     );
     controller.addListener(_textListener);
+
+    myFocusNode.addListener(() {
+      if (!myFocusNode.hasFocus) {
+        widget.onSubmitted?.call(controller.textWithoutReplacements);
+        widget.onSubmitted?.call('');
+        // ..// print('TextField has lost focus');
+      }
+    });
   }
 
   @override
   void dispose() {
     controller.removeListener(_textListener);
     controller.dispose();
+    myFocusNode.dispose();
 
     super.dispose();
   }
@@ -113,6 +124,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> {
       controller: controller,
       onChanged: (String value) => widget.onTextChanged?.call(controller.textWithoutReplacements),
       onSubmitted: (String value) => widget.onSubmitted?.call(controller.textWithoutReplacements),
+      focusNode: myFocusNode,
     );
   }
 }

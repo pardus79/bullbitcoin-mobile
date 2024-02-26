@@ -19,6 +19,7 @@ class LabelField extends StatefulWidget {
 class LabelFieldState extends State<LabelField> {
   final FocusNode _chipFocusNode = FocusNode();
   late List<String> _labels = <String>[];
+  late String _searchQuery = '';
   List<String> _suggestions = <String>[];
 
   @override
@@ -91,6 +92,7 @@ class LabelFieldState extends State<LabelField> {
     final List<String> results = await _suggestionCallback(value);
     setState(() {
       _suggestions = results.where((String label) => !_labels.contains(label)).toList();
+      _searchQuery = value;
     });
   }
 
@@ -103,7 +105,7 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _selectSuggestion(String label) {
-    // print('Suggestion selected: $label');
+    print('Suggestion selected: $label');
     setState(() {
       _labels.add(label);
       _suggestions = <String>[];
@@ -125,13 +127,16 @@ class LabelFieldState extends State<LabelField> {
   }
 
   void _onSubmitted(String text) {
-    // print('Submitted: $text');
-    if (text.trim().isNotEmpty) {
+    print('Submitted: $text');
+    if (text.trim().isNotEmpty && !_labels.contains(text.trim())) {
       setState(() {
         _labels = <String>[..._labels, text.trim()];
       });
     } else {
       _chipFocusNode.unfocus();
+      setState(() {
+        _suggestions = <String>[];
+      });
     }
     widget.onChanged(_labels);
   }
