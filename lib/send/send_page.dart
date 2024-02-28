@@ -513,8 +513,14 @@ class TxDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final address = context.select((SendCubit cubit) => cubit.state.address);
-    final amount = context.select((CurrencyCubit cubit) => cubit.state.amount);
-    final amtStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
+    final sendAll = context.select((SendCubit cubit) => cubit.state.sendAllCoin);
+    final unfrozenBalance =
+        context.select((WalletBloc cubit) => cubit.state.wallet?.balanceWithoutFrozenUTXOs());
+    final allAmount = context.select((CurrencyCubit cubit) => cubit.state.amount);
+    final amount = sendAll ? unfrozenBalance! : allAmount;
+    final amtStr = context.select(
+      (CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount),
+    );
     final fee = context.select((SendCubit cubit) => cubit.state.psbtSignedFeeAmount ?? 0);
     final feeStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(fee));
 
@@ -576,8 +582,16 @@ class TxSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final amount = context.select((CurrencyCubit cubit) => cubit.state.amount);
-    final amtStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
+    final sendAll = context.select((SendCubit cubit) => cubit.state.sendAllCoin);
+    final unfrozenBalance =
+        context.select((WalletBloc cubit) => cubit.state.wallet?.balanceWithoutFrozenUTXOs());
+    final allAmount = context.select((CurrencyCubit cubit) => cubit.state.amount);
+    final amount = sendAll ? unfrozenBalance! : allAmount;
+    final amtStr = context.select(
+      (CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount),
+    );
+    // final amount = context.select((CurrencyCubit cubit) => cubit.state.amount);
+    // final amtStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
     final txid = context.select((SendCubit cubit) => cubit.state.tx!.txid);
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.green),
