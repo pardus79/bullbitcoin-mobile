@@ -215,7 +215,7 @@ class WalletAddress {
       for (final addr in myAddresses) {
         AddressStatus addressStatus = addr.state;
         int balance = 0;
-        final matches = utxos.where((utxo) => utxo.address.address == addr.address).toList();
+        final matches = utxos.where((utxo) => utxo.address == addr.address).toList();
         if (matches.isEmpty) {
           if (addr.state == AddressStatus.active) {
             addressStatus = AddressStatus.used;
@@ -270,6 +270,8 @@ class WalletAddress {
           address: existing.address,
           index: existing.index,
           label: label ?? existing.label,
+          refTxIds:
+              spentTxId != null ? [...existing.refTxIds, spentTxId] : (existing.refTxIds ?? []),
           spentTxId: spentTxId ?? existing.spentTxId,
           kind: kind,
           state: state,
@@ -283,6 +285,7 @@ class WalletAddress {
           index: idx,
           label: label,
           spentTxId: spentTxId,
+          refTxIds: spentTxId != null ? [spentTxId] : [],
           kind: kind,
           state: state,
           spendable: spendable,

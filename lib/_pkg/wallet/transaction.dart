@@ -233,7 +233,7 @@ class WalletTx {
           // HANDLE EXTERNAL RECIPIENT
           //
           //
-          externalAddress = wallet.getAddressFromAddresses(
+          externalAddress = wallet.getAddressFromTxId(
             txObj.txid,
             isSend: !txObj.isReceived(),
             kind: AddressKind.external,
@@ -295,7 +295,7 @@ class WalletTx {
           //
           //
 
-          changeAddress = wallet.getAddressFromAddresses(
+          changeAddress = wallet.getAddressFromTxId(
             txObj.txid,
             isSend: !txObj.isReceived(),
             kind: AddressKind.change,
@@ -345,7 +345,7 @@ class WalletTx {
           }
           if (changeAddress != null) txObj = addOutputAddresses(changeAddress, txObj);
         } else if (txObj.isReceived()) {
-          depositAddress = wallet.getAddressFromAddresses(
+          depositAddress = wallet.getAddressFromTxId(
             txObj.txid,
             isSend: !txObj.isReceived(),
             kind: AddressKind.deposit,

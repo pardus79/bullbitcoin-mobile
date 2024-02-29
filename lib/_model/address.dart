@@ -28,6 +28,7 @@ class Address with _$Address {
     required AddressStatus state,
     String? label,
     String? spentTxId,
+    @Default([]) List<String> refTxIds,
     @Default(true) bool spendable,
     @Default(0) int highestPreviousBalance,
     @Default(0) int balance,
@@ -36,14 +37,11 @@ class Address with _$Address {
 
   factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
 
-  // TODO: UTXO
-  // Updated with UTXO change
   List<bdk.OutPoint> getUnspentUtxosOutpoints(List<UTXO> utxos) {
     return utxos
-        .where((ut) => ut.address.address == address)
+        .where((ut) => ut.address == address)
         .map((e) => bdk.OutPoint(txid: e.txid, vout: e.txIndex))
         .toList();
-    // return utxos?.where((tx) => !tx.isSpent).map((tx) => tx.outpoint).toList() ?? [];
   }
 
   String miniString() {
@@ -78,7 +76,8 @@ class UTXO with _$UTXO {
     required bool isSpent,
     required int value,
     required String label,
-    required Address address,
+    required String address,
+    required AddressKind addressType,
     required bool spendable,
   }) = _UTXO;
   const UTXO._();

@@ -216,7 +216,6 @@ class AddressActions extends StatelessWidget {
     final freezing = context.select((AddressCubit cubit) => cubit.state.freezingAddress);
     final hasUtxos =
         context.select((AddressCubit cubit) => cubit.state.address?.state == AddressStatus.active);
-    //TODO: UTXO context.select((AddressCubit cubit) => cubit.state.address!.utxos?.isNotEmpty ?? false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

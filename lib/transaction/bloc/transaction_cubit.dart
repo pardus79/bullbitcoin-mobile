@@ -121,7 +121,7 @@ class TransactionCubit extends Cubit<TransactionState> {
     final tx = state.tx;
     final txid = tx.txid;
 
-    final address = walletBloc.state.wallet!.getAddressFromAddresses(txid);
+    final address = walletBloc.state.wallet!.getAddressFromTxId(txid);
 
     if (address == null || address.label == null) return;
 

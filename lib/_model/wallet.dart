@@ -140,21 +140,15 @@ class Wallet with _$Wallet {
     return amt;
   }
 
-  String getAddressFromTxid(String txid) {
-    // TODO: UTXO
-    // Updated / Simplified (Seach specific to utxos. Is this fine?)
-    for (final utxo in utxos) if (utxo.txid == txid) return utxo.address.address;
-    for (final tx in transactions) {
-      for (final addrs in tx.outAddrs) if (addrs.spentTxId == txid) return addrs.address;
-    }
-    return '';
-
-    /*
-    for (final address in myAddressBook)
-      for (final utxo in address.utxos ?? <bdk.LocalUtxo>[])
-        if (utxo.outpoint.txid == txid) return address.address; // this will return change
-    */
-  }
+  // TODO: Should update this with refTxIds
+  // Actually this function is not used anywhere
+  // String getAddressFromTxid(String txid) {
+  //   for (final utxo in utxos) if (utxo.txid == txid) return utxo.address;
+  //   for (final tx in transactions) {
+  //     for (final addrs in tx.outAddrs) if (addrs.spentTxId == txid) return addrs.address;
+  //   }
+  //   return '';
+  // }
 
   Address? findAddressInWallet(String address) {
     final completeAddressBook = [
@@ -167,14 +161,17 @@ class Wallet with _$Wallet {
     return null;
   }
 
-  Address? getAddressFromAddresses(
+  // TODO: Renamed this from getAddressFromTxid to getAddressFromAddress
+  Address? getAddressFromTxId(
     String txid, {
     bool isSend = false,
     AddressKind? kind,
   }) {
     for (final address in (isSend ? externalAddressBook : myAddressBook) ?? <Address>[])
       if (isSend) {
-        if (address.spentTxId == txid) {
+        // TODO: Should update this with refTxIds
+        // if (address.spentTxId == txid) {
+        if (address.refTxIds.contains(txid)) {
           if (kind == null) {
             return address;
           } else if (kind == address.kind) {
@@ -182,9 +179,8 @@ class Wallet with _$Wallet {
           }
         }
       } else {
-        // TODO: UTXO
         for (final utxo in utxos) {
-          if (utxo.address.address == address.address && utxo.txid == txid) {
+          if (utxo.address == address.address && utxo.txid == txid) {
             if (kind == null) {
               return address;
             } else if (kind == address.kind) {
@@ -192,17 +188,6 @@ class Wallet with _$Wallet {
             }
           }
         }
-        /*
-        for (final utxo in address.utxos ?? <bdk.LocalUtxo>[]) {
-          if (utxo.outpoint.txid == txid) {
-            if (kind == null) {
-              return address;
-            } else if (kind == address.kind) {
-              return address;
-            }
-          }
-        }
-        */
         return null;
       }
 

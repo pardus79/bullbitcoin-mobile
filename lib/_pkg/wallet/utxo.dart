@@ -43,11 +43,8 @@ class WalletUtxo {
           value: unspent.txout.value,
           label: addressLabel,
           spendable: spendable,
-          address: Address(
-            address: addressStr,
-            kind: addressKind,
-            state: AddressStatus.active,
-          ),
+          address: addressStr,
+          addressType: addressKind,
         );
         list.add(utxo);
       }

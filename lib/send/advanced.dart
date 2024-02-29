@@ -251,7 +251,9 @@ class AdvancedOptionAdress extends StatelessWidget {
 
     final balance = utxo.value;
 
-    final addressType = utxo.address.getKindString();
+    final addressType =
+        Address(address: utxo.address, kind: utxo.addressType, state: AddressStatus.active)
+            .getKindString();
 
     final amt = context.select(
       (CurrencyCubit x) => x.state.getAmountInUnits(balance),
@@ -259,8 +261,11 @@ class AdvancedOptionAdress extends StatelessWidget {
 
     final label = utxo.label;
 
+    // TODO: UTXO.address type change
+    // final addessStr =
+    //     utxo.address + (utxo.address.label != null ? utxo.address.label! : '');
     final addessStr =
-        utxo.address.toShortString() + (utxo.address.label != null ? utxo.address.label! : '');
+        utxo.address.substring(0, 5) + '...' + utxo.address.substring(utxo.address.length - 5);
 
     return AnimatedOpacity(
       opacity: isFrozen ? 0.5 : 1,
