@@ -42,7 +42,7 @@ class PSBTPopUp extends StatelessWidget {
     final isSats = context.select((CurrencyCubit cubit) => cubit.state.unitsInSats);
     final txfee = context.select((SendCubit cubit) => cubit.state.tx?.fee ?? 0);
     final toAddress = tx.toAddress ?? '';
-    final label = tx.label;
+    final label = tx.labels?.join(', ') ?? '';
 
     final amt = context.select(
       (CurrencyCubit cubit) => cubit.state.getAmountInUnits(
@@ -141,7 +141,7 @@ class PSBTPopUp extends StatelessWidget {
             fee,
             isBold: true,
           ),
-          if (label != null && label.isNotEmpty) ...[
+          if (label.isNotEmpty) ...[
             const BBText.title(
               'Label',
             ),

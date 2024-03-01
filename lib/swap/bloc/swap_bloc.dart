@@ -104,7 +104,7 @@ class SwapBloc extends Bloc<SwapEvent, SwapState> {
     final tx = Transaction.fromSwapTx(event.swapTx).copyWith(
       isSwap: true,
       swapIndex: wallet.swapTxCount,
-      label: event.label,
+      labels: [event.label ?? ''],
     );
 
     final (updatedWallet, err) = await walletTx.addSwapTxToWallet(

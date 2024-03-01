@@ -43,10 +43,10 @@ class TransactionCubit extends Cubit<TransactionState> {
     required this.networkCubit,
     required this.networkFeesCubit,
   }) : super(TransactionState(tx: tx)) {
-    if (tx.isReceived())
-      loadReceiveLabel();
-    else
-      loadSentLabel();
+    // if (tx.isReceived())
+    //   loadReceiveLabel();
+    // else
+    //   loadSentLabel();
 
     loadTx();
   }
@@ -117,23 +117,23 @@ class TransactionCubit extends Cubit<TransactionState> {
   //   emit(state.copyWith(tx: tx!));
   // }
 
-  void loadReceiveLabel() {
-    final tx = state.tx;
-    final txid = tx.txid;
+  // void loadReceiveLabel() {
+  //   final tx = state.tx;
+  //   final txid = tx.txid;
 
-    final address = walletBloc.state.wallet!.getAddressFromAddresses(txid);
+  //   final address = walletBloc.state.wallet!.getAddressFromAddresses(txid);
 
-    if (address == null || address.label == null) return;
+  //   if (address == null || address.label == null) return;
 
-    emit(
-      state.copyWith(
-        tx: tx.copyWith(label: address.label),
-        label: address.label!,
-      ),
-    );
-  }
+  //   emit(
+  //     state.copyWith(
+  //       tx: tx.copyWith(labels: address.labels),
+  //       label: address.label!,
+  //     ),
+  //   );
+  // }
 
-  void loadSentLabel() {}
+  // void loadSentLabel() {}
 
   // void loadLabel() async {
   //   final tx = (walletBloc.state.wallet?.transactions ?? []).firstWhere(
@@ -183,52 +183,52 @@ class TransactionCubit extends Cubit<TransactionState> {
     );
   }
 
-  void saveLabelClicked() async {
-    final label = state.tx.label;
-    if (label == state.label) return;
-    emit(state.copyWith(savingLabel: true, errSavingLabel: ''));
+  // void saveLabelClicked() async {
+  //   final label = state.tx.label;
+  //   if (label == state.label) return;
+  //   emit(state.copyWith(savingLabel: true, errSavingLabel: ''));
 
-    final tx = state.tx.copyWith(
-      label: state.label,
-      outAddrs: state.tx.outAddrs
-          .map(
-            (out) => out.copyWith(
-              label: out.label ?? label,
-            ),
-          )
-          .toList(),
-    );
+  //   final tx = state.tx.copyWith(
+  //     label: state.label,
+  //     outAddrs: state.tx.outAddrs
+  //         .map(
+  //           (out) => out.copyWith(
+  //             label: out.label ?? label,
+  //           ),
+  //         )
+  //         .toList(),
+  //   );
 
-    final updateWallet = walletBloc.state.wallet!.copyWith(
-      transactions: [
-        for (final t in walletBloc.state.wallet?.transactions ?? <Transaction>[])
-          if (t.txid == tx.txid) tx else t,
-      ],
-    );
+  //   final updateWallet = walletBloc.state.wallet!.copyWith(
+  //     transactions: [
+  //       for (final t in walletBloc.state.wallet?.transactions ?? <Transaction>[])
+  //         if (t.txid == tx.txid) tx else t,
+  //     ],
+  //   );
 
-    final (w, err) = await walletUpdate.updateAddressesFromTxs(updateWallet);
-    if (err != null) {
-      emit(state.copyWith(errSavingLabel: err.toString(), savingLabel: false));
-      return;
-    }
+  //   final (w, err) = await walletUpdate.updateAddressesFromTxs(updateWallet);
+  //   if (err != null) {
+  //     emit(state.copyWith(errSavingLabel: err.toString(), savingLabel: false));
+  //     return;
+  //   }
 
-    walletBloc.add(
-      UpdateWallet(
-        w!,
-        updateTypes: [UpdateWalletTypes.transactions, UpdateWalletTypes.addresses],
-      ),
-    );
+  //   walletBloc.add(
+  //     UpdateWallet(
+  //       w!,
+  //       updateTypes: [UpdateWalletTypes.transactions, UpdateWalletTypes.addresses],
+  //     ),
+  //   );
 
-    await Future.delayed(const Duration(seconds: 1));
-    walletBloc.add(ListTransactions());
+  //   await Future.delayed(const Duration(seconds: 1));
+  //   walletBloc.add(ListTransactions());
 
-    emit(
-      state.copyWith(
-        savingLabel: false,
-        tx: tx,
-      ),
-    );
-  }
+  //   emit(
+  //     state.copyWith(
+  //       savingLabel: false,
+  //       tx: tx,
+  //     ),
+  //   );
+  // }
 
   // void updateFeeRate(String feeRate) {
   //   final amt = int.tryParse(feeRate) ?? 0;
@@ -348,7 +348,6 @@ class TransactionCubit extends Cubit<TransactionState> {
     final (_, updatedWallet) = await walletAddress.addAddressToWallet(
       address: (null, tx.toAddress!),
       wallet: w,
-      label: tx.label,
       spentTxId: txid,
       kind: AddressKind.external,
       state: AddressStatus.used,

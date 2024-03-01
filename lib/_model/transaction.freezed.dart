@@ -26,7 +26,6 @@ mixin _$Transaction {
   int? get sent => throw _privateConstructorUsedError;
   int? get fee => throw _privateConstructorUsedError;
   int? get height => throw _privateConstructorUsedError;
-  String? get label => throw _privateConstructorUsedError;
   List<String>? get labels => throw _privateConstructorUsedError;
   String? get toAddress => throw _privateConstructorUsedError;
   String? get psbt => throw _privateConstructorUsedError;
@@ -62,7 +61,6 @@ abstract class $TransactionCopyWith<$Res> {
       int? sent,
       int? fee,
       int? height,
-      String? label,
       List<String>? labels,
       String? toAddress,
       String? psbt,
@@ -101,7 +99,6 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
     Object? sent = freezed,
     Object? fee = freezed,
     Object? height = freezed,
-    Object? label = freezed,
     Object? labels = freezed,
     Object? toAddress = freezed,
     Object? psbt = freezed,
@@ -141,10 +138,6 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int?,
-      label: freezed == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String?,
       labels: freezed == labels
           ? _value.labels
           : labels // ignore: cast_nullable_to_non_nullable
@@ -240,7 +233,6 @@ abstract class _$$TransactionImplCopyWith<$Res>
       int? sent,
       int? fee,
       int? height,
-      String? label,
       List<String>? labels,
       String? toAddress,
       String? psbt,
@@ -279,7 +271,6 @@ class __$$TransactionImplCopyWithImpl<$Res>
     Object? sent = freezed,
     Object? fee = freezed,
     Object? height = freezed,
-    Object? label = freezed,
     Object? labels = freezed,
     Object? toAddress = freezed,
     Object? psbt = freezed,
@@ -319,10 +310,6 @@ class __$$TransactionImplCopyWithImpl<$Res>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int?,
-      label: freezed == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String?,
       labels: freezed == labels
           ? _value._labels
           : labels // ignore: cast_nullable_to_non_nullable
@@ -389,7 +376,6 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       this.sent,
       this.fee,
       this.height,
-      this.label,
       final List<String>? labels,
       this.toAddress,
       this.psbt,
@@ -423,8 +409,6 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
   final int? fee;
   @override
   final int? height;
-  @override
-  final String? label;
   final List<String>? _labels;
   @override
   List<String>? get labels {
@@ -482,7 +466,7 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, label: $label, labels: $labels, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, prevTxIds: $prevTxIds, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
+    return 'Transaction(timestamp: $timestamp, txid: $txid, received: $received, sent: $sent, fee: $fee, height: $height, labels: $labels, toAddress: $toAddress, psbt: $psbt, rbfEnabled: $rbfEnabled, oldTx: $oldTx, broadcastTime: $broadcastTime, outAddrs: $outAddrs, prevTxIds: $prevTxIds, bdkTx: $bdkTx, wallet: $wallet, isSwap: $isSwap, swapIndex: $swapIndex, swapTx: $swapTx)';
   }
 
   @override
@@ -496,7 +480,6 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('sent', sent))
       ..add(DiagnosticsProperty('fee', fee))
       ..add(DiagnosticsProperty('height', height))
-      ..add(DiagnosticsProperty('label', label))
       ..add(DiagnosticsProperty('labels', labels))
       ..add(DiagnosticsProperty('toAddress', toAddress))
       ..add(DiagnosticsProperty('psbt', psbt))
@@ -525,7 +508,6 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
             (identical(other.sent, sent) || other.sent == sent) &&
             (identical(other.fee, fee) || other.fee == fee) &&
             (identical(other.height, height) || other.height == height) &&
-            (identical(other.label, label) || other.label == label) &&
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.toAddress, toAddress) ||
                 other.toAddress == toAddress) &&
@@ -556,7 +538,6 @@ class _$TransactionImpl extends _Transaction with DiagnosticableTreeMixin {
         sent,
         fee,
         height,
-        label,
         const DeepCollectionEquality().hash(_labels),
         toAddress,
         psbt,
@@ -594,7 +575,6 @@ abstract class _Transaction extends Transaction {
       final int? sent,
       final int? fee,
       final int? height,
-      final String? label,
       final List<String>? labels,
       final String? toAddress,
       final String? psbt,
@@ -626,8 +606,6 @@ abstract class _Transaction extends Transaction {
   int? get fee;
   @override
   int? get height;
-  @override
-  String? get label;
   @override
   List<String>? get labels;
   @override

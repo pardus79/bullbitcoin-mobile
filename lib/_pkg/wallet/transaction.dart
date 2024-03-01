@@ -151,9 +151,6 @@ class WalletTx {
         final SerializedTx sTx = SerializedTx.fromJson(
           jsonDecode(txObj.bdkTx!.serializedTx!) as Map<String, dynamic>,
         );
-        if (storedTxIdx != -1 &&
-            storedTxs[storedTxIdx].label != null &&
-            storedTxs[storedTxIdx].label!.isNotEmpty) label = storedTxs[storedTxIdx].label;
 
         Address? externalAddress;
         Address? changeAddress;
@@ -333,11 +330,6 @@ class WalletTx {
           }
         }
 
-        if (storedTxIdx != -1 &&
-            storedTxs[storedTxIdx].label != null &&
-            storedTxs[storedTxIdx].label!.isNotEmpty) label = storedTxs[storedTxIdx].label;
-
-        transactions.add(txObj.copyWith(label: label));
         // Future.delayed(const Duration(milliseconds: 100));
       }
 
@@ -399,10 +391,6 @@ class WalletTx {
           rbfEnabled: storedTx?.rbfEnabled ?? false,
           outAddrs: storedTx?.outAddrs ?? [],
         );
-
-        if (storedTxIdx != -1 &&
-            storedTxs[storedTxIdx].label != null &&
-            storedTxs[storedTxIdx].label!.isNotEmpty) label = storedTxs[storedTxIdx].label;
 
         final SerializedTx sTx = SerializedTx.fromJson(
           jsonDecode(txObj.bdkTx!.serializedTx!) as Map<String, dynamic>,
@@ -470,8 +458,6 @@ class WalletTx {
             toAddress: recipients.toString(),
           );
         }
-
-        transactions.add(txObj.copyWith(label: label));
       }
 
       final w = wallet.copyWith(
@@ -564,7 +550,6 @@ class WalletTx {
             state: AddressStatus.used,
             highestPreviousBalance: amount,
             balance: amount,
-            label: note ?? '',
             spendable: false,
           );
         } else {
@@ -574,7 +559,6 @@ class WalletTx {
             state: AddressStatus.used,
             highestPreviousBalance: txOut.value,
             balance: txOut.value,
-            label: note ?? '',
           );
         }
       });
@@ -590,7 +574,6 @@ class WalletTx {
         fee: feeAmt ?? 0,
         height: txDetails.confirmationTime?.height,
         timestamp: txDetails.confirmationTime?.timestamp ?? 0,
-        label: note,
         toAddress: address,
         outAddrs: outAddrs,
         psbt: txResult.psbt.psbtBase64,
@@ -661,7 +644,6 @@ class WalletTx {
       final txid = await psbtStruct.txId();
       final newTx = transaction.copyWith(
         txid: txid,
-        label: note,
         toAddress: address,
         broadcastTime: DateTime.now().millisecondsSinceEpoch,
         oldTx: false,

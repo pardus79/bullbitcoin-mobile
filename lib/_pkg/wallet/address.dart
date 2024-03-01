@@ -275,7 +275,6 @@ class WalletAddress {
         updated = Address(
           address: existing.address,
           index: existing.index,
-          label: label ?? existing.label,
           labels: labels,
           spentTxId: spentTxId ?? existing.spentTxId,
           kind: kind,
@@ -288,7 +287,6 @@ class WalletAddress {
         updated = Address(
           address: adr,
           index: idx,
-          label: label,
           labels: labels,
           spentTxId: spentTxId,
           kind: kind,

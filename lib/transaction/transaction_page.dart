@@ -107,7 +107,8 @@ class TxAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = context.select((TransactionCubit cubit) => cubit.state.tx.label ?? '');
+    final label =
+        context.select((TransactionCubit cubit) => cubit.state.tx.labels?.join(',') ?? '');
 
     return BBAppBar(
       text: label.isNotEmpty ? label : 'Transaction',

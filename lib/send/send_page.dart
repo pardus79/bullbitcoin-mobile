@@ -355,7 +355,8 @@ class _EnterNoteState extends State<EnterNote> {
     return LabelField(
       suggestions: suggestions,
       onChanged: (List<String> lbls) {
-        context.read<SendCubit>().updateLabels(lbls);
+        // context.read<SendCubit>().updateLabels(lbls);
+        // context.read<SendCubit>().updateLabels(lbls);
       },
     );
     // return BBTextInput.big(

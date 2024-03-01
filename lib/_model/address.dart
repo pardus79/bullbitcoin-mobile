@@ -27,7 +27,6 @@ class Address with _$Address {
     int? index,
     required AddressKind kind,
     required AddressStatus state,
-    String? label,
     List<String>? labels,
     String? spentTxId,
     @Default(true) bool spendable,
@@ -61,18 +60,6 @@ class Address with _$Address {
             lbls.addAll(tx.labels ?? []);
           }
         }
-
-        // if (!tx.isReceived() && tx.txid.endsWith('316b')) {
-        //   for (final prevTxId in tx.prevTxIds) {
-        //     for (final txx in w.transactions) {
-        //       if (txx.labels != null && txx.labels!.isNotEmpty) {
-        //         if (prevTxId == tx.txid) {
-        //           lbls.addAll(txx.labels ?? []);
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
       }
       // TODO: Should look in external address book?
     }

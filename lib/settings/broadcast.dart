@@ -336,7 +336,7 @@ class TxInfo extends StatelessWidget {
     final tx = context.select((BroadcastTxCubit cubit) => cubit.state.transaction);
     // final psbt = context.select((BroadcastTxCubit cubit) => cubit.state.psbtBDK);
     if (tx == null) return const SizedBox();
-    final label = tx.label ?? 'No Label';
+    final label = tx.labels?.join(', ') ?? 'No Label';
 
     final txamt = context.select(
       (BroadcastTxCubit cubit) => cubit.state.amount ?? 0,

@@ -24,7 +24,7 @@ class TransactionState with _$TransactionState {
   const TransactionState._();
 
   bool showSaveButton() {
-    if (label.isEmpty && label != tx.label) return false;
+    if (label.isEmpty && label != tx.labels?.join(',')) return false;
     return true;
   }
 }
