@@ -23,8 +23,8 @@ mixin _$Address {
   String get address => throw _privateConstructorUsedError;
   int? get index => throw _privateConstructorUsedError;
   AddressKind get kind => throw _privateConstructorUsedError;
-  AddressStatus get state => throw _privateConstructorUsedError;
-  String? get label => throw _privateConstructorUsedError;
+  AddressStatus get state =>
+      throw _privateConstructorUsedError; // String? label,
   List<String>? get labels => throw _privateConstructorUsedError;
   String? get spentTxId => throw _privateConstructorUsedError;
   bool get spendable => throw _privateConstructorUsedError;
@@ -46,7 +46,6 @@ abstract class $AddressCopyWith<$Res> {
       int? index,
       AddressKind kind,
       AddressStatus state,
-      String? label,
       List<String>? labels,
       String? spentTxId,
       bool spendable,
@@ -71,7 +70,6 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
     Object? index = freezed,
     Object? kind = null,
     Object? state = null,
-    Object? label = freezed,
     Object? labels = freezed,
     Object? spentTxId = freezed,
     Object? spendable = null,
@@ -95,10 +93,6 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as AddressStatus,
-      label: freezed == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String?,
       labels: freezed == labels
           ? _value.labels
           : labels // ignore: cast_nullable_to_non_nullable
@@ -135,7 +129,6 @@ abstract class _$$AddressImplCopyWith<$Res> implements $AddressCopyWith<$Res> {
       int? index,
       AddressKind kind,
       AddressStatus state,
-      String? label,
       List<String>? labels,
       String? spentTxId,
       bool spendable,
@@ -158,7 +151,6 @@ class __$$AddressImplCopyWithImpl<$Res>
     Object? index = freezed,
     Object? kind = null,
     Object? state = null,
-    Object? label = freezed,
     Object? labels = freezed,
     Object? spentTxId = freezed,
     Object? spendable = null,
@@ -182,10 +174,6 @@ class __$$AddressImplCopyWithImpl<$Res>
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as AddressStatus,
-      label: freezed == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String?,
       labels: freezed == labels
           ? _value._labels
           : labels // ignore: cast_nullable_to_non_nullable
@@ -218,7 +206,6 @@ class _$AddressImpl extends _Address {
       this.index,
       required this.kind,
       required this.state,
-      this.label,
       final List<String>? labels,
       this.spentTxId,
       this.spendable = true,
@@ -238,9 +225,9 @@ class _$AddressImpl extends _Address {
   final AddressKind kind;
   @override
   final AddressStatus state;
-  @override
-  final String? label;
+// String? label,
   final List<String>? _labels;
+// String? label,
   @override
   List<String>? get labels {
     final value = _labels;
@@ -264,7 +251,7 @@ class _$AddressImpl extends _Address {
 
   @override
   String toString() {
-    return 'Address(address: $address, index: $index, kind: $kind, state: $state, label: $label, labels: $labels, spentTxId: $spentTxId, spendable: $spendable, highestPreviousBalance: $highestPreviousBalance, balance: $balance)';
+    return 'Address(address: $address, index: $index, kind: $kind, state: $state, labels: $labels, spentTxId: $spentTxId, spendable: $spendable, highestPreviousBalance: $highestPreviousBalance, balance: $balance)';
   }
 
   @override
@@ -276,7 +263,6 @@ class _$AddressImpl extends _Address {
             (identical(other.index, index) || other.index == index) &&
             (identical(other.kind, kind) || other.kind == kind) &&
             (identical(other.state, state) || other.state == state) &&
-            (identical(other.label, label) || other.label == label) &&
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.spentTxId, spentTxId) ||
                 other.spentTxId == spentTxId) &&
@@ -295,7 +281,6 @@ class _$AddressImpl extends _Address {
       index,
       kind,
       state,
-      label,
       const DeepCollectionEquality().hash(_labels),
       spentTxId,
       spendable,
@@ -322,7 +307,6 @@ abstract class _Address extends Address {
       final int? index,
       required final AddressKind kind,
       required final AddressStatus state,
-      final String? label,
       final List<String>? labels,
       final String? spentTxId,
       final bool spendable,
@@ -340,9 +324,7 @@ abstract class _Address extends Address {
   AddressKind get kind;
   @override
   AddressStatus get state;
-  @override
-  String? get label;
-  @override
+  @override // String? label,
   List<String>? get labels;
   @override
   String? get spentTxId;

@@ -18,11 +18,12 @@ class WalletAddress {
       final x = addresses.firstWhere(
         (element) => element.address == address,
       );
-      label = x.label;
+      /* label = x.label; */
       labels = x.labels;
     }
 
-    return (label, labels);
+    return ('', labels); // TODO: Remove first param
+    // return (label, labels);
   }
 
   Future<(Wallet?, Err?)> loadAddresses({
@@ -275,7 +276,7 @@ class WalletAddress {
         updated = Address(
           address: existing.address,
           index: existing.index,
-          label: label ?? existing.label,
+          // label: label ?? existing.label,
           labels: labels,
           spentTxId: spentTxId ?? existing.spentTxId,
           kind: kind,
@@ -288,7 +289,7 @@ class WalletAddress {
         updated = Address(
           address: adr,
           index: idx,
-          label: label,
+          // label: label,
           labels: labels,
           spentTxId: spentTxId,
           kind: kind,

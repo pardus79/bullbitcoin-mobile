@@ -482,7 +482,7 @@ class RenameLabel extends StatelessWidget {
         value: receiveCubit,
         child: BlocListener<ReceiveCubit, ReceiveState>(
           listenWhen: (previous, current) =>
-              previous.defaultAddress?.label != current.defaultAddress?.label,
+              previous.defaultAddress?.labels?.join() != current.defaultAddress?.labels?.join(),
           listener: (context, state) {
             // context.pop();
           },

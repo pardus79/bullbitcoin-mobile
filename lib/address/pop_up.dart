@@ -409,7 +409,7 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
     final saving = context.select((AddressCubit cubit) => cubit.state.savingAddressName);
     final err = context.select((AddressCubit cubit) => cubit.state.errSavingAddressName);
     final saved = context.select((AddressCubit cubit) => cubit.state.savedAddressName);
-    final _ = widget.address.label ?? 'Enter Label';
+    // final _ = widget.address.label ?? 'Enter Label';
 
     final suggestions =
         context.select((AddressCubit _) => _.walletBloc.state.wallet?.globalLabels ?? []);
@@ -441,7 +441,9 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
             width: 250,
             child: BBButton.bigRed(
               loading: saving,
-              onPressed: () {
+              onPressed: () async {
+                // TODO: [Bad practice] wait for LabelField.inputfield's focus lost event to propagate to onChanged
+                await Future.delayed(const Duration(seconds: 2));
                 context.read<AddressCubit>().saveAddressName(widget.address, labels);
               },
               label: 'Save',

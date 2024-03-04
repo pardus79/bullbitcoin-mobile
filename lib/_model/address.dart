@@ -27,7 +27,7 @@ class Address with _$Address {
     int? index,
     required AddressKind kind,
     required AddressStatus state,
-    String? label,
+    // String? label,
     List<String>? labels,
     String? spentTxId,
     @Default(true) bool spendable,

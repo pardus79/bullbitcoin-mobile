@@ -107,10 +107,12 @@ class TxAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = context.select((TransactionCubit cubit) => cubit.state.tx.label ?? '');
+    final tx = context.select((TransactionCubit cubit) => cubit.state.tx);
+    final w = context.select((TransactionCubit cubit) => cubit.walletBloc.state.wallet!);
+    final (labels, isInherited) = tx.getLabels(w);
 
     return BBAppBar(
-      text: label.isNotEmpty ? label : 'Transaction',
+      text: labels.isNotEmpty ? labels.join(', ') : 'Transaction',
       onBack: () {
         context.pop();
       },

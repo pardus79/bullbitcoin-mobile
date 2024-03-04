@@ -34,7 +34,7 @@ class AddressCubit extends Cubit<AddressState> {
 
     final (address, w) = await walletAddress.addAddressToWallet(
       address: (state.address!.index, state.address!.address),
-      label: state.address?.label,
+      // label: state.address?.label,
       wallet: walletBloc.state.wallet!,
       kind: state.address!.kind,
       state: state.address!.state,
@@ -64,7 +64,7 @@ class AddressCubit extends Cubit<AddressState> {
 
     final (address, w) = await walletAddress.addAddressToWallet(
       address: (state.address!.index, state.address!.address),
-      label: state.address?.label,
+      // label: state.address?.label,
       wallet: walletBloc.state.wallet!,
       kind: state.address!.kind,
       state: state.address!.state,

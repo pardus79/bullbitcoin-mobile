@@ -77,7 +77,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       address: address!.address,
       wallet: state.walletBloc!.state.wallet!,
     );
-    final labelUpdated = address.copyWith(label: label, labels: labels);
+    final labelUpdated = address.copyWith(labels: labels);
 
     if (labels != null)
       emit(
