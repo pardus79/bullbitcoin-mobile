@@ -31,20 +31,20 @@ class WalletUpdate {
     for (final address in addresses) {
       final existingMyAddressIndex = myAddressBook.indexWhere((a) => a.address == address.address);
       if (existingMyAddressIndex != -1) {
-        // final updatedAddress = myAddressBook[existingMyAddressIndex].copyWith(
-        //   label: address.label,
-        // );
-        // myAddressBook[existingMyAddressIndex] = updatedAddress;
+        final updatedAddress = myAddressBook[existingMyAddressIndex].copyWith(
+          labels: address.labels,
+        );
+        myAddressBook[existingMyAddressIndex] = updatedAddress;
       }
 
       final existingExternalAddressIndex =
           externalAddressBook.indexWhere((a) => a.address == address.address);
 
       if (existingExternalAddressIndex != -1) {
-        // final updatedAddress = externalAddressBook[existingExternalAddressIndex].copyWith(
-        //   label: address.label,
-        // );
-        // externalAddressBook[existingExternalAddressIndex] = updatedAddress;
+        final updatedAddress = externalAddressBook[existingExternalAddressIndex].copyWith(
+          labels: address.labels,
+        );
+        externalAddressBook[existingExternalAddressIndex] = updatedAddress;
       }
     }
     final w = wallet.copyWith(
@@ -60,11 +60,11 @@ class WalletUpdate {
     for (final tx in txs) {
       final txIndex = transactions.indexWhere((a) => a.txid == tx.txid);
       if (txIndex != -1) {
-        // final updatedTx = transactions[txIndex].copyWith(
-        //   label: tx.label,
-        //   outAddrs: tx.outAddrs.map((addr) => addr.copyWith(label: tx.label)).toList(),
-        // );
-        // transactions[txIndex] = updatedTx;
+        final updatedTx = transactions[txIndex].copyWith(
+          labels: tx.labels,
+          outAddrs: tx.outAddrs.map((addr) => addr.copyWith(labels: tx.labels)).toList(),
+        );
+        transactions[txIndex] = updatedTx;
       }
     }
     final w = wallet.copyWith(transactions: transactions);

@@ -127,11 +127,10 @@ class AddressCubit extends Cubit<AddressState> {
     emit(
       state.copyWith(
         address: addr,
-        savingAddressName: false,
         savedAddressName: true,
       ),
     );
     await Future.delayed(const Duration(seconds: 3));
-    emit(state.copyWith(savedAddressName: false));
+    emit(state.copyWith(savedAddressName: false, savingAddressName: false));
   }
 }

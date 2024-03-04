@@ -532,6 +532,9 @@ class RenameLabel extends StatelessWidget {
         BBButton.bigRed(
           label: 'Save',
           onPressed: () async {
+            // TODO: Improve
+            FocusScope.of(context).requestFocus(FocusNode());
+            await Future.delayed(const Duration(seconds: 1));
             context.read<ReceiveCubit>().saveDefaultAddressLabel();
             // TODO: To Improve
             await Future.delayed(const Duration(milliseconds: 900));

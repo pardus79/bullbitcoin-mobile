@@ -443,7 +443,8 @@ class _AddressLabelTextFieldState extends State<AddressLabelTextField> {
               loading: saving,
               onPressed: () async {
                 // TODO: [Bad practice] wait for LabelField.inputfield's focus lost event to propagate to onChanged
-                await Future.delayed(const Duration(seconds: 2));
+                FocusScope.of(context).requestFocus(FocusNode());
+                await Future.delayed(const Duration(seconds: 1));
                 context.read<AddressCubit>().saveAddressName(widget.address, labels);
               },
               label: 'Save',

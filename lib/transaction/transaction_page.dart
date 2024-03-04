@@ -351,7 +351,10 @@ class _TxLabelTextFieldState extends State<TxLabelTextField> {
         ),
         const Gap(8),
         BBButton.smallRed(
-          onPressed: () {
+          onPressed: () async {
+            // TODO: Improve
+            FocusScope.of(context).requestFocus(FocusNode());
+            await Future.delayed(const Duration(seconds: 1));
             ScaffoldMessenger.of(context).showSnackBar(context.showToast('Labels saved'));
             context.read<TransactionCubit>().saveLabelsClicked(_labels);
           },
