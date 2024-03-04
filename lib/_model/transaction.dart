@@ -28,6 +28,7 @@ class Transaction with _$Transaction {
     int? broadcastTime,
     // String? serializedTx,
     @Default([]) List<Address> outAddrs,
+    @Default([]) List<TxOut> outs,
     @JsonKey(
       includeFromJson: false,
       includeToJson: false,
@@ -137,6 +138,24 @@ class Transaction with _$Transaction {
       broadcastTime == null ? null : DateTime.fromMillisecondsSinceEpoch(broadcastTime!);
 
   bool canRBF() => rbfEnabled == true && timestamp == 0;
+}
+
+class Outpoint {
+  const Outpoint({
+    required this.txid,
+    required this.vout,
+  });
+  final String txid;
+  final int vout;
+}
+
+class TxOut {
+  const TxOut({
+    required this.value,
+    required this.outpoint,
+  });
+  final int value;
+  final Outpoint outpoint;
 }
 
 DateTime getDateTimeFromInt(int time) => DateTime.fromMillisecondsSinceEpoch(time * 1000);
