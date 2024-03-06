@@ -202,7 +202,7 @@ class WalletLabel extends StatelessWidget {
     final err = context.select((ImportWalletCubit cubit) => cubit.state.errSavingWallet);
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

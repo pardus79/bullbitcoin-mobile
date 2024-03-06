@@ -57,7 +57,7 @@ class _ImportEnterWordsScreenState extends State<ImportEnterWordsScreen> {
 
     createFocusNodes(importType == ImportTypes.words12);
 
-    print('focusNodes length: ${focusNodes.length}');
+    // print('focusNodes length: ${focusNodes.length}');
 
     return StackedPage(
       bottomChild: const _ImportWordsRecoverButton(),
@@ -68,9 +68,9 @@ class _ImportEnterWordsScreenState extends State<ImportEnterWordsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Gap(22),
+              const Gap(16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SegmentedButton(
                   style: ButtonStyle(
                     iconColor: MaterialStatePropertyAll<Color>(
@@ -112,7 +112,7 @@ class _ImportEnterWordsScreenState extends State<ImportEnterWordsScreen> {
                   },
                 ),
               ),
-              const Gap(25),
+              const Gap(16),
               if (importType == ImportTypes.words12) ...[
                 Row(
                   children: [
@@ -177,11 +177,10 @@ class _ImportEnterWordsScreenState extends State<ImportEnterWordsScreen> {
                   ],
                 ),
               ],
-              const Gap(32),
+              const Gap(16),
               const _ImportWordsPassphrase(),
-              const Gap(32),
+              const Gap(16),
               const WalletLabel(),
-              const Gap(80),
             ],
           ),
         ),
@@ -392,7 +391,7 @@ class _ImportWordsPassphrase extends StatelessWidget {
     final text = context.select((ImportWalletCubit cubit) => cubit.state.passPhrase);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: BBTextInput.big(
         value: text,
         onChanged: (value) => context.read<ImportWalletCubit>().passPhraseChanged(value),
