@@ -531,8 +531,8 @@ class HomeBottomBar2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        left: 32,
-        right: 32,
+        left: 18,
+        right: 18,
         bottom: 24,
         top: 8,
       ),
