@@ -36,7 +36,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 ///   - For each swap status update, `UpdateOrClaimSwap` is called
 /// 5. UpdateOrClaimSwap
 ///   - If Swap is (reverse and settled) or is (submbarine and status is txnMempool or txnConfirmed | ISSUE: Could also check for txnClaimed. right?),
-///     - [Idea] Merge the swap with tx and remove it from wallet.swaps list
+///     - [Intent] Merge the swap with tx and remove it from wallet.swaps list
 ///     - Pick swapTx from claimedSwapTxs, if given swap.txid is null (ISSUE: Here swap.txid is null and not found in claimedSwapTxs)
 ///     - Merge the swap with wallet.tx by calling `walletTransaction.mergeSwapTxIntoTx`
 ///       - Remove the swap from wallet.swaps since the swap is like DONE now.
@@ -108,6 +108,9 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     // TODO: Sai: 'Sometimes' this is not returning all swaps
     // Sometimes -->
     //  When swap is created. Without app restart, this function is never invoked.
+    //  ???
+    // On app restart,
+    //  This function is invoked and returns all swaps as expected.
     final swapTxs = walletBloc.state.allSwapTxs();
     final swapTxsToWatch = <SwapTx>[];
     print('WatchWalletTxs: ${swapTxs.length}');
@@ -204,8 +207,10 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     final wallet = walletBloc.state.wallet;
     if (wallet == null) return;
     SwapTx swapTx = event.swapTx;
-    // print('_onUpdateOrClaimSwap: ${swapTx.id}');
+    print('_onUpdateOrClaimSwap: ${swapTx.id}');
 
+    // This if bloc is executed multiple times for a same swapTx.
+    // Ideally expected flow should be, once this block is executed, swapTx should be removed from wallet.swaps and won't be triggered again for same swap
     if (swapTx.status!.status.reverseSettled || swapTx.paidSubmarine) {
       if (swapTx.txid == null) {
         // TODO: Sai: This is throwing error 'Bad state: No element' for completed swaps;
@@ -229,6 +234,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
       );
       homeCubit.updateSelectedWallet(walletBloc);
       for (final swap in swapsToDelete) add(DeleteSensitiveSwapData(swap.id));
+      print('1');
       return;
       // } else if (swapTx.status!.status == SwapStatus.txnClaimed ||
       //     swapTx.status!.status == SwapStatus.txnMempool) {
@@ -277,6 +283,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
           ),
         );
         homeCubit.updateSelectedWallet(walletBloc);
+        print('2');
         return;
       }
       shouldRefund = true;
@@ -297,6 +304,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
           errClaimingSwap: 'Address not found',
         ),
       );
+      print('3');
       return;
     }
 
@@ -319,6 +327,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
           errClaimingSwap: 'Fees not found',
         ),
       );
+      print('4');
       return;
     }
 
@@ -375,6 +384,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     // await Future.delayed(500.ms);
 
     homeCubit.updateSelectedWallet(walletBloc);
+    print('5');
 
     // await Future.delayed(500.ms);
   }
