@@ -103,6 +103,27 @@ class WalletRepository {
         }
       }
 
+      // const Wallet liquidWallet = Wallet(
+      //   network: BBNetwork.LTestnet,
+      //   type: BBWalletType.words,
+      //   scriptType: ScriptType.bip84,
+      // );
+
+      // final (lseed, lErr) = await WalletSensitiveCreate().mnemonicSeed(
+      //   'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
+      //   BBNetwork.LTestnet,
+      // );
+      // final (lwallet, errWallet) = await WalletSensitiveCreate().oneLiquidFromBIP39(
+      //   network: BBNetwork.LTestnet,
+      //   walletType: BBWalletType.words,
+      //   scriptType: ScriptType.bip84,
+      //   seed: lseed!,
+      //   passphrase: '',
+      // );
+
+      // wallets.add(lwallet!);
+      // print('Loaded liquid wallet');
+
       return (wallets, null);
     } catch (e) {
       return (null, Err(e.toString(), expected: e.toString() == 'No Key'));

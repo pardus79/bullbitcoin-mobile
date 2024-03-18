@@ -28,7 +28,11 @@ class HomeState with _$HomeState {
 
   List<WalletBloc> walletBlocsFromNetwork(BBNetwork network) {
     final blocs = walletBlocs
-            ?.where((wallet) => wallet.state.wallet?.network == network)
+            ?.where(
+              (wallet) =>
+                  wallet.state.wallet?.network == network ||
+                  wallet.state.wallet?.network == BBNetwork.LTestnet,
+            ) // TODO: Cleanup: Liquid
             .toList()
             .reversed
             .toList() ??

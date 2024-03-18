@@ -185,7 +185,8 @@ class _ImportEnterWordsScreenState extends State<ImportEnterWordsScreen> {
                     const _ImportWordsPassphrase(),
                     const Gap(8),
                     const WalletLabel(),
-                    const Gap(80),
+                    const Gap(8),
+                    const _ImportLiquidButton(), // TODO: Cleanup: Liquid
                   ],
                 ),
               ),
@@ -433,6 +434,33 @@ class _ImportWordsRecoverButton extends StatelessWidget {
             context.read<ImportWalletCubit>().recoverWalletClicked();
           },
           disabled: recovering,
+        ),
+      ],
+    );
+  }
+}
+
+class _ImportLiquidButton extends StatelessWidget {
+  const _ImportLiquidButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final err = context.select((ImportWalletCubit cubit) => cubit.state.errImporting);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (err.isNotEmpty) ...[
+          const Gap(8),
+          BBText.error(
+            err,
+          ),
+        ],
+        BBButton.big(
+          label: 'Import Liquid',
+          onPressed: () {
+            context.read<ImportWalletCubit>().recoverLiquidWalletClicked();
+          },
         ),
       ],
     );

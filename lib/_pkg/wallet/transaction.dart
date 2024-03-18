@@ -9,6 +9,7 @@ import 'package:bb_mobile/_pkg/wallet/address.dart';
 import 'package:bb_mobile/_pkg/wallet/utils.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:hex/hex.dart';
+import 'package:lwk_dart/lwk_dart.dart' as lwk;
 
 class WalletTx {
   Transaction addOutputAddresses(Address newAddress, Transaction tx) {
@@ -544,6 +545,73 @@ class WalletTx {
         transactions.add(txObj.copyWith(label: label));
       }
 
+      final w = wallet.copyWith(
+        transactions: transactions,
+        unsignedTxs: unsignedTxs,
+      );
+
+      return (w, null);
+    } on Exception catch (e) {
+      return (
+        null,
+        Err(
+          e.message,
+          title: 'Error occurred while getting transactions',
+          solution: 'Please try again.',
+        )
+      );
+    }
+  }
+
+  Future<(Wallet?, Err?)> getLiquidTransactions({
+    required Wallet wallet,
+    required lwk.Wallet lwkWallet,
+  }) async {
+    try {
+      final storedTxs = wallet.transactions.toList();
+      final unsignedTxs = wallet.unsignedTxs.toList();
+
+      final txs = await lwkWallet.txs();
+
+      if (txs.isEmpty) return (wallet, null);
+
+      final List<Transaction> transactions = [];
+
+      for (final tx in txs) {
+        String? label;
+
+        final storedTxIdx = storedTxs.indexWhere((t) => t.txid == tx.txid);
+        final idxUnsignedTx = unsignedTxs.indexWhere((t) => t.txid == tx.txid);
+
+        Transaction? storedTx;
+        if (storedTxIdx != -1) storedTx = storedTxs.elementAtOrNull(storedTxIdx);
+        if (idxUnsignedTx != -1) {
+          if (tx.txid == unsignedTxs[idxUnsignedTx].txid) unsignedTxs.removeAt(idxUnsignedTx);
+        }
+        final txObj = Transaction(
+          txid: tx.txid,
+          received: tx.kind == 'outgoing' ? 0 : tx.amount,
+          sent: tx.kind == 'outgoing' ? tx.amount : 0,
+          fee: tx.fee ?? 0,
+          height: 100,
+          timestamp: 0,
+          rbfEnabled: false,
+          outAddrs: storedTx?.outAddrs ??
+              tx.outputs
+                  .map(
+                    (e) => Address(
+                      address: e.address,
+                      kind: AddressKind.deposit,
+                      state: AddressStatus.active,
+                    ),
+                  )
+                  .toList(),
+        );
+
+        transactions.add(txObj);
+      }
+
+      // Future.delayed(const Duration(milliseconds: 200));
       final w = wallet.copyWith(
         transactions: transactions,
         unsignedTxs: unsignedTxs,

@@ -409,12 +409,88 @@ class ImportWalletCubit extends Cubit<ImportState> {
     emit(state.copyWith(importStep: ImportSteps.scanningWallets));
   }
 
+  // TODO: Liquid: Cleanup
+  void recoverLiquidWalletClicked() async {
+    // await checkWalletLabel();
+    if (state.errSavingWallet.isNotEmpty) return;
+
+    final List<String> words = [
+      'fossil',
+      'install',
+      'fever',
+      'ticket',
+      'wisdom',
+      'outer',
+      'broken',
+      'aspect',
+      'lucky',
+      'still',
+      'flavor',
+      'dial',
+    ];
+
+    final words12 = state.words12.toList();
+    words12[0] = (word: words[0], tapped: false);
+    words12[1] = (word: words[1], tapped: false);
+    words12[2] = (word: words[2], tapped: false);
+    words12[3] = (word: words[3], tapped: false);
+    words12[4] = (word: words[4], tapped: false);
+    words12[5] = (word: words[5], tapped: false);
+    words12[6] = (word: words[6], tapped: false);
+    words12[7] = (word: words[7], tapped: false);
+    words12[8] = (word: words[8], tapped: false);
+    words12[9] = (word: words[9], tapped: false);
+    words12[10] = (word: words[10], tapped: false);
+    words12[11] = (word: words[11], tapped: false);
+
+    emit(
+      state.copyWith(
+        words12: words12,
+      ),
+    );
+    //final words = state.importType == ImportTypes.words12 ? state.words12 : state.words24;
+    // emit(state.copyWith(errImporting: ''));
+    // for (final word in words)
+    //   if (word.word.isEmpty) {
+    //     emit(state.copyWith(errImporting: 'Please fill all words'));
+    //     return;
+    //   }
+    await _updateWalletDetailsForSelection();
+    if (state.errImporting.isNotEmpty) return;
+
+    emit(state.copyWith(importStep: ImportSteps.scanningWallets));
+  }
+
   Future _updateWalletDetailsForSelection() async {
     try {
       final type = state.importType;
 
       final wallets = <Wallet>[];
       final network = networkCubit.state.testnet ? BBNetwork.Testnet : BBNetwork.Mainnet;
+
+      // if (network == BBNetwork.LTestnet) {
+      final (lseed, lErr) = await WalletSensitiveCreate().mnemonicSeed(
+        'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
+        BBNetwork.LTestnet,
+      );
+
+      final mnemonic = state.words12.map((_) => _.word);
+      final passphrase = state.passPhrase.isEmpty ? '' : state.passPhrase;
+      final (ws, wErrs) = await walletSensCreate.oneLiquidFromBIP39(
+        seed: lseed!,
+        passphrase: '',
+        network: BBNetwork.LTestnet,
+        walletType: BBWalletType.words,
+        scriptType: ScriptType.bip84,
+      );
+      if (wErrs != null) {
+        emit(state.copyWith(errImporting: 'Error creating Wallets from Bip 39'));
+        return;
+      }
+      wallets.addAll([ws!]);
+      emit(state.copyWith(walletDetails: wallets));
+      return;
+      // }
 
       switch (type) {
         case ImportTypes.words12:

@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:bb_mobile/_model/address.dart';
+import 'package:bb_mobile/_model/seed.dart';
 import 'package:bb_mobile/_model/wallet.dart';
+import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bb_mobile/_pkg/logger.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
 import 'package:bb_mobile/_pkg/storage/secure_storage.dart';
@@ -98,7 +100,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
     emit(state.copyWith(wallet: wallet));
 
-    if (state.bdkWallet == null) {
+    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) {
       final (bdkWallet, err) = await walletCreate.loadPublicBdkWallet(
         wallet,
       );
@@ -111,6 +113,25 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         );
       }
       emit(state.copyWith(bdkWallet: bdkWallet));
+    } else if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) {
+      final (lwkWallet, err) = await walletCreate.loadPublicLwkWallet(
+        wallet,
+        const Seed(
+          mnemonic:
+              'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
+          network: BBNetwork.LTestnet,
+          passphrases: [],
+        ),
+      );
+      if (err != null) {
+        emit(
+          state.copyWith(
+            loadingWallet: false,
+            errLoadingWallet: err.toString(),
+          ),
+        );
+      }
+      emit(state.copyWith(lwkWallet: lwkWallet));
     }
 
     emit(
@@ -129,7 +150,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   Future _syncWallet(SyncWallet event, Emitter<WalletState> emit) async {
-    if (state.bdkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
     if (state.syncing) return;
 
     emit(
@@ -139,53 +161,58 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       ),
     );
 
-    if (networkCubit.state.blockchain == null) {
-      await networkCubit.loadNetworks();
-      await Future.delayed(const Duration(milliseconds: 300));
+    if (state.wallet?.network == BBNetwork.LTestnet) {
+      const electrumUrl = 'blockstream.info:465';
+      await state.lwkWallet?.sync(electrumUrl);
+      emit(state.copyWith(syncing: false, syncErrCount: 0));
+    } else {
       if (networkCubit.state.blockchain == null) {
+        await networkCubit.loadNetworks();
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (networkCubit.state.blockchain == null) {
+          emit(state.copyWith(syncing: false));
+          return;
+        }
+      }
+
+      final blockchain = networkCubit.state.blockchain;
+      final bdkWallet = state.bdkWallet!;
+
+      final sameNetwork = state.wallet?.isSameNetwork(networkCubit.state.testnet) ?? false;
+      if (!sameNetwork) {
         emit(state.copyWith(syncing: false));
         return;
       }
-    }
 
-    final blockchain = networkCubit.state.blockchain;
-    final bdkWallet = state.bdkWallet!;
+      locator<Logger>().log('Start Wallet Sync for ' + (state.wallet?.sourceFingerprint ?? ''));
+      final (bdkW, err) = await walletSync.syncWallet(
+        blockChain: blockchain!,
+        bdkWallet: bdkWallet,
+      );
 
-    final sameNetwork = state.wallet?.isSameNetwork(networkCubit.state.testnet) ?? false;
-    if (!sameNetwork) {
-      emit(state.copyWith(syncing: false));
-      return;
-    }
+      locator<Logger>().log('End Wallet Sync for ' + (state.wallet?.sourceFingerprint ?? ''));
 
-    locator<Logger>().log('Start Wallet Sync for ' + (state.wallet?.sourceFingerprint ?? ''));
+      if (err != null) {
+        if (err.message.toLowerCase().contains('panic') && state.syncErrCount < 5) {
+          await networkCubit.loadNetworks();
+          await Future.delayed(const Duration(milliseconds: 300));
+          emit(state.copyWith(syncErrCount: state.syncErrCount + 1));
+          add(SyncWallet());
+          return;
+        }
 
-    final (bdkW, err) = await walletSync.syncWallet(
-      blockChain: blockchain!,
-      bdkWallet: bdkWallet,
-    );
-
-    locator<Logger>().log('End Wallet Sync for ' + (state.wallet?.sourceFingerprint ?? ''));
-
-    if (err != null) {
-      if (err.message.toLowerCase().contains('panic') && state.syncErrCount < 5) {
-        await networkCubit.loadNetworks();
-        await Future.delayed(const Duration(milliseconds: 300));
-        emit(state.copyWith(syncErrCount: state.syncErrCount + 1));
-        add(SyncWallet());
+        emit(
+          state.copyWith(
+            errSyncing: err.toString(),
+            syncing: false,
+          ),
+        );
+        locator<Logger>().log(err.toString());
         return;
       }
 
-      emit(
-        state.copyWith(
-          errSyncing: err.toString(),
-          syncing: false,
-        ),
-      );
-      locator<Logger>().log(err.toString());
-      return;
+      emit(state.copyWith(syncing: false, bdkWallet: bdkW, syncErrCount: 0));
     }
-
-    emit(state.copyWith(syncing: false, bdkWallet: bdkW, syncErrCount: 0));
     await Future.delayed(100.ms);
 
     if (!fromStorage) add(GetFirstAddress());
@@ -195,32 +222,47 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   void _getBalance(GetBalance event, Emitter<WalletState> emit) async {
-    if (state.bdkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
 
     emit(state.copyWith(loadingBalance: true, errLoadingBalance: ''));
 
-    final (w, err) = await walletBalance.getBalance(
-      bdkWallet: state.bdkWallet!,
-      wallet: state.wallet!,
-    );
-    if (err != null) {
-      emit(
-        state.copyWith(
-          errLoadingBalance: err.toString(),
-          loadingBalance: false,
-        ),
+    Wallet? wFinal;
+    if (state.wallet?.network == BBNetwork.LTestnet) {
+      final (wl, errl) = await walletBalance.getLiquidBalance(
+        lwkWallet: state.lwkWallet!,
+        wallet: state.wallet!,
       );
-      return;
+      wFinal = wl?.$1;
+    } else {
+      final (w, err) = await walletBalance.getBalance(
+        bdkWallet: state.bdkWallet!,
+        wallet: state.wallet!,
+      );
+
+      if (err != null) {
+        emit(
+          state.copyWith(
+            errLoadingBalance: err.toString(),
+            loadingBalance: false,
+          ),
+        );
+        return;
+      }
+      wFinal = w?.$1;
     }
 
-    final (wallet, _) = w!;
-
-    add(UpdateWallet(wallet, saveToStorage: fromStorage, updateTypes: [UpdateWalletTypes.balance]));
+    add(
+      UpdateWallet(
+        wFinal!,
+        saveToStorage: fromStorage,
+        updateTypes: [UpdateWalletTypes.balance],
+      ),
+    );
 
     emit(
       state.copyWith(
         loadingBalance: false,
-        // balance: balance,
       ),
     );
 
@@ -228,7 +270,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   void _listTransactions(ListTransactions event, Emitter<WalletState> emit) async {
-    if (state.bdkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
+    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
 
     emit(
       state.copyWith(
@@ -237,93 +280,116 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       ),
     );
 
-    final (walletWithDepositAddresses, err1) = await walletAddress.loadAddresses(
-      wallet: state.wallet!,
-      bdkWallet: state.bdkWallet!,
-    );
-    if (err1 != null) {
+    Wallet? walletUpdatedAddressesAndUtxos;
+    Err? err6;
+    if (state.wallet?.network == BBNetwork.Testnet) {
+      final (walletWithDepositAddresses, err1) = await walletAddress.loadAddresses(
+        wallet: state.wallet!,
+        bdkWallet: state.bdkWallet!,
+      );
+      if (err1 != null) {
+        emit(
+          state.copyWith(
+            errSyncingAddresses: err1.toString(),
+            syncingAddresses: false,
+          ),
+        );
+        return;
+      }
+      final (walletWithChangeAddresses, err2) = await walletAddress.loadChangeAddresses(
+        wallet: walletWithDepositAddresses!,
+        bdkWallet: state.bdkWallet!,
+      );
+      if (err2 != null) {
+        emit(
+          state.copyWith(
+            errSyncingAddresses: err2.toString(),
+            syncingAddresses: false,
+          ),
+        );
+        return;
+      }
+      emit(state.copyWith(loadingTxs: true, errLoadingWallet: ''));
+
+      final (walletWithTxs, err3) = await walletTransaction.getTransactions(
+        bdkWallet: state.bdkWallet!,
+        wallet: walletWithChangeAddresses!,
+      );
+
+      if (err3 != null) {
+        emit(
+          state.copyWith(
+            errLoadingWallet: err3.toString(),
+            loadingTxs: false,
+          ),
+        );
+        return;
+      }
+
+      final (walletWithTxAndAddresses, err4) =
+          await walletUpdate.updateAddressesFromTxs(walletWithTxs!);
+
+      if (err4 != null) {
+        emit(
+          state.copyWith(
+            errLoadingWallet: err4.toString(),
+            loadingTxs: false,
+          ),
+        );
+        return;
+      }
+
+      emit(state.copyWith(loadingTxs: false));
+
       emit(
         state.copyWith(
-          errSyncingAddresses: err1.toString(),
-          syncingAddresses: false,
+          syncingAddresses: true,
+          errSyncingAddresses: '',
         ),
       );
-      return;
-    }
-    final (walletWithChangeAddresses, err2) = await walletAddress.loadChangeAddresses(
-      wallet: walletWithDepositAddresses!,
-      bdkWallet: state.bdkWallet!,
-    );
-    if (err2 != null) {
-      emit(
-        state.copyWith(
-          errSyncingAddresses: err2.toString(),
-          syncingAddresses: false,
-        ),
+
+      final (walletwithUtxos, err5) = await walletUtxo.loadUtxos(
+        wallet: walletWithTxAndAddresses!,
+        bdkWallet: state.bdkWallet!,
       );
-      return;
-    }
-    emit(state.copyWith(loadingTxs: true, errLoadingWallet: ''));
+      if (err5 != null) {
+        emit(
+          state.copyWith(
+            errSyncingAddresses: err5.toString(),
+            syncingAddresses: false,
+          ),
+        );
+        return;
+      }
 
-    final (walletWithTxs, err3) = await walletTransaction.getTransactions(
-      bdkWallet: state.bdkWallet!,
-      wallet: walletWithChangeAddresses!,
-    );
-
-    if (err3 != null) {
-      emit(
-        state.copyWith(
-          errLoadingWallet: err3.toString(),
-          loadingTxs: false,
-        ),
+      (walletUpdatedAddressesAndUtxos, err6) =
+          await walletAddress.updateUtxoAddresses(wallet: walletwithUtxos!);
+      if (err6 != null) {
+        emit(
+          state.copyWith(
+            errSyncingAddresses: err6.toString(),
+            syncingAddresses: false,
+          ),
+        );
+        return;
+      }
+    } else if (state.wallet?.network == BBNetwork.LTestnet) {
+      final (walletWithTxs, err3) = await walletTransaction.getLiquidTransactions(
+        lwkWallet: state.lwkWallet!,
+        wallet: state.wallet!,
       );
-      return;
-    }
 
-    final (walletWithTxAndAddresses, err4) =
-        await walletUpdate.updateAddressesFromTxs(walletWithTxs!);
+      if (err3 != null) {
+        emit(
+          state.copyWith(
+            errLoadingWallet: err3.toString(),
+            loadingTxs: false,
+          ),
+        );
+        return;
+      }
 
-    if (err4 != null) {
-      emit(
-        state.copyWith(
-          errLoadingWallet: err4.toString(),
-          loadingTxs: false,
-        ),
-      );
-      return;
-    }
-
-    emit(state.copyWith(loadingTxs: false));
-
-    emit(
-      state.copyWith(
-        syncingAddresses: true,
-        errSyncingAddresses: '',
-      ),
-    );
-
-    final (walletwithUtxos, err5) =
-        await walletUtxo.loadUtxos(wallet: walletWithTxAndAddresses!, bdkWallet: state.bdkWallet!);
-    if (err5 != null) {
-      emit(
-        state.copyWith(
-          errSyncingAddresses: err5.toString(),
-          syncingAddresses: false,
-        ),
-      );
-      return;
-    }
-
-    final (walletUpdatedAddressesAndUtxos, err6) =
-        await walletAddress.updateUtxoAddresses(wallet: walletwithUtxos!);
-    if (err6 != null) {
-      emit(
-        state.copyWith(
-          errSyncingAddresses: err6.toString(),
-          syncingAddresses: false,
-        ),
-      );
-      return;
+      walletUpdatedAddressesAndUtxos = walletWithTxs;
     }
 
     add(
