@@ -27,12 +27,16 @@ class HomeState with _$HomeState {
       wallets?.where((wallet) => wallet.network == network).toList().reversed.toList() ?? [];
 
   List<WalletBloc> walletBlocsFromNetwork(BBNetwork network) {
+    final nets = [];
+    if (network == BBNetwork.Mainnet) {
+      nets.addAll([BBNetwork.Mainnet, BBNetwork.LMainnet]);
+    } else {
+      nets.addAll([BBNetwork.Testnet, BBNetwork.LTestnet]);
+    }
     final blocs = walletBlocs
             ?.where(
-              (wallet) =>
-                  wallet.state.wallet?.network == network ||
-                  wallet.state.wallet?.network == BBNetwork.LTestnet,
-            ) // TODO: Cleanup: Liquid
+              (wallet) => nets.contains(wallet.state.wallet?.network),
+            )
             .toList()
             .reversed
             .toList() ??

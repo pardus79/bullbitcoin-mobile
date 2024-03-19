@@ -387,10 +387,11 @@ class WalletSensitiveCreate {
     if (sfErr != null) {
       return (null, Err('Error Getting Fingerprint'));
     }
+
+    /*
     bdk.Descriptor? internal;
     bdk.Descriptor? external;
 
-    /*
     final rootXprv = await bdk.DescriptorSecretKey.create(
       network: bdkNetwork,
       mnemonic: bdkMnemonic,

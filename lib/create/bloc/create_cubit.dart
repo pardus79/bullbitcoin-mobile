@@ -220,11 +220,31 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     //   emit(state.copyWith(saving: false, errSaving: 'Error Saving Wallet'));
     // }
 
+    var (liquidSecure, errLCreating1) = await walletSensCreate.oneLiquidFromBIP39(
+      seed: seed,
+      passphrase: '',
+      scriptType: ScriptType.bip84,
+      network: BBNetwork.LMainnet,
+      walletType: BBWalletType.secure,
+    );
+    if (errLCreating1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Creating Liquid Wallet'));
+      return;
+    }
+
+    liquidSecure = liquidSecure!.copyWith(name: 'Bull Liquid Wallet');
+
+    final errLSaving1 =
+        await walletRepository.newWallet(wallet: liquidSecure, hiveStore: hiveStorage);
+    if (errLSaving1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Saving Liquid Wallet'));
+    }
+
     clearSensitive();
 
     emit(
       state.copyWith(
-        savedWallets: [walletSecure],
+        savedWallets: [walletSecure, liquidSecure],
         saving: false,
         saved: true,
       ),
