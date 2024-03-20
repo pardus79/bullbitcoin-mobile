@@ -410,6 +410,50 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
       return;
     }
 
+    final (wallets, wErrs) = await walletRepository.readAllWallets(
+      hiveStore: hiveStorage,
+    );
+    if (wErrs != null) {
+      emit(
+        state.copyWith(
+          deleting: false,
+          errDeleting: 'Could not read wallets from storage',
+        ),
+      );
+    }
+
+    final Wallet? matchingWallet =
+        wallets?.where((element) => element.sourceFingerprint == sourceFingerprint).first;
+
+    if (matchingWallet != null) {
+      final mErr = await walletRepository.deleteWallet(
+        walletHashId: matchingWallet.getWalletStorageString(),
+        storage: hiveStorage,
+      );
+
+      if (mErr != null) {
+        emit(
+          state.copyWith(
+            deleting: false,
+            errDeleting: err.toString(),
+          ),
+        );
+        return;
+      }
+      final dbDir = appDocDir.path + '/' + matchingWallet.getWalletStorageString();
+
+      final errDeleting1 = await fileStorage.deleteFile(dbDir);
+      if (errDeleting1 != null) {
+        emit(
+          state.copyWith(
+            deleting: false,
+            errDeleting: errDeleting1.toString(),
+          ),
+        );
+        return;
+      }
+    }
+
     if (hasPassphrase) {
       final errr = await walletSensRepository.deletePassphrase(
         passphraseFingerprintIndex: sourceFingerprint,
@@ -425,19 +469,6 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
         );
       }
     }
-
-    final (wallets, wErrs) = await walletRepository.readAllWallets(
-      hiveStore: hiveStorage,
-    );
-    if (wErrs != null) {
-      emit(
-        state.copyWith(
-          deleting: false,
-          errDeleting: 'Could not read wallets from storage',
-        ),
-      );
-    }
-
     final List<Wallet> networkSpecificWallets = (wallets != null)
         ? wallets.where((wallet) => wallet.network == state.wallet.network).toList()
         : [];

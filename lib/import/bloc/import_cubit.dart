@@ -4,6 +4,7 @@ import 'package:bb_mobile/_model/cold_card.dart';
 import 'package:bb_mobile/_model/seed.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/barcode.dart';
+import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bb_mobile/_pkg/file_picker.dart';
 import 'package:bb_mobile/_pkg/nfc.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
@@ -618,11 +619,13 @@ class ImportWalletCubit extends Cubit<ImportState> {
 
     final network = networkCubit.state.testnet ? BBNetwork.Testnet : BBNetwork.Mainnet;
 
+    Seed? seed;
+    Err? sErr;
     if (selectedWallet.type == BBWalletType.words) {
       final mnemonic = (state.importType == ImportTypes.words12)
           ? state.words12.map((_) => _.word).join(' ')
           : state.words24.map((_) => _.word).join(' ');
-      final (seed, sErr) = await walletSensCreate.mnemonicSeed(mnemonic, network);
+      (seed, sErr) = await walletSensCreate.mnemonicSeed(mnemonic, network);
       if (sErr != null) {
         emit(state.copyWith(errImporting: 'Error creating mnemonicSeed'));
         return;
@@ -655,7 +658,6 @@ class ImportWalletCubit extends Cubit<ImportState> {
         }
       }
     }
-
     final err = await walletRepository.newWallet(
       wallet: selectedWallet,
       hiveStore: hiveStorage,
@@ -678,6 +680,51 @@ class ImportWalletCubit extends Cubit<ImportState> {
         ),
       );
     }
+
+    final (allWallets, readErr) = await walletRepository.readAllWallets(hiveStore: hiveStorage);
+
+    bool liquidWalletExists = false;
+    if (readErr == null) {
+      for (final w in allWallets!) {
+        if ((network == BBNetwork.Mainnet && w.network == BBNetwork.LMainnet) ||
+            (network == BBNetwork.Testnet && w.network == BBNetwork.LTestnet)) {
+          liquidWalletExists = true;
+        }
+      }
+    }
+
+    if (seed != null && !liquidWalletExists) {
+      await Future.delayed(const Duration(seconds: 1));
+      var (wsLiquid, wLiquidErrs) = await walletSensCreate.oneLiquidFromBIP39(
+        seed: seed,
+        passphrase: '',
+        network: (network == BBNetwork.LMainnet || network == BBNetwork.Mainnet)
+            ? BBNetwork.LMainnet
+            : BBNetwork.LTestnet,
+        walletType: BBWalletType.words,
+        scriptType: ScriptType.bip84,
+      );
+      if (wLiquidErrs != null) {
+        emit(state.copyWith(errImporting: 'Error creating liquid wallets from Bip 84'));
+        return;
+      }
+
+      wsLiquid = (state.walletLabel != null && state.walletLabel != '')
+          ? wsLiquid?.copyWith(name: 'Liquid ${state.walletLabel}')
+          : wsLiquid;
+
+      final liquidWalletErr = await walletRepository.newWallet(
+        wallet: wsLiquid!,
+        hiveStore: hiveStorage,
+      );
+
+      emit(
+        state.copyWith(
+          savedWallet: wsLiquid,
+        ),
+      );
+    }
+
     reset();
   }
 
