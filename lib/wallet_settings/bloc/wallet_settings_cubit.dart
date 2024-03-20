@@ -374,6 +374,7 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
     emit(state.copyWith(savedFile: false));
   }
 
+  // TODO: Liquid: Logic to delete liquid wallet
   void deleteWalletClicked() async {
     emit(state.copyWith(deleting: true, errDeleting: ''));
     final mnemonicFingerprint = state.wallet.getRelatedSeedStorageString();

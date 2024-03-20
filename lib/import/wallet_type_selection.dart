@@ -33,7 +33,12 @@ class ImportSelectWalletTypeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((ImportWalletCubit cubit) => cubit.state.walletDetails ?? []);
+    final wallets = context.select(
+      (ImportWalletCubit cubit) =>
+          cubit.state.walletDetails
+              ?.where((w) => w.network != BBNetwork.LMainnet && w.network != BBNetwork.LTestnet) ??
+          [],
+    );
 
     final walletCubits = [
       for (final w in wallets)

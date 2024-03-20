@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bb_mobile/_model/address.dart';
-import 'package:bb_mobile/_model/seed.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bb_mobile/_pkg/logger.dart';
@@ -11,6 +10,7 @@ import 'package:bb_mobile/_pkg/wallet/address.dart';
 import 'package:bb_mobile/_pkg/wallet/balance.dart';
 import 'package:bb_mobile/_pkg/wallet/create.dart';
 import 'package:bb_mobile/_pkg/wallet/repository.dart';
+import 'package:bb_mobile/_pkg/wallet/sensitive/repository.dart';
 import 'package:bb_mobile/_pkg/wallet/sync.dart';
 import 'package:bb_mobile/_pkg/wallet/transaction.dart';
 import 'package:bb_mobile/_pkg/wallet/update.dart';
@@ -114,14 +114,22 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       }
       emit(state.copyWith(bdkWallet: bdkWallet));
     } else if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) {
+      final WalletSensitiveRepository walletSensRepo = WalletSensitiveRepository();
+      final (seed, errSeed) = await walletSensRepo.readSeed(
+        fingerprintIndex: state.wallet!.getRelatedSeedStorageString(),
+        secureStore: secureStorage,
+      );
+      if (errSeed != null) {
+        emit(
+          state.copyWith(
+            loadingWallet: false,
+            errLoadingWallet: errSeed.toString(),
+          ),
+        );
+      }
       final (lwkWallet, err) = await walletCreate.loadPublicLwkWallet(
         wallet,
-        const Seed(
-          mnemonic:
-              'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
-          network: BBNetwork.LTestnet,
-          passphrases: [],
-        ),
+        seed!,
       );
       if (err != null) {
         emit(
