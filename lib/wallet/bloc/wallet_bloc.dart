@@ -161,7 +161,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       ),
     );
 
-    if (state.wallet?.network == BBNetwork.LTestnet) {
+    if (state.wallet?.network == BBNetwork.LTestnet ||
+        state.wallet?.network == BBNetwork.LMainnet) {
       const electrumUrl = 'blockstream.info:465';
       await state.lwkWallet?.sync(electrumUrl);
       emit(state.copyWith(syncing: false, syncErrCount: 0));

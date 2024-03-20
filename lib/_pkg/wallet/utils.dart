@@ -35,12 +35,14 @@ String combinedDescriptorString(String descriptor) {
   }
 }
 
-String createDescriptorHashId(String descriptor) {
+String createDescriptorHashId(String descriptor, {BBNetwork network = BBNetwork.Mainnet}) {
   final descHashId = sha1
       .convert(
         utf8.encode(
           // allows passing either internal or external descriptor
-          descriptor.replaceFirst('/0/*', '/<0;1>/*').replaceFirst('/1/*', '/<0;1>/*'),
+          // TODO: Liquid: Added network here to distinguish between Liquid mainnet and testnet. Is this fine?
+          descriptor.replaceFirst('/0/*', '/<0;1>/*').replaceFirst('/1/*', '/<0;1>/*') +
+              network.toString(),
         ),
       )
       .toString()

@@ -417,7 +417,8 @@ class WalletSensitiveCreate {
     );
     */
 
-    final descHashId = createDescriptorHashId(descriptor.descriptor.substring(0, 12));
+    final descHashId =
+        createDescriptorHashId(descriptor.descriptor.substring(0, 12), network: network);
     // final descHashId = createDescriptorHashId(await external.asString()).substring(0, 12);
     // final type = isImported ? BBWalletType.words : BBWalletType.newSeed;
 

@@ -469,6 +469,7 @@ class ImportWalletCubit extends Cubit<ImportState> {
       final network = networkCubit.state.testnet ? BBNetwork.Testnet : BBNetwork.Mainnet;
 
       // if (network == BBNetwork.LTestnet) {
+      /*
       final (lseed, lErr) = await WalletSensitiveCreate().mnemonicSeed(
         'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
         BBNetwork.LTestnet,
@@ -490,6 +491,7 @@ class ImportWalletCubit extends Cubit<ImportState> {
       wallets.addAll([ws!]);
       emit(state.copyWith(walletDetails: wallets));
       return;
+      */
       // }
 
       switch (type) {
@@ -507,6 +509,28 @@ class ImportWalletCubit extends Cubit<ImportState> {
             return;
           }
           wallets.addAll(ws!);
+
+          final (lseed, lErr) = await WalletSensitiveCreate().mnemonicSeed(
+            mnemonic,
+            network,
+          );
+
+          final (wsLiquid, wLiquidErrs) = await walletSensCreate.oneLiquidFromBIP39(
+            seed: lseed!,
+            passphrase: '',
+            network: (network == BBNetwork.LMainnet || network == BBNetwork.Mainnet)
+                ? BBNetwork.LMainnet
+                : BBNetwork.LTestnet,
+            walletType: BBWalletType.words,
+            scriptType: ScriptType.bip84,
+          );
+          if (wLiquidErrs != null) {
+            emit(state.copyWith(errImporting: 'Error creating liquid wallets from Bip 84'));
+            return;
+          }
+          wallets.addAll([wsLiquid!]);
+
+          emit(state.copyWith(walletDetails: wallets));
         case ImportTypes.words24:
           final mnemonic = state.words24.map((_) => _.word).join(' ');
           final passphrase = state.passPhrase.isEmpty ? '' : state.passPhrase;
