@@ -17,7 +17,6 @@ import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_mobile/wallet_settings/bloc/state.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path_provider/path_provider.dart';
 
 class WalletSettingsCubit extends Cubit<WalletSettingsState> {
   WalletSettingsCubit({
@@ -379,6 +378,7 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
     emit(state.copyWith(deleting: true, errDeleting: ''));
     final mnemonicFingerprint = state.wallet.getRelatedSeedStorageString();
     final sourceFingerprint = state.wallet.sourceFingerprint;
+    final walletNetwork = state.wallet.network;
     final hasPassphrase = state.wallet.hasPassphrase();
     final err = await walletRepository.deleteWallet(
       walletHashId: state.wallet.getWalletStorageString(),
@@ -396,19 +396,18 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
     }
     await Future.delayed(const Duration(seconds: 1));
 
-    final appDocDir = await getApplicationDocumentsDirectory();
-    final dbDir = appDocDir.path + '/' + state.wallet.getWalletStorageString();
-
-    final errDeleting = await fileStorage.deleteFile(dbDir);
-    if (errDeleting != null) {
-      emit(
-        state.copyWith(
-          deleting: false,
-          errDeleting: errDeleting.toString(),
-        ),
-      );
-      return;
-    }
+    // final appDocDir = await getApplicationDocumentsDirectory();
+    // final dbDir = appDocDir.path + '/' + state.wallet.getWalletStorageString();
+    // final errDeleting = await fileStorage.deleteFile(dbDir);
+    // if (errDeleting != null) {
+    //   emit(
+    //     state.copyWith(
+    //       deleting: false,
+    //       errDeleting: errDeleting.toString(),
+    //     ),
+    //   );
+    //   return;
+    // }
 
     final (wallets, wErrs) = await walletRepository.readAllWallets(
       hiveStore: hiveStorage,
@@ -422,10 +421,23 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
       );
     }
 
-    final Wallet? matchingWallet =
-        wallets?.where((element) => element.sourceFingerprint == sourceFingerprint).first;
+    final nets = [];
+    if (walletNetwork == BBNetwork.Mainnet || walletNetwork == BBNetwork.LMainnet) {
+      nets.addAll([BBNetwork.Mainnet, BBNetwork.LMainnet]);
+    } else {
+      nets.addAll([BBNetwork.Testnet, BBNetwork.LTestnet]);
+    }
+    final List<Wallet> matchingWallets = wallets
+            ?.where(
+              (element) =>
+                  element.sourceFingerprint == sourceFingerprint && nets.contains(element.network),
+            )
+            .toList() ??
+        [];
 
-    if (matchingWallet != null) {
+    if (matchingWallets.isNotEmpty) {
+      final Wallet matchingWallet = matchingWallets.first;
+
       final mErr = await walletRepository.deleteWallet(
         walletHashId: matchingWallet.getWalletStorageString(),
         storage: hiveStorage,
@@ -440,19 +452,18 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
         );
         return;
       }
-      final dbDir = appDocDir.path + '/' + matchingWallet.getWalletStorageString();
-
-      final errDeleting1 = await fileStorage.deleteFile(dbDir);
-      if (errDeleting1 != null) {
-        emit(
-          state.copyWith(
-            deleting: false,
-            errDeleting: errDeleting1.toString(),
-          ),
-        );
-        return;
-      }
     }
+    // final dbDir = appDocDir.path + '/' + matchingWallet.getWalletStorageString();
+    // final errDeleting1 = await fileStorage.deleteFile(dbDir);
+    // if (errDeleting1 != null) {
+    //   emit(
+    //     state.copyWith(
+    //       deleting: false,
+    //       errDeleting: errDeleting1.toString(),
+    //     ),
+    //   );
+    //   return;
+    // }
 
     if (hasPassphrase) {
       final errr = await walletSensRepository.deletePassphrase(
@@ -491,7 +502,8 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
         );
       }
     }
-    homeCubit.removeWallet(walletBloc);
+    // homeCubit.removeWallet(walletBloc);
+    homeCubit.removeWalletWithSourceFingerprint(sourceFingerprint, walletNetwork);
     // homeCubit.removeWalletPostDelete(state.wallet.id);
 
     emit(

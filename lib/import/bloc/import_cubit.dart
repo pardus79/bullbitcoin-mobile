@@ -682,7 +682,11 @@ class ImportWalletCubit extends Cubit<ImportState> {
     }
 
     final (allWallets, readErr) = await walletRepository.readAllWallets(hiveStore: hiveStorage);
-
+    emit(
+      state.copyWith(
+        savedWallet: null,
+      ),
+    );
     bool liquidWalletExists = false;
     if (readErr == null) {
       for (final w in allWallets!) {

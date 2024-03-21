@@ -28,7 +28,7 @@ class HomeState with _$HomeState {
 
   List<WalletBloc> walletBlocsFromNetwork(BBNetwork network) {
     final nets = [];
-    if (network == BBNetwork.Mainnet) {
+    if (network == BBNetwork.Mainnet || network == BBNetwork.LMainnet) {
       nets.addAll([BBNetwork.Mainnet, BBNetwork.LMainnet]);
     } else {
       nets.addAll([BBNetwork.Testnet, BBNetwork.LTestnet]);

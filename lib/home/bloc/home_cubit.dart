@@ -174,4 +174,17 @@ class HomeCubit extends Cubit<HomeState> {
     wallets.removeWhere((w) => w.id == walletBloc.state.wallet!.id);
     emit(state.copyWith(wallets: wallets, selectedWalletCubit: null));
   }
+
+  void removeWalletWithSourceFingerprint(String sourceFingerprint, BBNetwork network) {
+    final nets = [];
+    if (network == BBNetwork.Mainnet || network == BBNetwork.LMainnet) {
+      nets.addAll([BBNetwork.Mainnet, BBNetwork.LMainnet]);
+    } else {
+      nets.addAll([BBNetwork.Testnet, BBNetwork.LTestnet]);
+    }
+    final wallets = state.wallets != null ? state.wallets!.toList() : <Wallet>[];
+    wallets
+        .removeWhere((w) => w.sourceFingerprint == sourceFingerprint && nets.contains(w.network));
+    emit(state.copyWith(wallets: wallets, selectedWalletCubit: null));
+  }
 }
