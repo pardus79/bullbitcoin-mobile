@@ -25,6 +25,7 @@ import 'package:bb_mobile/wallet/bloc/state.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lwk_dart/lwk_dart.dart' as lwk;
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   WalletBloc({
@@ -100,7 +101,9 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
     emit(state.copyWith(wallet: wallet));
 
-    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) {
+    if ((state.wallet?.network == BBNetwork.Testnet ||
+            state.wallet?.network == BBNetwork.Mainnet) &&
+        state.bdkWallet == null) {
       final (bdkWallet, err) = await walletCreate.loadPublicBdkWallet(
         wallet,
       );
@@ -113,7 +116,9 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         );
       }
       emit(state.copyWith(bdkWallet: bdkWallet));
-    } else if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) {
+    } else if ((state.wallet?.network == BBNetwork.LTestnet ||
+            state.wallet?.network == BBNetwork.LTestnet) &&
+        state.lwkWallet == null) {
       final WalletSensitiveRepository walletSensRepo = WalletSensitiveRepository();
       final (seed, errSeed) = await walletSensRepo.readSeed(
         fingerprintIndex: state.wallet!.getRelatedSeedStorageString(),
@@ -158,8 +163,13 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   Future _syncWallet(SyncWallet event, Emitter<WalletState> emit) async {
-    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
-    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.LMainnet ||
+            state.wallet?.network == BBNetwork.LTestnet) &&
+        state.lwkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.Mainnet ||
+            state.wallet?.network == BBNetwork.Testnet) &&
+        state.bdkWallet == null) return;
+
     if (state.syncing) return;
 
     emit(
@@ -231,13 +241,18 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   void _getBalance(GetBalance event, Emitter<WalletState> emit) async {
-    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
-    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.LMainnet ||
+            state.wallet?.network == BBNetwork.LTestnet) &&
+        state.lwkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.Mainnet ||
+            state.wallet?.network == BBNetwork.Testnet) &&
+        state.bdkWallet == null) return;
 
     emit(state.copyWith(loadingBalance: true, errLoadingBalance: ''));
 
     Wallet? wFinal;
-    if (state.wallet?.network == BBNetwork.LTestnet) {
+    if (state.wallet?.network == BBNetwork.LTestnet ||
+        state.wallet?.network == BBNetwork.LMainnet) {
       final (wl, errl) = await walletBalance.getLiquidBalance(
         lwkWallet: state.lwkWallet!,
         wallet: state.wallet!,
@@ -279,8 +294,12 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   void _listTransactions(ListTransactions event, Emitter<WalletState> emit) async {
-    if (state.wallet?.network == BBNetwork.LTestnet && state.lwkWallet == null) return;
-    if (state.wallet?.network == BBNetwork.Testnet && state.bdkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.LMainnet ||
+            state.wallet?.network == BBNetwork.LTestnet) &&
+        state.lwkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.Mainnet ||
+            state.wallet?.network == BBNetwork.Testnet) &&
+        state.bdkWallet == null) return;
 
     emit(
       state.copyWith(
@@ -291,7 +310,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
     Wallet? walletUpdatedAddressesAndUtxos;
     Err? err6;
-    if (state.wallet?.network == BBNetwork.Testnet) {
+    if (state.wallet?.network == BBNetwork.Mainnet || state.wallet?.network == BBNetwork.Testnet) {
       final (walletWithDepositAddresses, err1) = await walletAddress.loadAddresses(
         wallet: state.wallet!,
         bdkWallet: state.bdkWallet!,
@@ -382,7 +401,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         );
         return;
       }
-    } else if (state.wallet?.network == BBNetwork.LTestnet) {
+    } else if (state.wallet?.network == BBNetwork.LMainnet ||
+        state.wallet?.network == BBNetwork.LTestnet) {
       final (walletWithTxs, err3) = await walletTransaction.getLiquidTransactions(
         lwkWallet: state.lwkWallet!,
         wallet: state.wallet!,
@@ -421,13 +441,25 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   void _updateUtxos(UpdateUtxos event, Emitter<WalletState> emit) async {}
 
   void _getFirstAddress(GetFirstAddress event, Emitter<WalletState> emit) async {
-    if (state.bdkWallet == null) return;
-    final (address, err) = await walletAddress.peekIndex(state.bdkWallet!, 0);
-    if (err != null) {
-      emit(state.copyWith(errSyncingAddresses: err.toString()));
-      return;
-    }
+    if ((state.wallet?.network == BBNetwork.LMainnet ||
+            state.wallet?.network == BBNetwork.LTestnet) &&
+        state.lwkWallet == null) return;
+    if ((state.wallet?.network == BBNetwork.Mainnet ||
+            state.wallet?.network == BBNetwork.Testnet) &&
+        state.bdkWallet == null) return;
 
+    String? address;
+    var err;
+    if (state.wallet?.network == BBNetwork.Mainnet || state.wallet?.network == BBNetwork.Testnet) {
+      (address, err) = await walletAddress.peekIndex(state.bdkWallet!, 0);
+      if (err != null) {
+        emit(state.copyWith(errSyncingAddresses: err.toString()));
+        return;
+      }
+    } else {
+      final lwk.Address? addr = await state.lwkWallet?.addressAtIndex(0);
+      address = addr?.standard;
+    }
     emit(
       state.copyWith(
         firstAddress: Address(
