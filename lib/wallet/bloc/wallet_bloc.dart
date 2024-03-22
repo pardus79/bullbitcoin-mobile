@@ -114,9 +114,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
             errLoadingWallet: err.toString(),
           ),
         );
+        return;
       }
       emit(state.copyWith(bdkWallet: bdkWallet));
-    } else if ((state.wallet?.network == BBNetwork.LTestnet ||
+    } else if ((state.wallet?.network == BBNetwork.LMainnet ||
             state.wallet?.network == BBNetwork.LTestnet) &&
         state.lwkWallet == null) {
       final WalletSensitiveRepository walletSensRepo = WalletSensitiveRepository();
@@ -131,6 +132,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
             errLoadingWallet: errSeed.toString(),
           ),
         );
+        return;
       }
       final (lwkWallet, err) = await walletCreate.loadPublicLwkWallet(
         wallet,
@@ -403,9 +405,43 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       }
     } else if (state.wallet?.network == BBNetwork.LMainnet ||
         state.wallet?.network == BBNetwork.LTestnet) {
+      // load address
+      // load change address
+      // load transactions
+      // update addresses from transactions
+      // load utxos
+
+      final (walletWithDepositAddresses, err1) = await walletAddress.loadLiquidAddresses(
+        wallet: state.wallet!,
+        lwkWallet: state.lwkWallet!,
+      );
+      if (err1 != null) {
+        emit(
+          state.copyWith(
+            errSyncingAddresses: err1.toString(),
+            syncingAddresses: false,
+          ),
+        );
+        return;
+      }
+      // final (walletWithChangeAddresses, err2) = await walletAddress.loadLiquidChangeAddresses(
+      //   wallet: walletWithDepositAddresses!,
+      //   lwkWallet: state.lwkWallet!,
+      // );
+      // if (err2 != null) {
+      //   emit(
+      //     state.copyWith(
+      //       errSyncingAddresses: err2.toString(),
+      //       syncingAddresses: false,
+      //     ),
+      //   );
+      //   return;
+      // }
+      emit(state.copyWith(loadingTxs: true, errLoadingWallet: ''));
+
       final (walletWithTxs, err3) = await walletTransaction.getLiquidTransactions(
         lwkWallet: state.lwkWallet!,
-        wallet: state.wallet!,
+        wallet: walletWithDepositAddresses!,
       );
 
       if (err3 != null) {

@@ -19,6 +19,7 @@ mixin _$ReceiveState {
   bool get loadingAddress => throw _privateConstructorUsedError;
   String get errLoadingAddress => throw _privateConstructorUsedError;
   Address? get defaultAddress => throw _privateConstructorUsedError;
+  Address? get defaultLiquidAddress => throw _privateConstructorUsedError;
   String get privateLabel => throw _privateConstructorUsedError;
   bool get savingLabel => throw _privateConstructorUsedError;
   String get errSavingLabel => throw _privateConstructorUsedError;
@@ -47,6 +48,7 @@ abstract class $ReceiveStateCopyWith<$Res> {
       {bool loadingAddress,
       String errLoadingAddress,
       Address? defaultAddress,
+      Address? defaultLiquidAddress,
       String privateLabel,
       bool savingLabel,
       String errSavingLabel,
@@ -61,6 +63,7 @@ abstract class $ReceiveStateCopyWith<$Res> {
       SwapCubit swapBloc});
 
   $AddressCopyWith<$Res>? get defaultAddress;
+  $AddressCopyWith<$Res>? get defaultLiquidAddress;
 }
 
 /// @nodoc
@@ -79,6 +82,7 @@ class _$ReceiveStateCopyWithImpl<$Res, $Val extends ReceiveState>
     Object? loadingAddress = null,
     Object? errLoadingAddress = null,
     Object? defaultAddress = freezed,
+    Object? defaultLiquidAddress = freezed,
     Object? privateLabel = null,
     Object? savingLabel = null,
     Object? errSavingLabel = null,
@@ -104,6 +108,10 @@ class _$ReceiveStateCopyWithImpl<$Res, $Val extends ReceiveState>
       defaultAddress: freezed == defaultAddress
           ? _value.defaultAddress
           : defaultAddress // ignore: cast_nullable_to_non_nullable
+              as Address?,
+      defaultLiquidAddress: freezed == defaultLiquidAddress
+          ? _value.defaultLiquidAddress
+          : defaultLiquidAddress // ignore: cast_nullable_to_non_nullable
               as Address?,
       privateLabel: null == privateLabel
           ? _value.privateLabel
@@ -167,6 +175,18 @@ class _$ReceiveStateCopyWithImpl<$Res, $Val extends ReceiveState>
       return _then(_value.copyWith(defaultAddress: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressCopyWith<$Res>? get defaultLiquidAddress {
+    if (_value.defaultLiquidAddress == null) {
+      return null;
+    }
+
+    return $AddressCopyWith<$Res>(_value.defaultLiquidAddress!, (value) {
+      return _then(_value.copyWith(defaultLiquidAddress: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -181,6 +201,7 @@ abstract class _$$ReceiveStateImplCopyWith<$Res>
       {bool loadingAddress,
       String errLoadingAddress,
       Address? defaultAddress,
+      Address? defaultLiquidAddress,
       String privateLabel,
       bool savingLabel,
       String errSavingLabel,
@@ -196,6 +217,8 @@ abstract class _$$ReceiveStateImplCopyWith<$Res>
 
   @override
   $AddressCopyWith<$Res>? get defaultAddress;
+  @override
+  $AddressCopyWith<$Res>? get defaultLiquidAddress;
 }
 
 /// @nodoc
@@ -212,6 +235,7 @@ class __$$ReceiveStateImplCopyWithImpl<$Res>
     Object? loadingAddress = null,
     Object? errLoadingAddress = null,
     Object? defaultAddress = freezed,
+    Object? defaultLiquidAddress = freezed,
     Object? privateLabel = null,
     Object? savingLabel = null,
     Object? errSavingLabel = null,
@@ -237,6 +261,10 @@ class __$$ReceiveStateImplCopyWithImpl<$Res>
       defaultAddress: freezed == defaultAddress
           ? _value.defaultAddress
           : defaultAddress // ignore: cast_nullable_to_non_nullable
+              as Address?,
+      defaultLiquidAddress: freezed == defaultLiquidAddress
+          ? _value.defaultLiquidAddress
+          : defaultLiquidAddress // ignore: cast_nullable_to_non_nullable
               as Address?,
       privateLabel: null == privateLabel
           ? _value.privateLabel
@@ -297,6 +325,7 @@ class _$ReceiveStateImpl extends _ReceiveState {
       {this.loadingAddress = true,
       this.errLoadingAddress = '',
       this.defaultAddress,
+      this.defaultLiquidAddress,
       this.privateLabel = '',
       this.savingLabel = false,
       this.errSavingLabel = '',
@@ -319,6 +348,8 @@ class _$ReceiveStateImpl extends _ReceiveState {
   final String errLoadingAddress;
   @override
   final Address? defaultAddress;
+  @override
+  final Address? defaultLiquidAddress;
   @override
   @JsonKey()
   final String privateLabel;
@@ -356,7 +387,7 @@ class _$ReceiveStateImpl extends _ReceiveState {
 
   @override
   String toString() {
-    return 'ReceiveState(loadingAddress: $loadingAddress, errLoadingAddress: $errLoadingAddress, defaultAddress: $defaultAddress, privateLabel: $privateLabel, savingLabel: $savingLabel, errSavingLabel: $errSavingLabel, labelSaved: $labelSaved, savedInvoiceAmount: $savedInvoiceAmount, description: $description, savedDescription: $savedDescription, creatingInvoice: $creatingInvoice, errCreatingInvoice: $errCreatingInvoice, walletBloc: $walletBloc, walletType: $walletType, swapBloc: $swapBloc)';
+    return 'ReceiveState(loadingAddress: $loadingAddress, errLoadingAddress: $errLoadingAddress, defaultAddress: $defaultAddress, defaultLiquidAddress: $defaultLiquidAddress, privateLabel: $privateLabel, savingLabel: $savingLabel, errSavingLabel: $errSavingLabel, labelSaved: $labelSaved, savedInvoiceAmount: $savedInvoiceAmount, description: $description, savedDescription: $savedDescription, creatingInvoice: $creatingInvoice, errCreatingInvoice: $errCreatingInvoice, walletBloc: $walletBloc, walletType: $walletType, swapBloc: $swapBloc)';
   }
 
   @override
@@ -370,6 +401,8 @@ class _$ReceiveStateImpl extends _ReceiveState {
                 other.errLoadingAddress == errLoadingAddress) &&
             (identical(other.defaultAddress, defaultAddress) ||
                 other.defaultAddress == defaultAddress) &&
+            (identical(other.defaultLiquidAddress, defaultLiquidAddress) ||
+                other.defaultLiquidAddress == defaultLiquidAddress) &&
             (identical(other.privateLabel, privateLabel) ||
                 other.privateLabel == privateLabel) &&
             (identical(other.savingLabel, savingLabel) ||
@@ -402,6 +435,7 @@ class _$ReceiveStateImpl extends _ReceiveState {
       loadingAddress,
       errLoadingAddress,
       defaultAddress,
+      defaultLiquidAddress,
       privateLabel,
       savingLabel,
       errSavingLabel,
@@ -427,6 +461,7 @@ abstract class _ReceiveState extends ReceiveState {
       {final bool loadingAddress,
       final String errLoadingAddress,
       final Address? defaultAddress,
+      final Address? defaultLiquidAddress,
       final String privateLabel,
       final bool savingLabel,
       final String errSavingLabel,
@@ -447,6 +482,8 @@ abstract class _ReceiveState extends ReceiveState {
   String get errLoadingAddress;
   @override
   Address? get defaultAddress;
+  @override
+  Address? get defaultLiquidAddress;
   @override
   String get privateLabel;
   @override
