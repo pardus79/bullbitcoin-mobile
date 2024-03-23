@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/home/cubit/home_state.dart';
 import 'package:bb_arch/home/home.dart';
@@ -22,8 +24,8 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
   }
 
-  void _load() {
-    context.read<HomeCubit>().loadNativeSdks();
+  void _action1() {
+    print('action1');
   }
 
   void _sync() {
@@ -36,9 +38,9 @@ class _HomeViewState extends State<HomeView> {
     final status = context.select((HomeCubit cubit) => cubit.state.status);
     final syncStatus = context.select((HomeCubit cubit) => cubit.state.syncWalletStatus);
 
-    print('wallets:');
-    print(status);
-    print(wallets);
+    print('HomeView.build:');
+    // print(status);
+    // print(wallets);
 
     if (status == WalletStatus.loading) {
       return Scaffold(
@@ -68,6 +70,12 @@ class _HomeViewState extends State<HomeView> {
                   return ListTile(
                     title: Text('${wallets[index].type.name}: ${wallets[index].network.name}'),
                     subtitle: Text(wallets[index].balance.toString()),
+                    leading: syncStatus[index].name == 'loading'
+                        ? const CircularProgressIndicator()
+                        : syncStatus[index].name == 'initial'
+                            ? const Icon(Icons.hourglass_empty)
+                            : const Icon(Icons.check),
+                    trailing: const Icon(Icons.chevron_right),
                   );
                 },
                 itemCount: wallets.length,
@@ -80,7 +88,7 @@ class _HomeViewState extends State<HomeView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: _load,
+            onPressed: _action1,
             tooltip: 'Load',
             child: const Icon(Icons.front_loader),
           ),

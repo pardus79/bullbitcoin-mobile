@@ -48,6 +48,8 @@ abstract class Wallet {
   dynamic bdkWallet;
   dynamic bdkBlockchain; // TODO: move this to safe place later
 
+  dynamic lwkWallet;
+
   Future<void> loadSdk() {
     throw UnimplementedError();
   }

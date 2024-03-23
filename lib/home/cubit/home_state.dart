@@ -7,6 +7,21 @@ part 'home_state.freezed.dart';
 
 enum WalletStatus { initial, loading, success, failure }
 
+extension WalletStatusExtension on WalletStatus {
+  String get name {
+    switch (this) {
+      case WalletStatus.initial:
+        return 'initial';
+      case WalletStatus.loading:
+        return 'loading';
+      case WalletStatus.success:
+        return 'success';
+      case WalletStatus.failure:
+        return 'failure';
+    }
+  }
+}
+
 @freezed
 class HomeState with _$HomeState {
   const factory HomeState({
