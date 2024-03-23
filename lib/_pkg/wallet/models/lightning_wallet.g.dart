@@ -18,7 +18,6 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
     )
       ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
       ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
-      ..nativeSdkLoaded = json['nativeSdkLoaded'] as bool
       ..electrumUrl = json['electrumUrl'] as String
       ..mnemonic = json['mnemonic'] as String;
 
@@ -27,7 +26,6 @@ Map<String, dynamic> _$$LightningWalletImplToJson(
     <String, dynamic>{
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
-      'nativeSdkLoaded': instance.nativeSdkLoaded,
       'electrumUrl': instance.electrumUrl,
       'mnemonic': instance.mnemonic,
       'id': instance.id,

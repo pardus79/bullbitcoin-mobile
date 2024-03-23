@@ -39,23 +39,28 @@ abstract class Wallet {
   WalletType type = WalletType.Bitcoin;
   NetworkType network = NetworkType.Mainnet;
   bool backupTested = false;
-  bool nativeSdkLoaded = false;
   DateTime? lastBackupTested;
+  DateTime? lastSync;
   String electrumUrl = '';
 
-  String mnemonic = '';
+  String mnemonic = ''; // TODO: Move to secure place
 
-  get bdkWallet => null;
+  dynamic bdkWallet;
+  dynamic bdkBlockchain; // TODO: move this to safe place later
 
-  get bdkBlockchain => null; // TODO: move this to safe place later
+  Future<void> loadSdk() {
+    throw UnimplementedError();
+  }
 
-  static Future<Wallet> loadFromMnemonic(String mnemonic) {
+  static Future<Wallet> setupNewWallet(String mnemonic, NetworkType network) {
     throw UnimplementedError();
   }
 
   static Future<Wallet> loadNativeSdk(Wallet wallet) {
     if (wallet.type == WalletType.Bitcoin) {
       return BitcoinWallet.loadNativeSdk(wallet as BitcoinWallet);
+    } else if (wallet.type == WalletType.Liquid) {
+      return LiquidWallet.loadNativeSdk(wallet as LiquidWallet);
     }
     throw UnimplementedError('Unknown Wallet subclass');
   }
@@ -63,6 +68,8 @@ abstract class Wallet {
   static Future<Wallet> syncWallet(Wallet wallet) {
     if (wallet.type == WalletType.Bitcoin) {
       return BitcoinWallet.syncWallet(wallet as BitcoinWallet);
+    } else if (wallet.type == WalletType.Liquid) {
+      return LiquidWallet.syncWallet(wallet as LiquidWallet);
     }
     throw UnimplementedError('Unknown Wallet subclass');
   }

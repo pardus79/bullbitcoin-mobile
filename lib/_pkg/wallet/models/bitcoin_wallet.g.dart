@@ -19,11 +19,10 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       electrumUrl: json['electrumUrl'] as String? ??
           'ssl://electrum.blockstream.info:60002',
       mnemonic: json['mnemonic'] as String? ?? '',
-    )..nativeSdkLoaded = json['nativeSdkLoaded'] as bool;
+    );
 
 Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
     <String, dynamic>{
-      'nativeSdkLoaded': instance.nativeSdkLoaded,
       'id': instance.id,
       'balance': instance.balance,
       'type': _$WalletTypeEnumMap[instance.type]!,

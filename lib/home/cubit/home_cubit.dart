@@ -4,6 +4,7 @@ import 'package:bb_arch/home/cubit/home_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
+// Move to WalletBloc
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit({required WalletRepository walletRep})
       : walletRepository = walletRep,

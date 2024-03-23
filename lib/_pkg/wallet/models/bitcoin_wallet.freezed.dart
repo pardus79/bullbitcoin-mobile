@@ -26,7 +26,8 @@ mixin _$BitcoinWallet {
   NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
-  String get electrumUrl => throw _privateConstructorUsedError;
+  String get electrumUrl =>
+      throw _privateConstructorUsedError; // TODO: Move to global const
   String get mnemonic => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Blockchain? get bdkBlockchain => throw _privateConstructorUsedError;
@@ -254,6 +255,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   @override
   @JsonKey()
   final String electrumUrl;
+// TODO: Move to global const
   @override
   @JsonKey()
   final String mnemonic;
@@ -354,7 +356,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   DateTime? get lastBackupTested;
   @override
   String get electrumUrl;
-  @override
+  @override // TODO: Move to global const
   String get mnemonic;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)

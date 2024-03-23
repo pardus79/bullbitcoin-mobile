@@ -16,7 +16,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     required NetworkType network,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
-    @Default('ssl://electrum.blockstream.info:60002') String electrumUrl,
+    @Default('ssl://electrum.blockstream.info:60002') String electrumUrl, // TODO: Move to global const
     @Default('') String mnemonic,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Blockchain? bdkBlockchain,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Wallet? bdkWallet,
@@ -26,39 +26,8 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet.fromJson(Map<String, dynamic> json) => _$BitcoinWalletFromJson(json);
 
   @override
-  static Future<Wallet> loadFromMnemonic(String mnemonicStr) async {
-    final mnemonic = await bdk.Mnemonic.fromString(mnemonicStr);
-
-    final descriptorSecretKey = await bdk.DescriptorSecretKey.create(network: bdk.Network.Testnet, mnemonic: mnemonic);
-
-    final externalDescriptor = await bdk.Descriptor.newBip44(
-        secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.External);
-    final internalDescriptor = await bdk.Descriptor.newBip44(
-        secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.Internal);
-
-    final blockchain = await bdk.Blockchain.create(
-        config: const bdk.BlockchainConfig.electrum(
-            config: bdk.ElectrumConfig(
-                stopGap: 10,
-                timeout: 5,
-                retry: 5,
-                url: 'ssl://electrum.blockstream.info:60002',
-                validateDomain: true)));
-
-    final wallet = await bdk.Wallet.create(
-        descriptor: externalDescriptor,
-        changeDescriptor: internalDescriptor,
-        network: bdk.Network.Testnet,
-        databaseConfig: const bdk.DatabaseConfig.memory());
-
-    return BitcoinWallet(
-        id: 'hi',
-        balance: 200,
-        type: WalletType.Bitcoin,
-        network: NetworkType.Testnet,
-        mnemonic: mnemonicStr,
-        bdkWallet: wallet,
-        bdkBlockchain: blockchain);
+  static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network) async {
+    return BitcoinWallet(id: 'hi', balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
   }
 
   @override
@@ -69,12 +38,12 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
 
     final descriptorSecretKey = await bdk.DescriptorSecretKey.create(network: bdk.Network.Testnet, mnemonic: mnem);
 
-    final externalDescriptor = await bdk.Descriptor.newBip44(
+    final externalDescriptor = await bdk.Descriptor.newBip84(
         secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.External);
-    final internalDescriptor = await bdk.Descriptor.newBip44(
+    final internalDescriptor = await bdk.Descriptor.newBip84(
         secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.Internal);
 
-    final blockchain = await bdk.Blockchain.create(
+    final bdkBlockchain = await bdk.Blockchain.create(
         config: const bdk.BlockchainConfig.electrum(
             config: bdk.ElectrumConfig(
                 stopGap: 10,
@@ -89,7 +58,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
         network: bdk.Network.Testnet,
         databaseConfig: const bdk.DatabaseConfig.memory());
 
-    return w.copyWith(bdkWallet: wallet, bdkBlockchain: blockchain);
+    return w.copyWith(bdkWallet: wallet, bdkBlockchain: bdkBlockchain);
   }
 
   @override
@@ -110,7 +79,6 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     ];
   }
 
-  @override
   static Future<Wallet> syncWallet(BitcoinWallet w) async {
     print('Syncing via bdk');
 
@@ -123,9 +91,10 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     return w.copyWith(balance: balance);
   }
 
+  // outdated
   @override
   Future<void> sync() async {
-    print('Syncing via bdk');
+    print('Syncing via bdk ${bdkWallet.hashCode}');
 
     await bdkWallet?.sync(bdkBlockchain!);
 

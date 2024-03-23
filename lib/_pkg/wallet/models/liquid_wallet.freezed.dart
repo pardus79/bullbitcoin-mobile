@@ -26,7 +26,10 @@ mixin _$LiquidWallet {
   NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
+  String get electrumUrl => throw _privateConstructorUsedError;
   String get mnemonic => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  lwk.Wallet? get lwkWallet => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -47,7 +50,10 @@ abstract class $LiquidWalletCopyWith<$Res> {
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String mnemonic});
+      String electrumUrl,
+      String mnemonic,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      lwk.Wallet? lwkWallet});
 }
 
 /// @nodoc
@@ -69,7 +75,9 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? electrumUrl = null,
     Object? mnemonic = null,
+    Object? lwkWallet = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -96,10 +104,18 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      electrumUrl: null == electrumUrl
+          ? _value.electrumUrl
+          : electrumUrl // ignore: cast_nullable_to_non_nullable
+              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
+      lwkWallet: freezed == lwkWallet
+          ? _value.lwkWallet
+          : lwkWallet // ignore: cast_nullable_to_non_nullable
+              as lwk.Wallet?,
     ) as $Val);
   }
 }
@@ -119,7 +135,10 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String mnemonic});
+      String electrumUrl,
+      String mnemonic,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      lwk.Wallet? lwkWallet});
 }
 
 /// @nodoc
@@ -139,7 +158,9 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? electrumUrl = null,
     Object? mnemonic = null,
+    Object? lwkWallet = freezed,
   }) {
     return _then(_$LiquidWalletImpl(
       id: null == id
@@ -166,10 +187,18 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      electrumUrl: null == electrumUrl
+          ? _value.electrumUrl
+          : electrumUrl // ignore: cast_nullable_to_non_nullable
+              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
+      lwkWallet: freezed == lwkWallet
+          ? _value.lwkWallet
+          : lwkWallet // ignore: cast_nullable_to_non_nullable
+              as lwk.Wallet?,
     ));
   }
 }
@@ -184,7 +213,9 @@ class _$LiquidWalletImpl extends _LiquidWallet {
       required this.network,
       this.backupTested = false,
       this.lastBackupTested,
-      this.mnemonic = ''})
+      this.electrumUrl = 'ssl://electrum.blockstream.info:60002',
+      this.mnemonic = '',
+      @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet})
       : super._();
 
   factory _$LiquidWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -205,11 +236,17 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   final DateTime? lastBackupTested;
   @override
   @JsonKey()
+  final String electrumUrl;
+  @override
+  @JsonKey()
   final String mnemonic;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final lwk.Wallet? lwkWallet;
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic)';
+    return 'LiquidWallet(id: $id, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
   }
 
   @override
@@ -225,14 +262,18 @@ class _$LiquidWalletImpl extends _LiquidWallet {
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
                 other.lastBackupTested == lastBackupTested) &&
+            (identical(other.electrumUrl, electrumUrl) ||
+                other.electrumUrl == electrumUrl) &&
             (identical(other.mnemonic, mnemonic) ||
-                other.mnemonic == mnemonic));
+                other.mnemonic == mnemonic) &&
+            (identical(other.lwkWallet, lwkWallet) ||
+                other.lwkWallet == lwkWallet));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, balance, type, network,
-      backupTested, lastBackupTested, mnemonic);
+      backupTested, lastBackupTested, electrumUrl, mnemonic, lwkWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -256,7 +297,10 @@ abstract class _LiquidWallet extends LiquidWallet {
       required final NetworkType network,
       final bool backupTested,
       final DateTime? lastBackupTested,
-      final String mnemonic}) = _$LiquidWalletImpl;
+      final String electrumUrl,
+      final String mnemonic,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      final lwk.Wallet? lwkWallet}) = _$LiquidWalletImpl;
   _LiquidWallet._() : super._();
 
   factory _LiquidWallet.fromJson(Map<String, dynamic> json) =
@@ -275,7 +319,12 @@ abstract class _LiquidWallet extends LiquidWallet {
   @override
   DateTime? get lastBackupTested;
   @override
+  String get electrumUrl;
+  @override
   String get mnemonic;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  lwk.Wallet? get lwkWallet;
   @override
   @JsonKey(ignore: true)
   _$$LiquidWalletImplCopyWith<_$LiquidWalletImpl> get copyWith =>
