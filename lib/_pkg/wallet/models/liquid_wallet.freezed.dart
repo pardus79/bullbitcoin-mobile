@@ -21,9 +21,12 @@ LiquidWallet _$LiquidWalletFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LiquidWallet {
   String get id => throw _privateConstructorUsedError;
-  double get balance => throw _privateConstructorUsedError;
+  int get balance => throw _privateConstructorUsedError;
+  WalletType get type => throw _privateConstructorUsedError;
+  NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
+  String get mnemonic => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,9 +42,12 @@ abstract class $LiquidWalletCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      double balance,
+      int balance,
+      WalletType type,
+      NetworkType network,
       bool backupTested,
-      DateTime? lastBackupTested});
+      DateTime? lastBackupTested,
+      String mnemonic});
 }
 
 /// @nodoc
@@ -59,8 +65,11 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
   $Res call({
     Object? id = null,
     Object? balance = null,
+    Object? type = null,
+    Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? mnemonic = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -70,7 +79,15 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as WalletType,
+      network: null == network
+          ? _value.network
+          : network // ignore: cast_nullable_to_non_nullable
+              as NetworkType,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -79,6 +96,10 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      mnemonic: null == mnemonic
+          ? _value.mnemonic
+          : mnemonic // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -93,9 +114,12 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      double balance,
+      int balance,
+      WalletType type,
+      NetworkType network,
       bool backupTested,
-      DateTime? lastBackupTested});
+      DateTime? lastBackupTested,
+      String mnemonic});
 }
 
 /// @nodoc
@@ -111,8 +135,11 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? balance = null,
+    Object? type = null,
+    Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? mnemonic = null,
   }) {
     return _then(_$LiquidWalletImpl(
       id: null == id
@@ -122,7 +149,15 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as WalletType,
+      network: null == network
+          ? _value.network
+          : network // ignore: cast_nullable_to_non_nullable
+              as NetworkType,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -131,6 +166,10 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      mnemonic: null == mnemonic
+          ? _value.mnemonic
+          : mnemonic // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -141,8 +180,11 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   _$LiquidWalletImpl(
       {required this.id,
       required this.balance,
+      required this.type,
+      required this.network,
       this.backupTested = false,
-      this.lastBackupTested})
+      this.lastBackupTested,
+      this.mnemonic = ''})
       : super._();
 
   factory _$LiquidWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -151,16 +193,23 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   @override
   final String id;
   @override
-  final double balance;
+  final int balance;
+  @override
+  final WalletType type;
+  @override
+  final NetworkType network;
   @override
   @JsonKey()
   final bool backupTested;
   @override
   final DateTime? lastBackupTested;
+  @override
+  @JsonKey()
+  final String mnemonic;
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, balance: $balance, backupTested: $backupTested, lastBackupTested: $lastBackupTested)';
+    return 'LiquidWallet(id: $id, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic)';
   }
 
   @override
@@ -170,16 +219,20 @@ class _$LiquidWalletImpl extends _LiquidWallet {
             other is _$LiquidWalletImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.balance, balance) || other.balance == balance) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.network, network) || other.network == network) &&
             (identical(other.backupTested, backupTested) ||
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
-                other.lastBackupTested == lastBackupTested));
+                other.lastBackupTested == lastBackupTested) &&
+            (identical(other.mnemonic, mnemonic) ||
+                other.mnemonic == mnemonic));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, balance, backupTested, lastBackupTested);
+  int get hashCode => Object.hash(runtimeType, id, balance, type, network,
+      backupTested, lastBackupTested, mnemonic);
 
   @JsonKey(ignore: true)
   @override
@@ -198,9 +251,12 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 abstract class _LiquidWallet extends LiquidWallet {
   factory _LiquidWallet(
       {required final String id,
-      required final double balance,
+      required final int balance,
+      required final WalletType type,
+      required final NetworkType network,
       final bool backupTested,
-      final DateTime? lastBackupTested}) = _$LiquidWalletImpl;
+      final DateTime? lastBackupTested,
+      final String mnemonic}) = _$LiquidWalletImpl;
   _LiquidWallet._() : super._();
 
   factory _LiquidWallet.fromJson(Map<String, dynamic> json) =
@@ -209,11 +265,17 @@ abstract class _LiquidWallet extends LiquidWallet {
   @override
   String get id;
   @override
-  double get balance;
+  int get balance;
+  @override
+  WalletType get type;
+  @override
+  NetworkType get network;
   @override
   bool get backupTested;
   @override
   DateTime? get lastBackupTested;
+  @override
+  String get mnemonic;
   @override
   @JsonKey(ignore: true)
   _$$LiquidWalletImplCopyWith<_$LiquidWalletImpl> get copyWith =>

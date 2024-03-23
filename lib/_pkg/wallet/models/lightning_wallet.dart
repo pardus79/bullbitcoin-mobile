@@ -10,7 +10,7 @@ part 'lightning_wallet.g.dart';
 class LightningWallet extends Wallet with _$LightningWallet {
   factory LightningWallet({
     required String id,
-    required double balance,
+    required int balance,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
   }) = _LightningWallet;
@@ -40,7 +40,7 @@ class LightningWallet extends Wallet with _$LightningWallet {
   }
 
   @override
-  void sync(String electrumUrl) {
-    print('Syncing with $electrumUrl via ldk');
+  Future<void> sync() async {
+    print('Syncing via ldk');
   }
 }

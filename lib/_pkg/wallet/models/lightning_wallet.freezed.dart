@@ -21,7 +21,7 @@ LightningWallet _$LightningWalletFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LightningWallet {
   String get id => throw _privateConstructorUsedError;
-  double get balance => throw _privateConstructorUsedError;
+  int get balance => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
 
@@ -38,10 +38,7 @@ abstract class $LightningWalletCopyWith<$Res> {
       _$LightningWalletCopyWithImpl<$Res, LightningWallet>;
   @useResult
   $Res call(
-      {String id,
-      double balance,
-      bool backupTested,
-      DateTime? lastBackupTested});
+      {String id, int balance, bool backupTested, DateTime? lastBackupTested});
 }
 
 /// @nodoc
@@ -70,7 +67,7 @@ class _$LightningWalletCopyWithImpl<$Res, $Val extends LightningWallet>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -92,10 +89,7 @@ abstract class _$$LightningWalletImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      double balance,
-      bool backupTested,
-      DateTime? lastBackupTested});
+      {String id, int balance, bool backupTested, DateTime? lastBackupTested});
 }
 
 /// @nodoc
@@ -122,7 +116,7 @@ class __$$LightningWalletImplCopyWithImpl<$Res>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -151,7 +145,7 @@ class _$LightningWalletImpl extends _LightningWallet {
   @override
   final String id;
   @override
-  final double balance;
+  final int balance;
   @override
   @JsonKey()
   final bool backupTested;
@@ -199,7 +193,7 @@ class _$LightningWalletImpl extends _LightningWallet {
 abstract class _LightningWallet extends LightningWallet {
   factory _LightningWallet(
       {required final String id,
-      required final double balance,
+      required final int balance,
       final bool backupTested,
       final DateTime? lastBackupTested}) = _$LightningWalletImpl;
   _LightningWallet._() : super._();
@@ -210,7 +204,7 @@ abstract class _LightningWallet extends LightningWallet {
   @override
   String get id;
   @override
-  double get balance;
+  int get balance;
   @override
   bool get backupTested;
   @override

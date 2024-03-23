@@ -8,9 +8,12 @@ part 'liquid_wallet.g.dart';
 class LiquidWallet extends Wallet with _$LiquidWallet {
   factory LiquidWallet({
     required String id,
-    required double balance,
+    required int balance,
+    required WalletType type,
+    required NetworkType network,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
+    @Default('') String mnemonic,
   }) = _LiquidWallet;
   LiquidWallet._();
 
@@ -40,7 +43,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   }
 
   @override
-  void sync(String electrumUrl) {
-    print('Syncing with $electrumUrl via lwk-dart');
+  Future<void> sync() async {
+    print('Syncing via lwk-dart');
   }
 }

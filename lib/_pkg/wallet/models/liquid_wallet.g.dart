@@ -9,25 +9,29 @@ part of 'liquid_wallet.dart';
 _$LiquidWalletImpl _$$LiquidWalletImplFromJson(Map<String, dynamic> json) =>
     _$LiquidWalletImpl(
       id: json['id'] as String,
-      balance: (json['balance'] as num).toDouble(),
+      balance: json['balance'] as int,
+      type: $enumDecode(_$WalletTypeEnumMap, json['type']),
+      network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       backupTested: json['backupTested'] as bool? ?? false,
       lastBackupTested: json['lastBackupTested'] == null
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
+      mnemonic: json['mnemonic'] as String? ?? '',
     )
-      ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
-      ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
-      ..nativeSdkLoaded = json['nativeSdkLoaded'] as bool;
+      ..nativeSdkLoaded = json['nativeSdkLoaded'] as bool
+      ..electrumUrl = json['electrumUrl'] as String;
 
 Map<String, dynamic> _$$LiquidWalletImplToJson(_$LiquidWalletImpl instance) =>
     <String, dynamic>{
-      'type': _$WalletTypeEnumMap[instance.type]!,
-      'network': _$NetworkTypeEnumMap[instance.network]!,
       'nativeSdkLoaded': instance.nativeSdkLoaded,
+      'electrumUrl': instance.electrumUrl,
       'id': instance.id,
       'balance': instance.balance,
+      'type': _$WalletTypeEnumMap[instance.type]!,
+      'network': _$NetworkTypeEnumMap[instance.network]!,
       'backupTested': instance.backupTested,
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
+      'mnemonic': instance.mnemonic,
     };
 
 const _$WalletTypeEnumMap = {

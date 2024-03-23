@@ -10,7 +10,7 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
         Map<String, dynamic> json) =>
     _$LightningWalletImpl(
       id: json['id'] as String,
-      balance: (json['balance'] as num).toDouble(),
+      balance: json['balance'] as int,
       backupTested: json['backupTested'] as bool? ?? false,
       lastBackupTested: json['lastBackupTested'] == null
           ? null
@@ -18,7 +18,9 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
     )
       ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
       ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
-      ..nativeSdkLoaded = json['nativeSdkLoaded'] as bool;
+      ..nativeSdkLoaded = json['nativeSdkLoaded'] as bool
+      ..electrumUrl = json['electrumUrl'] as String
+      ..mnemonic = json['mnemonic'] as String;
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
@@ -26,6 +28,8 @@ Map<String, dynamic> _$$LightningWalletImplToJson(
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'nativeSdkLoaded': instance.nativeSdkLoaded,
+      'electrumUrl': instance.electrumUrl,
+      'mnemonic': instance.mnemonic,
       'id': instance.id,
       'balance': instance.balance,
       'backupTested': instance.backupTested,

@@ -1,24 +1,36 @@
+import 'package:bb_arch/_pkg/storage/hive.dart';
+import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
+import 'package:bb_arch/app/app.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'home/home.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final HiveStorage storage = HiveStorage();
+  await storage.init();
+
+  final WalletRepository walletRepository = WalletRepository(storage: storage);
+
+  runApp(MyApp(
+    storage: storage,
+    walletRepository: walletRepository,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key, required this.storage, required this.walletRepository});
 
-  // This widget is the root of your application.
+  final HiveStorage storage;
+  final WalletRepository walletRepository;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+    return App(
+      storage: storage,
+      walletRepository: walletRepository,
     );
   }
 }
