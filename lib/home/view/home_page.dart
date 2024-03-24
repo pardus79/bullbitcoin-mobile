@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => HomeCubit(walletRep: context.read<WalletRepository>()))],
+      providers: [BlocProvider(create: (_) => HomeCubit())],
       child: const HomeView(
         title: 'Bull Bitcoin',
       ),

@@ -18,7 +18,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [RepositoryProvider.value(value: walletRepository)],
-      child: MultiBlocProvider(providers: [BlocProvider(create: (_) => WalletBloc())], child: const AppView()),
+      child: MultiBlocProvider(
+          providers: [BlocProvider(create: (_) => WalletBloc(walletRepository: walletRepository))],
+          child: const AppView()),
     );
   }
 }

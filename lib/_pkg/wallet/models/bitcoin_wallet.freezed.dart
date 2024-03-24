@@ -27,8 +27,6 @@ mixin _$BitcoinWallet {
   NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
-  String get electrumUrl =>
-      throw _privateConstructorUsedError; // TODO: Move to global const
   String get mnemonic => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Blockchain? get bdkBlockchain => throw _privateConstructorUsedError;
@@ -55,7 +53,6 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String electrumUrl,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
@@ -83,7 +80,6 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
-    Object? electrumUrl = null,
     Object? mnemonic = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
@@ -117,10 +113,6 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      electrumUrl: null == electrumUrl
-          ? _value.electrumUrl
-          : electrumUrl // ignore: cast_nullable_to_non_nullable
-              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
@@ -153,7 +145,6 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String electrumUrl,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
@@ -179,7 +170,6 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
-    Object? electrumUrl = null,
     Object? mnemonic = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
@@ -213,10 +203,6 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      electrumUrl: null == electrumUrl
-          ? _value.electrumUrl
-          : electrumUrl // ignore: cast_nullable_to_non_nullable
-              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
@@ -244,7 +230,6 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       required this.network,
       this.backupTested = false,
       this.lastBackupTested,
-      this.electrumUrl = 'ssl://electrum.blockstream.info:60002',
       this.mnemonic = '',
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkBlockchain,
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkWallet})
@@ -270,10 +255,6 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   final DateTime? lastBackupTested;
   @override
   @JsonKey()
-  final String electrumUrl;
-// TODO: Move to global const
-  @override
-  @JsonKey()
   final String mnemonic;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -284,7 +265,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
   }
 
   @override
@@ -301,8 +282,6 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
                 other.lastBackupTested == lastBackupTested) &&
-            (identical(other.electrumUrl, electrumUrl) ||
-                other.electrumUrl == electrumUrl) &&
             (identical(other.mnemonic, mnemonic) ||
                 other.mnemonic == mnemonic) &&
             (identical(other.bdkBlockchain, bdkBlockchain) ||
@@ -313,19 +292,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      balance,
-      type,
-      network,
-      backupTested,
-      lastBackupTested,
-      electrumUrl,
-      mnemonic,
-      bdkBlockchain,
-      bdkWallet);
+  int get hashCode => Object.hash(runtimeType, id, name, balance, type, network,
+      backupTested, lastBackupTested, mnemonic, bdkBlockchain, bdkWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -350,7 +318,6 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       required final NetworkType network,
       final bool backupTested,
       final DateTime? lastBackupTested,
-      final String electrumUrl,
       final String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final bdk.Blockchain? bdkBlockchain,
@@ -376,8 +343,6 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   @override
   DateTime? get lastBackupTested;
   @override
-  String get electrumUrl;
-  @override // TODO: Move to global const
   String get mnemonic;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)

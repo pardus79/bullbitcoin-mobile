@@ -1,4 +1,16 @@
 part of 'wallet_bloc.dart';
 
-@immutable
-sealed class WalletEvent {}
+class WalletEvent {}
+
+class ReadAllWallets extends WalletEvent {
+  ReadAllWallets();
+}
+
+class SyncAllWallets extends WalletEvent {
+  SyncAllWallets();
+}
+
+class SyncWallet extends WalletEvent {
+  final String walletId;
+  SyncWallet({required this.walletId});
+}

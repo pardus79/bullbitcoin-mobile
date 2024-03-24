@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'home_state.dart';
+part of 'wallet_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,21 +15,22 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$HomeState {
+mixin _$WalletState {
   LoadStatus get status => throw _privateConstructorUsedError;
   List<LoadStatus> get syncWalletStatus => throw _privateConstructorUsedError;
   List<Wallet> get wallets => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $HomeStateCopyWith<HomeState> get copyWith =>
+  $WalletStateCopyWith<WalletState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $HomeStateCopyWith<$Res> {
-  factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
-      _$HomeStateCopyWithImpl<$Res, HomeState>;
+abstract class $WalletStateCopyWith<$Res> {
+  factory $WalletStateCopyWith(
+          WalletState value, $Res Function(WalletState) then) =
+      _$WalletStateCopyWithImpl<$Res, WalletState>;
   @useResult
   $Res call(
       {LoadStatus status,
@@ -39,9 +40,9 @@ abstract class $HomeStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
-    implements $HomeStateCopyWith<$Res> {
-  _$HomeStateCopyWithImpl(this._value, this._then);
+class _$WalletStateCopyWithImpl<$Res, $Val extends WalletState>
+    implements $WalletStateCopyWith<$Res> {
+  _$WalletStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -78,11 +79,11 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
 }
 
 /// @nodoc
-abstract class _$$HomeStateImplCopyWith<$Res>
-    implements $HomeStateCopyWith<$Res> {
-  factory _$$HomeStateImplCopyWith(
-          _$HomeStateImpl value, $Res Function(_$HomeStateImpl) then) =
-      __$$HomeStateImplCopyWithImpl<$Res>;
+abstract class _$$WalletStateImplCopyWith<$Res>
+    implements $WalletStateCopyWith<$Res> {
+  factory _$$WalletStateImplCopyWith(
+          _$WalletStateImpl value, $Res Function(_$WalletStateImpl) then) =
+      __$$WalletStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -93,11 +94,11 @@ abstract class _$$HomeStateImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$HomeStateImplCopyWithImpl<$Res>
-    extends _$HomeStateCopyWithImpl<$Res, _$HomeStateImpl>
-    implements _$$HomeStateImplCopyWith<$Res> {
-  __$$HomeStateImplCopyWithImpl(
-      _$HomeStateImpl _value, $Res Function(_$HomeStateImpl) _then)
+class __$$WalletStateImplCopyWithImpl<$Res>
+    extends _$WalletStateCopyWithImpl<$Res, _$WalletStateImpl>
+    implements _$$WalletStateImplCopyWith<$Res> {
+  __$$WalletStateImplCopyWithImpl(
+      _$WalletStateImpl _value, $Res Function(_$WalletStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -108,7 +109,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
     Object? wallets = null,
     Object? error = null,
   }) {
-    return _then(_$HomeStateImpl(
+    return _then(_$WalletStateImpl(
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -131,8 +132,8 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$HomeStateImpl implements _HomeState {
-  const _$HomeStateImpl(
+class _$WalletStateImpl implements _WalletState {
+  const _$WalletStateImpl(
       {this.status = LoadStatus.initial,
       final List<LoadStatus> syncWalletStatus = const [],
       final List<Wallet> wallets = const [],
@@ -168,14 +169,14 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   String toString() {
-    return 'HomeState(status: $status, syncWalletStatus: $syncWalletStatus, wallets: $wallets, error: $error)';
+    return 'WalletState(status: $status, syncWalletStatus: $syncWalletStatus, wallets: $wallets, error: $error)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HomeStateImpl &&
+            other is _$WalletStateImpl &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._syncWalletStatus, _syncWalletStatus) &&
@@ -194,16 +195,16 @@ class _$HomeStateImpl implements _HomeState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$HomeStateImplCopyWith<_$HomeStateImpl> get copyWith =>
-      __$$HomeStateImplCopyWithImpl<_$HomeStateImpl>(this, _$identity);
+  _$$WalletStateImplCopyWith<_$WalletStateImpl> get copyWith =>
+      __$$WalletStateImplCopyWithImpl<_$WalletStateImpl>(this, _$identity);
 }
 
-abstract class _HomeState implements HomeState {
-  const factory _HomeState(
+abstract class _WalletState implements WalletState {
+  const factory _WalletState(
       {final LoadStatus status,
       final List<LoadStatus> syncWalletStatus,
       final List<Wallet> wallets,
-      final String error}) = _$HomeStateImpl;
+      final String error}) = _$WalletStateImpl;
 
   @override
   LoadStatus get status;
@@ -215,6 +216,6 @@ abstract class _HomeState implements HomeState {
   String get error;
   @override
   @JsonKey(ignore: true)
-  _$$HomeStateImplCopyWith<_$HomeStateImpl> get copyWith =>
+  _$$WalletStateImplCopyWith<_$WalletStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

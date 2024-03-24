@@ -27,7 +27,6 @@ mixin _$LiquidWallet {
   NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
-  String get electrumUrl => throw _privateConstructorUsedError;
   String get mnemonic => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   lwk.Wallet? get lwkWallet => throw _privateConstructorUsedError;
@@ -52,7 +51,6 @@ abstract class $LiquidWalletCopyWith<$Res> {
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String electrumUrl,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       lwk.Wallet? lwkWallet});
@@ -78,7 +76,6 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
-    Object? electrumUrl = null,
     Object? mnemonic = null,
     Object? lwkWallet = freezed,
   }) {
@@ -111,10 +108,6 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      electrumUrl: null == electrumUrl
-          ? _value.electrumUrl
-          : electrumUrl // ignore: cast_nullable_to_non_nullable
-              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
@@ -143,7 +136,6 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
       NetworkType network,
       bool backupTested,
       DateTime? lastBackupTested,
-      String electrumUrl,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       lwk.Wallet? lwkWallet});
@@ -167,7 +159,6 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
     Object? network = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
-    Object? electrumUrl = null,
     Object? mnemonic = null,
     Object? lwkWallet = freezed,
   }) {
@@ -200,10 +191,6 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      electrumUrl: null == electrumUrl
-          ? _value.electrumUrl
-          : electrumUrl // ignore: cast_nullable_to_non_nullable
-              as String,
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
@@ -227,7 +214,6 @@ class _$LiquidWalletImpl extends _LiquidWallet {
       required this.network,
       this.backupTested = false,
       this.lastBackupTested,
-      this.electrumUrl = 'ssl://electrum.blockstream.info:60002',
       this.mnemonic = '',
       @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet})
       : super._();
@@ -252,9 +238,6 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   final DateTime? lastBackupTested;
   @override
   @JsonKey()
-  final String electrumUrl;
-  @override
-  @JsonKey()
   final String mnemonic;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -262,7 +245,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
+    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
   }
 
   @override
@@ -279,8 +262,6 @@ class _$LiquidWalletImpl extends _LiquidWallet {
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
                 other.lastBackupTested == lastBackupTested) &&
-            (identical(other.electrumUrl, electrumUrl) ||
-                other.electrumUrl == electrumUrl) &&
             (identical(other.mnemonic, mnemonic) ||
                 other.mnemonic == mnemonic) &&
             (identical(other.lwkWallet, lwkWallet) ||
@@ -290,7 +271,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, balance, type, network,
-      backupTested, lastBackupTested, electrumUrl, mnemonic, lwkWallet);
+      backupTested, lastBackupTested, mnemonic, lwkWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -315,7 +296,6 @@ abstract class _LiquidWallet extends LiquidWallet {
       required final NetworkType network,
       final bool backupTested,
       final DateTime? lastBackupTested,
-      final String electrumUrl,
       final String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final lwk.Wallet? lwkWallet}) = _$LiquidWalletImpl;
@@ -338,8 +318,6 @@ abstract class _LiquidWallet extends LiquidWallet {
   bool get backupTested;
   @override
   DateTime? get lastBackupTested;
-  @override
-  String get electrumUrl;
   @override
   String get mnemonic;
   @override

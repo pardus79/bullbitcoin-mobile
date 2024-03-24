@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/misc.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/home/cubit/home_state.dart';
 import 'package:bb_arch/home/home.dart';
+import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +21,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
-    context.read<HomeCubit>().readWallets();
+    context.read<WalletBloc>().add(ReadAllWallets());
     super.initState();
   }
 
@@ -27,20 +30,20 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _sync() {
-    context.read<HomeCubit>().syncAllWallets();
+    context.read<WalletBloc>().add(SyncAllWallets());
   }
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((HomeCubit cubit) => cubit.state.wallets);
-    final status = context.select((HomeCubit cubit) => cubit.state.status);
-    final syncStatus = context.select((HomeCubit cubit) => cubit.state.syncWalletStatus);
+    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
+    final status = context.select((WalletBloc cubit) => cubit.state.status);
+    final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
 
     print('HomeView.build:');
     // print(status);
     // print(wallets);
 
-    if (status == WalletStatus.loading) {
+    if (status == LoadStatus.loading) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
