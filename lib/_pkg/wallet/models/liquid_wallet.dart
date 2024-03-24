@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, invalid_annotation_target
+
 import 'package:bb_arch/_pkg/constants.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
@@ -16,6 +18,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     required WalletType type,
     required NetworkType network,
     @Default(false) bool backupTested,
+    DateTime? lastSync,
     DateTime? lastBackupTested,
     @Default('') String mnemonic,
     @JsonKey(includeFromJson: false, includeToJson: false) lwk.Wallet? lwkWallet,
@@ -24,7 +27,6 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
   factory LiquidWallet.fromJson(Map<String, dynamic> json) => _$LiquidWalletFromJson(json);
 
-  @override
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
       id: 'hi',
@@ -36,8 +38,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     );
   }
 
-  @override
-  static Future<Wallet> loadNativeSdk(LiquidWallet w) async {
+  static Future<LiquidWallet> loadNativeSdk(LiquidWallet w) async {
     print('Loading native sdk for liquid wallet');
 
     final appDocDir = await getApplicationDocumentsDirectory();
@@ -78,17 +79,17 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   static Future<Wallet> syncWallet(LiquidWallet w) async {
     print('Syncing via lwk');
 
+    if (w.lwkWallet == null) {
+      print('Wallet is not loaded with bdk. Loading it now');
+      w = await loadNativeSdk(w);
+    }
+
     await w.lwkWallet?.sync(liquidElectrumUrl);
 
     final bal = await w.lwkWallet?.balance();
     final balance = bal?.lbtc ?? 0;
     print('balance is $balance');
 
-    return w.copyWith(balance: balance);
-  }
-
-  @override
-  Future<void> sync() async {
-    print('Syncing via lwk-dart');
+    return w.copyWith(balance: balance, lastSync: DateTime.now());
   }
 }

@@ -8,6 +8,6 @@ class WalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WalletView();
+    return const WalletView();
   }
 }

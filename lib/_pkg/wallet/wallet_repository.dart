@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
@@ -28,22 +27,11 @@ class WalletRepository {
     }
   }
 
-  Future<(List<Wallet>?, dynamic)> readAllWallets() async {
+  Future<(List<Wallet>?, dynamic)> loadAllWallets() async {
     try {
       final (walletsStr, _) = await storage.getValue('wallets');
-
       List<dynamic> walletsJson = jsonDecode(walletsStr!);
-
-      final wallets = walletsJson.map((walletJson) {
-        // TODO: Generalize and move to Wallet
-        if (walletJson['type'] == 'Bitcoin') {
-          return BitcoinWallet.fromJson(walletJson as Map<String, dynamic>);
-        } else if (walletJson['type'] == 'Liquid') {
-          return LiquidWallet.fromJson(walletJson as Map<String, dynamic>);
-        } else {
-          throw UnimplementedError();
-        }
-      }).toList();
+      final wallets = walletsJson.map((walletJson) => Wallet.fromJson(walletJson)).toList();
 
       return (wallets, null);
     } catch (e) {
@@ -51,7 +39,9 @@ class WalletRepository {
     }
   }
 
-  void addWallet(Wallet w) {}
+  void addWallet(Wallet w) {
+    throw UnimplementedError();
+  }
 
   Future<void> setupWallets() async {
     print('Setting up wallets: BEGIN');

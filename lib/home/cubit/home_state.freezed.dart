@@ -16,9 +16,6 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$HomeState {
-  LoadStatus get status => throw _privateConstructorUsedError;
-  List<LoadStatus> get syncWalletStatus => throw _privateConstructorUsedError;
-  List<Wallet> get wallets => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -31,11 +28,7 @@ abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
-  $Res call(
-      {LoadStatus status,
-      List<LoadStatus> syncWalletStatus,
-      List<Wallet> wallets,
-      String error});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -51,24 +44,9 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
-    Object? syncWalletStatus = null,
-    Object? wallets = null,
     Object? error = null,
   }) {
     return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as LoadStatus,
-      syncWalletStatus: null == syncWalletStatus
-          ? _value.syncWalletStatus
-          : syncWalletStatus // ignore: cast_nullable_to_non_nullable
-              as List<LoadStatus>,
-      wallets: null == wallets
-          ? _value.wallets
-          : wallets // ignore: cast_nullable_to_non_nullable
-              as List<Wallet>,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -85,11 +63,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       __$$HomeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {LoadStatus status,
-      List<LoadStatus> syncWalletStatus,
-      List<Wallet> wallets,
-      String error});
+  $Res call({String error});
 }
 
 /// @nodoc
@@ -103,24 +77,9 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
-    Object? syncWalletStatus = null,
-    Object? wallets = null,
     Object? error = null,
   }) {
     return _then(_$HomeStateImpl(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as LoadStatus,
-      syncWalletStatus: null == syncWalletStatus
-          ? _value._syncWalletStatus
-          : syncWalletStatus // ignore: cast_nullable_to_non_nullable
-              as List<LoadStatus>,
-      wallets: null == wallets
-          ? _value._wallets
-          : wallets // ignore: cast_nullable_to_non_nullable
-              as List<Wallet>,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -132,35 +91,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$HomeStateImpl implements _HomeState {
-  const _$HomeStateImpl(
-      {this.status = LoadStatus.initial,
-      final List<LoadStatus> syncWalletStatus = const [],
-      final List<Wallet> wallets = const [],
-      this.error = ''})
-      : _syncWalletStatus = syncWalletStatus,
-        _wallets = wallets;
-
-  @override
-  @JsonKey()
-  final LoadStatus status;
-  final List<LoadStatus> _syncWalletStatus;
-  @override
-  @JsonKey()
-  List<LoadStatus> get syncWalletStatus {
-    if (_syncWalletStatus is EqualUnmodifiableListView)
-      return _syncWalletStatus;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_syncWalletStatus);
-  }
-
-  final List<Wallet> _wallets;
-  @override
-  @JsonKey()
-  List<Wallet> get wallets {
-    if (_wallets is EqualUnmodifiableListView) return _wallets;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_wallets);
-  }
+  const _$HomeStateImpl({this.error = ''});
 
   @override
   @JsonKey()
@@ -168,7 +99,7 @@ class _$HomeStateImpl implements _HomeState {
 
   @override
   String toString() {
-    return 'HomeState(status: $status, syncWalletStatus: $syncWalletStatus, wallets: $wallets, error: $error)';
+    return 'HomeState(error: $error)';
   }
 
   @override
@@ -176,20 +107,11 @@ class _$HomeStateImpl implements _HomeState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$HomeStateImpl &&
-            (identical(other.status, status) || other.status == status) &&
-            const DeepCollectionEquality()
-                .equals(other._syncWalletStatus, _syncWalletStatus) &&
-            const DeepCollectionEquality().equals(other._wallets, _wallets) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      status,
-      const DeepCollectionEquality().hash(_syncWalletStatus),
-      const DeepCollectionEquality().hash(_wallets),
-      error);
+  int get hashCode => Object.hash(runtimeType, error);
 
   @JsonKey(ignore: true)
   @override
@@ -199,18 +121,8 @@ class _$HomeStateImpl implements _HomeState {
 }
 
 abstract class _HomeState implements HomeState {
-  const factory _HomeState(
-      {final LoadStatus status,
-      final List<LoadStatus> syncWalletStatus,
-      final List<Wallet> wallets,
-      final String error}) = _$HomeStateImpl;
+  const factory _HomeState({final String error}) = _$HomeStateImpl;
 
-  @override
-  LoadStatus get status;
-  @override
-  List<LoadStatus> get syncWalletStatus;
-  @override
-  List<Wallet> get wallets;
   @override
   String get error;
   @override

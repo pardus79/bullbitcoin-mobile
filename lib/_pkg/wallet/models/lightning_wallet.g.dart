@@ -22,10 +22,7 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
       ..lastSync = json['lastSync'] == null
           ? null
           : DateTime.parse(json['lastSync'] as String)
-      ..mnemonic = json['mnemonic'] as String
-      ..bdkWallet = json['bdkWallet']
-      ..bdkBlockchain = json['bdkBlockchain']
-      ..lwkWallet = json['lwkWallet'];
+      ..mnemonic = json['mnemonic'] as String;
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
@@ -35,9 +32,6 @@ Map<String, dynamic> _$$LightningWalletImplToJson(
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'lastSync': instance.lastSync?.toIso8601String(),
       'mnemonic': instance.mnemonic,
-      'bdkWallet': instance.bdkWallet,
-      'bdkBlockchain': instance.bdkBlockchain,
-      'lwkWallet': instance.lwkWallet,
       'id': instance.id,
       'balance': instance.balance,
       'backupTested': instance.backupTested,

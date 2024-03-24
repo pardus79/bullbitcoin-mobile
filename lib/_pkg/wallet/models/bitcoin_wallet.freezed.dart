@@ -26,6 +26,7 @@ mixin _$BitcoinWallet {
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
+  DateTime? get lastSync => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
   String get mnemonic => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -52,6 +53,7 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       WalletType type,
       NetworkType network,
       bool backupTested,
+      DateTime? lastSync,
       DateTime? lastBackupTested,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
@@ -79,6 +81,7 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? type = null,
     Object? network = null,
     Object? backupTested = null,
+    Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
     Object? bdkBlockchain = freezed,
@@ -109,6 +112,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
               as bool,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       lastBackupTested: freezed == lastBackupTested
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
@@ -144,6 +151,7 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       WalletType type,
       NetworkType network,
       bool backupTested,
+      DateTime? lastSync,
       DateTime? lastBackupTested,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
@@ -169,6 +177,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? type = null,
     Object? network = null,
     Object? backupTested = null,
+    Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
     Object? bdkBlockchain = freezed,
@@ -199,6 +208,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
               as bool,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       lastBackupTested: freezed == lastBackupTested
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
@@ -229,6 +242,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       required this.type,
       required this.network,
       this.backupTested = false,
+      this.lastSync,
       this.lastBackupTested,
       this.mnemonic = '',
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkBlockchain,
@@ -252,6 +266,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   @JsonKey()
   final bool backupTested;
   @override
+  final DateTime? lastSync;
+  @override
   final DateTime? lastBackupTested;
   @override
   @JsonKey()
@@ -265,7 +281,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
   }
 
   @override
@@ -280,6 +296,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
             (identical(other.network, network) || other.network == network) &&
             (identical(other.backupTested, backupTested) ||
                 other.backupTested == backupTested) &&
+            (identical(other.lastSync, lastSync) ||
+                other.lastSync == lastSync) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
                 other.lastBackupTested == lastBackupTested) &&
             (identical(other.mnemonic, mnemonic) ||
@@ -292,8 +310,19 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, balance, type, network,
-      backupTested, lastBackupTested, mnemonic, bdkBlockchain, bdkWallet);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      balance,
+      type,
+      network,
+      backupTested,
+      lastSync,
+      lastBackupTested,
+      mnemonic,
+      bdkBlockchain,
+      bdkWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -317,6 +346,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       required final WalletType type,
       required final NetworkType network,
       final bool backupTested,
+      final DateTime? lastSync,
       final DateTime? lastBackupTested,
       final String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
@@ -340,6 +370,8 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   NetworkType get network;
   @override
   bool get backupTested;
+  @override
+  DateTime? get lastSync;
   @override
   DateTime? get lastBackupTested;
   @override

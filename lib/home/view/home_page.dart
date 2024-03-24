@@ -1,4 +1,3 @@
-import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

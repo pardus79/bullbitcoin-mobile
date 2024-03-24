@@ -2,8 +2,8 @@ part of 'wallet_bloc.dart';
 
 class WalletEvent {}
 
-class ReadAllWallets extends WalletEvent {
-  ReadAllWallets();
+class LoadAllWallets extends WalletEvent {
+  LoadAllWallets();
 }
 
 class SyncAllWallets extends WalletEvent {

@@ -2,9 +2,6 @@
 
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
-import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
-import 'package:bb_arch/home/cubit/home_state.dart';
-import 'package:bb_arch/home/home.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,12 +16,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  @override
-  void initState() {
-    context.read<WalletBloc>().add(ReadAllWallets());
-    super.initState();
-  }
-
   void _action1() {
     print('action1');
   }
@@ -35,15 +26,13 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final loadStatus = context.select((WalletBloc cubit) => cubit.state.status);
     final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
-    final status = context.select((WalletBloc cubit) => cubit.state.status);
     final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
 
-    print('HomeView.build:');
-    // print(status);
-    // print(wallets);
+    print('HomeView.build');
 
-    if (status == LoadStatus.loading) {
+    if (loadStatus == LoadStatus.loading) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,

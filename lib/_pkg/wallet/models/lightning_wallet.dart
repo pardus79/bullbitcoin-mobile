@@ -1,5 +1,6 @@
+// ignore_for_file: avoid_print
+
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'dart:convert';
 
 import 'wallet.dart';
 
@@ -18,9 +19,9 @@ class LightningWallet extends Wallet with _$LightningWallet {
 
   factory LightningWallet.fromJson(Map<String, dynamic> json) => _$LightningWalletFromJson(json);
 
-  @override
-  void loadNativeSdk() {
-    print('Loading native sdk for bitcoin wallet');
+  static Future<LightningWallet> loadNativeSdk(LightningWallet w) async {
+    print('Loading native sdk for lightning wallet');
+    return LightningWallet(id: 'LN', balance: 0);
   }
 
   @override
@@ -37,10 +38,5 @@ class LightningWallet extends Wallet with _$LightningWallet {
         'date': '2023-01-02',
       }
     ];
-  }
-
-  @override
-  Future<void> sync() async {
-    print('Syncing via ldk');
   }
 }

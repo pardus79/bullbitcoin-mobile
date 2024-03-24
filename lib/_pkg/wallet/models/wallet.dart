@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 
@@ -45,10 +47,10 @@ abstract class Wallet {
 
   String mnemonic = ''; // TODO: Move to secure place
 
-  dynamic bdkWallet;
-  dynamic bdkBlockchain; // TODO: move this to safe place later
+  // dynamic bdkWallet;
+  // dynamic bdkBlockchain; // TODO: move this to safe place later
 
-  dynamic lwkWallet;
+  // dynamic lwkWallet;
 
   // TODO: Try and make this work
   Future<void> loadSdk() {
@@ -57,11 +59,11 @@ abstract class Wallet {
 
   // static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'})
 
-  static Future<Wallet> loadNativeSdk(Wallet wallet) {
-    if (wallet.type == WalletType.Bitcoin) {
-      return BitcoinWallet.loadNativeSdk(wallet as BitcoinWallet);
-    } else if (wallet.type == WalletType.Liquid) {
-      return LiquidWallet.loadNativeSdk(wallet as LiquidWallet);
+  static Future<Wallet> loadNativeSdk(Wallet w) async {
+    if (w.type == WalletType.Bitcoin) {
+      return BitcoinWallet.loadNativeSdk(w as BitcoinWallet);
+    } else if (w.type == WalletType.Liquid) {
+      return LiquidWallet.loadNativeSdk(w as LiquidWallet);
     }
     throw UnimplementedError('Unknown Wallet subclass');
   }
@@ -85,9 +87,9 @@ abstract class Wallet {
   Map<String, dynamic> toJson();
 
   static Wallet fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('type') && json['type'] == WalletType.Bitcoin) {
+    if (json.containsKey('type') && json['type'] == WalletType.Bitcoin.name) {
       return BitcoinWallet.fromJson(json);
-    } else if (json.containsKey('type') && json['type'] == WalletType.Liquid) {
+    } else if (json.containsKey('type') && json['type'] == WalletType.Liquid.name) {
       return LiquidWallet.fromJson(json);
     }
     throw UnimplementedError('Unknown Wallet subclass');

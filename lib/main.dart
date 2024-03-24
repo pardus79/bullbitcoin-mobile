@@ -2,13 +2,11 @@ import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/app/app.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-
-import 'home/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // TODO: Move this to a Splash loader
   final HiveStorage storage = HiveStorage();
   await storage.init();
 
@@ -21,7 +19,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.storage, required this.walletRepository});
+  const MyApp({super.key, required this.storage, required this.walletRepository});
 
   final HiveStorage storage;
   final WalletRepository walletRepository;

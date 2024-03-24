@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bb_arch/_pkg/err.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 

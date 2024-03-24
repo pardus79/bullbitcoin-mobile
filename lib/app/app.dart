@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
-import 'package:bb_arch/home/view/home_page.dart';
 import 'package:bb_arch/router.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +15,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [RepositoryProvider.value(value: walletRepository)],
-      child: MultiBlocProvider(
-          providers: [BlocProvider(create: (_) => WalletBloc(walletRepository: walletRepository))],
-          child: const AppView()),
+      child: MultiBlocProvider(providers: [
+        BlocProvider(create: (_) => WalletBloc(walletRepository: walletRepository)..add(LoadAllWallets()))
+      ], child: const AppView()),
     );
   }
 }

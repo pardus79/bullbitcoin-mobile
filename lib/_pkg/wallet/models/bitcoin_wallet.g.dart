@@ -14,26 +14,24 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       backupTested: json['backupTested'] as bool? ?? false,
+      lastSync: json['lastSync'] == null
+          ? null
+          : DateTime.parse(json['lastSync'] as String),
       lastBackupTested: json['lastBackupTested'] == null
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
       mnemonic: json['mnemonic'] as String? ?? '',
-    )
-      ..lastSync = json['lastSync'] == null
-          ? null
-          : DateTime.parse(json['lastSync'] as String)
-      ..lwkWallet = json['lwkWallet'];
+    );
 
 Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
     <String, dynamic>{
-      'lastSync': instance.lastSync?.toIso8601String(),
-      'lwkWallet': instance.lwkWallet,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'backupTested': instance.backupTested,
+      'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
       'mnemonic': instance.mnemonic,
     };
