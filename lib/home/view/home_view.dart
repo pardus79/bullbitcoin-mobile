@@ -16,8 +16,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  int _counter = 0;
-
   @override
   void initState() {
     context.read<HomeCubit>().readWallets();

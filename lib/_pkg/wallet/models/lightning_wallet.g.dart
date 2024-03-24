@@ -16,18 +16,28 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
     )
+      ..name = json['name'] as String
       ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
       ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
-      ..electrumUrl = json['electrumUrl'] as String
-      ..mnemonic = json['mnemonic'] as String;
+      ..lastSync = json['lastSync'] == null
+          ? null
+          : DateTime.parse(json['lastSync'] as String)
+      ..mnemonic = json['mnemonic'] as String
+      ..bdkWallet = json['bdkWallet']
+      ..bdkBlockchain = json['bdkBlockchain']
+      ..lwkWallet = json['lwkWallet'];
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
     <String, dynamic>{
+      'name': instance.name,
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
-      'electrumUrl': instance.electrumUrl,
+      'lastSync': instance.lastSync?.toIso8601String(),
       'mnemonic': instance.mnemonic,
+      'bdkWallet': instance.bdkWallet,
+      'bdkBlockchain': instance.bdkBlockchain,
+      'lwkWallet': instance.lwkWallet,
       'id': instance.id,
       'balance': instance.balance,
       'backupTested': instance.backupTested,

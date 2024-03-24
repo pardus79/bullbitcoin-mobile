@@ -1,3 +1,4 @@
+import 'package:bb_arch/_pkg/constants.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'wallet.dart';
@@ -11,12 +12,12 @@ String _electrumUrl = 'ssl://electrum.blockstream.info:60002';
 class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet({
     required String id,
+    required String name,
     required int balance,
     required WalletType type,
     required NetworkType network,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
-    @Default('ssl://electrum.blockstream.info:60002') String electrumUrl, // TODO: Move to global const
     @Default('') String mnemonic,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Blockchain? bdkBlockchain,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Wallet? bdkWallet,
@@ -26,8 +27,9 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet.fromJson(Map<String, dynamic> json) => _$BitcoinWalletFromJson(json);
 
   @override
-  static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network) async {
-    return BitcoinWallet(id: 'hi', balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
+  static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'}) async {
+    return BitcoinWallet(
+        id: 'hi', name: name, balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
   }
 
   @override
@@ -43,14 +45,10 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     final internalDescriptor = await bdk.Descriptor.newBip84(
         secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.Internal);
 
+    // TODO: Made this common across all wallets
     final bdkBlockchain = await bdk.Blockchain.create(
         config: const bdk.BlockchainConfig.electrum(
-            config: bdk.ElectrumConfig(
-                stopGap: 10,
-                timeout: 5,
-                retry: 5,
-                url: 'ssl://electrum.blockstream.info:60002',
-                validateDomain: true)));
+            config: bdk.ElectrumConfig(stopGap: 10, timeout: 5, retry: 5, url: btcElectrumUrl, validateDomain: true)));
 
     final wallet = await bdk.Wallet.create(
         descriptor: externalDescriptor,

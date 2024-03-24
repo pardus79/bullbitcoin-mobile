@@ -21,6 +21,7 @@ BitcoinWallet _$BitcoinWalletFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BitcoinWallet {
   String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   int get balance => throw _privateConstructorUsedError;
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $BitcoinWalletCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
+      String name,
       int balance,
       WalletType type,
       NetworkType network,
@@ -75,6 +77,7 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
   @override
   $Res call({
     Object? id = null,
+    Object? name = null,
     Object? balance = null,
     Object? type = null,
     Object? network = null,
@@ -89,6 +92,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       balance: null == balance
           ? _value.balance
@@ -140,6 +147,7 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
+      String name,
       int balance,
       WalletType type,
       NetworkType network,
@@ -165,6 +173,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? name = null,
     Object? balance = null,
     Object? type = null,
     Object? network = null,
@@ -179,6 +188,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       balance: null == balance
           ? _value.balance
@@ -225,6 +238,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
 class _$BitcoinWalletImpl extends _BitcoinWallet {
   _$BitcoinWalletImpl(
       {required this.id,
+      required this.name,
       required this.balance,
       required this.type,
       required this.network,
@@ -241,6 +255,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   final String id;
+  @override
+  final String name;
   @override
   final int balance;
   @override
@@ -268,7 +284,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
   }
 
   @override
@@ -277,6 +293,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
         (other.runtimeType == runtimeType &&
             other is _$BitcoinWalletImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.balance, balance) || other.balance == balance) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.network, network) || other.network == network) &&
@@ -299,6 +316,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   int get hashCode => Object.hash(
       runtimeType,
       id,
+      name,
       balance,
       type,
       network,
@@ -326,6 +344,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 abstract class _BitcoinWallet extends BitcoinWallet {
   factory _BitcoinWallet(
       {required final String id,
+      required final String name,
       required final int balance,
       required final WalletType type,
       required final NetworkType network,
@@ -344,6 +363,8 @@ abstract class _BitcoinWallet extends BitcoinWallet {
 
   @override
   String get id;
+  @override
+  String get name;
   @override
   int get balance;
   @override

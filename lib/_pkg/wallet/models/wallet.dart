@@ -35,13 +35,13 @@ extension NetworkTypeExtension on NetworkType {
 
 abstract class Wallet {
   String id = '';
+  String name = '';
   int balance = 0;
   WalletType type = WalletType.Bitcoin;
   NetworkType network = NetworkType.Mainnet;
   bool backupTested = false;
   DateTime? lastBackupTested;
   DateTime? lastSync;
-  String electrumUrl = '';
 
   String mnemonic = ''; // TODO: Move to secure place
 
@@ -50,13 +50,12 @@ abstract class Wallet {
 
   dynamic lwkWallet;
 
+  // TODO: Try and make this work
   Future<void> loadSdk() {
     throw UnimplementedError();
   }
 
-  static Future<Wallet> setupNewWallet(String mnemonic, NetworkType network) {
-    throw UnimplementedError();
-  }
+  // static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'})
 
   static Future<Wallet> loadNativeSdk(Wallet wallet) {
     if (wallet.type == WalletType.Bitcoin) {

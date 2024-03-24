@@ -21,6 +21,7 @@ LiquidWallet _$LiquidWalletFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LiquidWallet {
   String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   int get balance => throw _privateConstructorUsedError;
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
@@ -45,6 +46,7 @@ abstract class $LiquidWalletCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
+      String name,
       int balance,
       WalletType type,
       NetworkType network,
@@ -70,6 +72,7 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
   @override
   $Res call({
     Object? id = null,
+    Object? name = null,
     Object? balance = null,
     Object? type = null,
     Object? network = null,
@@ -83,6 +86,10 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       balance: null == balance
           ? _value.balance
@@ -130,6 +137,7 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
+      String name,
       int balance,
       WalletType type,
       NetworkType network,
@@ -153,6 +161,7 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? name = null,
     Object? balance = null,
     Object? type = null,
     Object? network = null,
@@ -166,6 +175,10 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       balance: null == balance
           ? _value.balance
@@ -208,6 +221,7 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
 class _$LiquidWalletImpl extends _LiquidWallet {
   _$LiquidWalletImpl(
       {required this.id,
+      required this.name,
       required this.balance,
       required this.type,
       required this.network,
@@ -223,6 +237,8 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 
   @override
   final String id;
+  @override
+  final String name;
   @override
   final int balance;
   @override
@@ -246,7 +262,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
+    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastBackupTested: $lastBackupTested, electrumUrl: $electrumUrl, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
   }
 
   @override
@@ -255,6 +271,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
         (other.runtimeType == runtimeType &&
             other is _$LiquidWalletImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.balance, balance) || other.balance == balance) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.network, network) || other.network == network) &&
@@ -272,7 +289,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, balance, type, network,
+  int get hashCode => Object.hash(runtimeType, id, name, balance, type, network,
       backupTested, lastBackupTested, electrumUrl, mnemonic, lwkWallet);
 
   @JsonKey(ignore: true)
@@ -292,6 +309,7 @@ class _$LiquidWalletImpl extends _LiquidWallet {
 abstract class _LiquidWallet extends LiquidWallet {
   factory _LiquidWallet(
       {required final String id,
+      required final String name,
       required final int balance,
       required final WalletType type,
       required final NetworkType network,
@@ -308,6 +326,8 @@ abstract class _LiquidWallet extends LiquidWallet {
 
   @override
   String get id;
+  @override
+  String get name;
   @override
   int get balance;
   @override

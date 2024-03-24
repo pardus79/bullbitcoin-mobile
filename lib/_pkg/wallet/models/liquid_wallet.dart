@@ -1,3 +1,4 @@
+import 'package:bb_arch/_pkg/constants.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
 import 'package:path_provider/path_provider.dart';
@@ -10,12 +11,12 @@ part 'liquid_wallet.g.dart';
 class LiquidWallet extends Wallet with _$LiquidWallet {
   factory LiquidWallet({
     required String id,
+    required String name,
     required int balance,
     required WalletType type,
     required NetworkType network,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
-    @Default('ssl://electrum.blockstream.info:60002') String electrumUrl,
     @Default('') String mnemonic,
     @JsonKey(includeFromJson: false, includeToJson: false) lwk.Wallet? lwkWallet,
   }) = _LiquidWallet;
@@ -24,9 +25,10 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   factory LiquidWallet.fromJson(Map<String, dynamic> json) => _$LiquidWalletFromJson(json);
 
   @override
-  static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network) async {
+  static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
       id: 'hi',
+      name: name,
       balance: 0,
       type: WalletType.Liquid,
       network: network,
@@ -76,8 +78,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   static Future<Wallet> syncWallet(LiquidWallet w) async {
     print('Syncing via lwk');
 
-    const electrumUrl = 'blockstream.info:465';
-    await w.lwkWallet?.sync(electrumUrl);
+    await w.lwkWallet?.sync(liquidElectrumUrl);
 
     final bal = await w.lwkWallet?.balance();
     final balance = bal?.lbtc ?? 0;
