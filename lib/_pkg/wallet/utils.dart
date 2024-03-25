@@ -206,3 +206,14 @@ bool isMainnetAddress(String address) {
 
   return address.startsWith('bc1') || address.startsWith('3') || address.startsWith('1');
 }
+
+// https://community.liquid.net/c/developers/elements-address-types
+bool isLiquidMainnetAddress(String address) {
+  if (address.isEmpty) {
+    return false;
+  }
+
+  final List<String> prefixes = ['lq1', 'VJL', 'ex1', 'G', ''];
+  return prefixes.any((prefix) => address.startsWith(prefix));
+  // return address.startsWith('lq1') || address.startsWith('VJL') || address.startsWith('ex1');
+}

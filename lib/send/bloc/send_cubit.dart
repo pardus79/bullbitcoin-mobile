@@ -134,6 +134,9 @@ class SendCubit extends Cubit<SendState> {
       } else if (address.startsWith('ln')) {
         emit(state.copyWith(address: address));
         state.swapCubit.decodeInvoice(address);
+      } else if (address.startsWith('tl1')) {
+        // TODO: Cover all liquid address formats in both mainnet/testnet
+        emit(state.copyWith(address: address));
       } else
         emit(state.copyWith(address: address));
     } catch (e) {
@@ -272,6 +275,7 @@ class SendCubit extends Cubit<SendState> {
     if (bdkWallet == null) return;
 
     final isLn = state.isLnInvoice();
+    final isLiquid = state.isLiquid();
     if (isLn) {
       final walletId = state.selectedWalletBloc!.state.wallet!.id;
       await state.swapCubit.createBtcLnSubSwap(
@@ -288,6 +292,11 @@ class SendCubit extends Cubit<SendState> {
         emit(state.copyWith(sending: false, errSending: state.swapCubit.state.errCreatingSwapInv));
         return;
       }
+    }
+
+    if (isLiquid) {
+      emit(state.copyWith(sending: true, errSending: ''));
+      final lwallet = state.selectedWalletBloc!.state.wallet;
     }
 
     final address = isLn ? state.swapCubit.state.swapTx?.scriptAddress : state.address;

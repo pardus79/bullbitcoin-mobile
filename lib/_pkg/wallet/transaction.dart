@@ -5,7 +5,9 @@ import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/error.dart';
+import 'package:bb_mobile/_pkg/storage/secure_storage.dart';
 import 'package:bb_mobile/_pkg/wallet/address.dart';
+import 'package:bb_mobile/_pkg/wallet/sensitive/repository.dart';
 import 'package:bb_mobile/_pkg/wallet/utils.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:hex/hex.dart';
@@ -630,6 +632,55 @@ class WalletTx {
     }
   }
 
+  Future<((Transaction?, int?, String)?, Err?)> buildLiquidTx({
+    required Wallet wallet,
+    required lwk.Wallet pubWallet,
+    required bool isManualSend,
+    required String address,
+    required int? amount,
+    required bool sendAllCoin,
+    required double feeRate,
+    required bool enableRbf,
+    required List<UTXO> selectedUtxos,
+    String? note,
+  }) async {
+    try {
+      final isMainnet = wallet.network == BBNetwork.LMainnet;
+      if (isMainnet != isLiquidMainnetAddress(address)) {
+        return (
+          null,
+          Err('Invalid Address. Network Mismatch!'),
+        );
+      }
+      final pset = await pubWallet.build(sats: amount ?? 0, outAddress: address, absFee: feeRate);
+      // pubWallet.sign(network: wallet.network == BBNetwork.LMainnet ? lwk.Network.Mainnet : lwk.Network.Testnet , pset: pset, mnemonic: mnemonic)
+
+      final Transaction tx = Transaction(
+        txid: '',
+        rbfEnabled: enableRbf,
+        received: 0,
+        sent: amount ?? 0,
+        fee: feeRate.toInt() ?? 0,
+        height: 0,
+        timestamp: 0,
+        label: '',
+        toAddress: address,
+        outAddrs: [],
+        psbt: pset,
+      );
+      return ((tx, feeRate.toInt(), pset), null);
+    } on Exception catch (e) {
+      return (
+        null,
+        Err(
+          e.message,
+          title: 'Error occurred while building transaction',
+          solution: 'Please try again.',
+        )
+      );
+    }
+  }
+
   Future<((Transaction?, int?, String)?, Err?)> buildTx({
     required Wallet wallet,
     required bdk.Wallet pubWallet,
@@ -745,6 +796,47 @@ class WalletTx {
     }
   }
 
+  Future<(Uint8List?, Err?)> finalizeLiquidTx({
+    required String pset,
+    required lwk.Wallet lwkWallet,
+    required Wallet wallet,
+    required SecureStorage secureStorage,
+  }) async {
+    try {
+      final (seed, sErr) = await WalletSensitiveRepository().readSeed(
+        fingerprintIndex: wallet.getRelatedSeedStorageString(),
+        secureStore: secureStorage,
+      );
+
+      if (sErr != null) {
+        return (
+          null,
+          Err(
+            sErr.toString(),
+            title: 'Error occurred while finalizing transaction',
+            solution: 'Please try again.',
+          ),
+        );
+      }
+
+      final signedTx = await lwkWallet.sign(
+        network: wallet.network == BBNetwork.LMainnet ? lwk.Network.Mainnet : lwk.Network.Testnet,
+        pset: pset,
+        mnemonic: seed!.mnemonic,
+      );
+      return (signedTx, null);
+    } catch (e) {
+      return (
+        null,
+        Err(
+          e.toString(),
+          title: 'Error occurred while signing transaction',
+          solution: 'Please try again.',
+        )
+      );
+    }
+  }
+
   Future<(bdk.Transaction?, Err?)> finalizeTx({
     required String psbt,
     // required bdk.Blockchain blockchain,
@@ -775,6 +867,52 @@ class WalletTx {
         Err(
           e.message,
           title: 'Error occurred while signing transaction',
+          solution: 'Please try again.',
+        )
+      );
+    }
+  }
+
+  Future<((Wallet, String)?, Err?)> broadcastLiquidTxWithWallet({
+    required Uint8List pset,
+    required bdk.Blockchain blockchain,
+    required Wallet wallet,
+    required String address,
+    required Transaction transaction,
+    String? note,
+  }) async {
+    try {
+      final psbtStruct = bdk.PartiallySignedTransaction(psbtBase64: psbt);
+      final tx = await psbtStruct.extractTx();
+
+      await blockchain.broadcast(tx);
+      final txid = await psbtStruct.txId();
+      final newTx = transaction.copyWith(
+        txid: txid,
+        label: note,
+        toAddress: address,
+        broadcastTime: DateTime.now().millisecondsSinceEpoch,
+        oldTx: false,
+      );
+
+      final txs = wallet.transactions.toList();
+      // final txs = walletBloc.state.wallet!.transactions.toList();
+      final idx = txs.indexWhere((element) => element.txid == newTx.txid);
+      if (idx != -1) {
+        txs.removeAt(idx);
+        txs.insert(idx, newTx);
+      } else
+        txs.add(newTx);
+      // txs.add(newTx);
+      final w = wallet.copyWith(transactions: txs);
+
+      return ((w, txid), null);
+    } on Exception catch (e) {
+      return (
+        null,
+        Err(
+          e.message,
+          title: 'Error occurred while broadcasting transaction',
           solution: 'Please try again.',
         )
       );

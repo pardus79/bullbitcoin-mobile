@@ -42,6 +42,10 @@ class SendState with _$SendState {
 
   bool isLnInvoice() => address.startsWith('ln') && !isWatchOnly();
 
+  bool isLiquid() =>
+      address.startsWith('tlq') &&
+      !isWatchOnly(); // TODO: Add other liquid fomats for both mainnet and testnet
+
   int calculateTotalSelected() {
     return selectedUtxos.fold<int>(
       0,
