@@ -46,11 +46,11 @@ class ReceiveState with _$ReceiveState {
     }
 
     if (walletType == ReceiveWalletType.liquid) {
-      if (defaultAddress == null) return '';
-      return defaultLiquidAddress!.address;
+      if (defaultLiquidAddress == null) return '';
+      return defaultLiquidAddress?.confidential ?? '[loading_address]';
     }
 
-    return defaultAddress!.address;
+    return defaultAddress?.address ?? '[loading_address]';
   }
 
   bool showNewRequestButton() => savedDescription.isEmpty && savedInvoiceAmount == 0;

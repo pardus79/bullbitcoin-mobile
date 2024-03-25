@@ -442,7 +442,8 @@ class WalletSensitiveCreate {
     wallet = wallet.copyWith(
       name: wallet.defaultNameString(),
       lastGeneratedAddress: Address(
-        address: firstAddress?.confidential ?? '',
+        address: firstAddress?.standard ?? '',
+        confidential: firstAddress?.confidential ?? '',
         index: 0,
         kind: AddressKind.deposit,
         state: AddressStatus.unused,

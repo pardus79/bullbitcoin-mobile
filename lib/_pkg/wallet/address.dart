@@ -159,12 +159,13 @@ class WalletAddress {
       for (var i = 0; i <= addressLastUnused.index; i++) {
         final address = await lwkWallet.addressAtIndex(i);
         final contain = wallet.myAddressBook.where(
-          (element) => element.address == address.confidential,
+          (element) => element.address == address.standard,
         );
         if (contain.isEmpty)
           addresses.add(
             Address(
-              address: address.confidential,
+              address: address.standard,
+              confidential: address.confidential,
               index: address.index,
               kind: AddressKind.deposit,
               state: AddressStatus.unused,
@@ -185,7 +186,8 @@ class WalletAddress {
         w = wallet.copyWith(
           myAddressBook: addresses,
           lastGeneratedAddress: Address(
-            address: addressLastUnused.confidential,
+            address: addressLastUnused.standard,
+            confidential: addressLastUnused.confidential,
             index: addressLastUnused.index,
             kind: AddressKind.deposit,
             state: AddressStatus.unused,

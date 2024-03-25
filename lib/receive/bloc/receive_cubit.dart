@@ -130,16 +130,6 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       );
     }
 
-    /*
-    final label = await walletAddress.getLabel(
-      address: address!.address,
-      wallet: state.walletBloc!.state.wallet!,
-    );
-    final labelUpdated = address.copyWith(label: label);
-
-    if (label != null) emit(state.copyWith(privateLabel: label, defaultAddress: labelUpdated));
-    */
-
     emit(
       state.copyWith(
         loadingAddress: false,
