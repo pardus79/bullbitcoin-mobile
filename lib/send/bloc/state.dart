@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/swap/bloc/swap_cubit.dart';
@@ -18,6 +20,7 @@ class SendState with _$SendState {
     @Default('') String errSending,
     @Default(false) bool sent,
     @Default('') String psbt,
+    Uint8List? txBytes,
     Transaction? tx,
     @Default(false) bool downloadingFile,
     @Default('') String errDownloadingFile,

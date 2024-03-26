@@ -475,7 +475,7 @@ class _SendAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BBAppBar(
-      text: 'Send bitcoinnnn',
+      text: 'Send bitcoin',
       onBack: () {
         context.pop();
       },

@@ -16,7 +16,6 @@ import 'package:bb_mobile/_ui/headers.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
 import 'package:bb_mobile/locator.dart';
-import 'package:bb_mobile/wallet/bloc/event.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_mobile/wallet_settings/addresses.dart';
 import 'package:bb_mobile/wallet_settings/bloc/state.dart';
@@ -574,7 +573,6 @@ class DeletePopUp extends StatelessWidget {
                 child: BBButton.big(
                   filled: true,
                   onPressed: () {
-                    context.read<WalletBloc>().add(KillSync());
                     context.read<WalletSettingsCubit>().deleteWalletClicked();
                   },
                   label: 'Delete',

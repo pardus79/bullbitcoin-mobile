@@ -634,30 +634,25 @@ class WalletTx {
 
   Future<((Transaction?, int?, String)?, Err?)> buildLiquidTx({
     required Wallet wallet,
-    required lwk.Wallet pubWallet,
-    required bool isManualSend,
+    required lwk.Wallet lwkWallet,
     required String address,
     required int? amount,
     required bool sendAllCoin,
     required double feeRate,
-    required bool enableRbf,
-    required List<UTXO> selectedUtxos,
-    String? note,
   }) async {
     try {
       final isMainnet = wallet.network == BBNetwork.LMainnet;
-      if (isMainnet != isLiquidMainnetAddress(address)) {
-        return (
-          null,
-          Err('Invalid Address. Network Mismatch!'),
-        );
-      }
-      final pset = await pubWallet.build(sats: amount ?? 0, outAddress: address, absFee: feeRate);
+      // if (isMainnet != isLiquidMainnetAddress(address)) {
+      //   return (
+      //     null,
+      //     Err('Invalid Address. Network Mismatch!'),
+      //   );
+      // }
+      final pset = await lwkWallet.build(sats: amount ?? 0, outAddress: address, absFee: feeRate);
       // pubWallet.sign(network: wallet.network == BBNetwork.LMainnet ? lwk.Network.Mainnet : lwk.Network.Testnet , pset: pset, mnemonic: mnemonic)
 
       final Transaction tx = Transaction(
         txid: '',
-        rbfEnabled: enableRbf,
         received: 0,
         sent: amount ?? 0,
         fee: feeRate.toInt() ?? 0,
@@ -874,25 +869,16 @@ class WalletTx {
   }
 
   Future<((Wallet, String)?, Err?)> broadcastLiquidTxWithWallet({
-    required Uint8List pset,
-    required bdk.Blockchain blockchain,
+    required Uint8List txBytes,
     required Wallet wallet,
-    required String address,
+    required lwk.Wallet lwkWallet,
     required Transaction transaction,
-    String? note,
   }) async {
     try {
-      final psbtStruct = bdk.PartiallySignedTransaction(psbtBase64: psbt);
-      final tx = await psbtStruct.extractTx();
-
-      await blockchain.broadcast(tx);
-      final txid = await psbtStruct.txId();
+      final txid = await lwkWallet.broadcast(electrumUrl: 'blockstream.info:465', txBytes: txBytes);
       final newTx = transaction.copyWith(
         txid: txid,
-        label: note,
-        toAddress: address,
         broadcastTime: DateTime.now().millisecondsSinceEpoch,
-        oldTx: false,
       );
 
       final txs = wallet.transactions.toList();
@@ -903,7 +889,6 @@ class WalletTx {
         txs.insert(idx, newTx);
       } else
         txs.add(newTx);
-      // txs.add(newTx);
       final w = wallet.copyWith(transactions: txs);
 
       return ((w, txid), null);
