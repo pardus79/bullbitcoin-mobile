@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
 import 'package:bb_arch/_pkg/constants.dart';
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:json_annotation/json_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
@@ -59,6 +61,32 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     return w.copyWith(bdkWallet: wallet, bdkBlockchain: bdkBlockchain);
   }
 
+  static Future<Wallet> syncWallet(BitcoinWallet w) async {
+    print('Syncing via bdk');
+
+    if (w.bdkWallet == null) {
+      print('Wallet is not loaded with bdk. Loading it now');
+      w = await loadNativeSdk(w);
+    }
+
+    await w.bdkWallet?.sync(w.bdkBlockchain!);
+
+    final bal = await w.bdkWallet?.getBalance();
+    final balance = bal?.confirmed ?? 0;
+    print('balance is $balance');
+
+    return w.copyWith(balance: balance, lastSync: DateTime.now());
+  }
+
+  @override
+  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+    final txs = await bdkWallet?.listTransactions(true);
+    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, type)) ?? [];
+
+    return Future.wait(txsFutures);
+  }
+
+  /*
   @override
   List<Map<String, dynamic>> getTransactions() {
     return [
@@ -76,21 +104,5 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
       }
     ];
   }
-
-  static Future<Wallet> syncWallet(BitcoinWallet w) async {
-    print('Syncing via bdk');
-
-    if (w.bdkWallet == null) {
-      print('Wallet is not loaded with bdk. Loading it now');
-      w = await loadNativeSdk(w);
-    }
-
-    await w.bdkWallet?.sync(w.bdkBlockchain!);
-
-    final bal = await w.bdkWallet?.getBalance();
-    final balance = bal?.confirmed ?? 0;
-    print('balance is $balance');
-
-    return w.copyWith(balance: balance, lastSync: DateTime.now());
-  }
+  */
 }

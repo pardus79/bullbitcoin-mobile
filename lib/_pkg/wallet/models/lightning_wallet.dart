@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'wallet.dart';
@@ -24,6 +25,7 @@ class LightningWallet extends Wallet with _$LightningWallet {
     return LightningWallet(id: 'LN', balance: 0);
   }
 
+/*
   @override
   List<Map<String, dynamic>> getTransactions() {
     return [
@@ -38,5 +40,13 @@ class LightningWallet extends Wallet with _$LightningWallet {
         'date': '2023-01-02',
       }
     ];
+  }
+  */
+
+  @override
+  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+    // final txs = await lwkWallet?.txs();
+
+    return [] as Iterable<Tx>;
   }
 }

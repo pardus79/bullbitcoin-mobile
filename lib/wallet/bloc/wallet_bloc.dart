@@ -12,10 +12,22 @@ part 'wallet_event.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository walletRepository;
+  Timer? _loadWalletsTimer;
+
   WalletBloc({required this.walletRepository}) : super(WalletState.initial()) {
     on<LoadAllWallets>(_onLoadAllWallets);
     on<SyncAllWallets>(_onSyncAllWallets);
     on<SyncWallet>(_onSyncWallet);
+
+    _loadWalletsTimer = Timer.periodic(const Duration(minutes: 10), (timer) {
+      add(SyncAllWallets());
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _loadWalletsTimer?.cancel();
+    return super.close();
   }
 
   void _onLoadAllWallets(LoadAllWallets event, Emitter<WalletState> emit) async {
@@ -32,7 +44,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         status: LoadStatus.success));
   }
 
-  // TODO: Or somehow dispatch SyncWallet for each wallet from here;
+  // TODO: Or somehow dispatch SyncWallet for each wallet from here; Is it really needed?
   void _onSyncAllWallets(SyncAllWallets event, Emitter<WalletState> emit) async {
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 

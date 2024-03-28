@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
 import 'package:bb_arch/_pkg/constants.dart';
+import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
 import 'package:path_provider/path_provider.dart';
@@ -58,6 +60,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     return w.copyWith(lwkWallet: wallet);
   }
 
+  /*
   @override
   List<Map<String, dynamic>> getTransactions() {
     return [
@@ -75,6 +78,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
       }
     ];
   }
+  */
 
   static Future<Wallet> syncWallet(LiquidWallet w) async {
     print('Syncing via lwk');
@@ -91,5 +95,13 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     print('balance is $balance');
 
     return w.copyWith(balance: balance, lastSync: DateTime.now());
+  }
+
+  @override
+  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+    final txs = await lwkWallet?.txs();
+    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, type)) ?? [];
+
+    return Future.wait(txsFutures);
   }
 }
