@@ -13,9 +13,8 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
     },
   ),
   GoRoute(
-      path: '/wallet/:id',
+      path: '/wallet',
       builder: (context, state) {
-        final id = state.pathParameters['id'];
-        return WalletPage(id: id!);
+        return const WalletPage();
       }),
 ]);

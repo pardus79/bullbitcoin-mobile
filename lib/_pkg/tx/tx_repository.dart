@@ -11,9 +11,9 @@ class TxRepository {
 
   Future<(List<Tx>?, dynamic)> listTxs(Wallet w) async {
     try {
-      final (txStr, _) = await storage.getValue('tx.${w.id}');
-      List<dynamic> txsJson = jsonDecode(txStr!);
-      final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
+      // final (txStr, _) = await storage.getValue('tx.${w.id}');
+      // List<dynamic> txsJson = jsonDecode(txStr!);
+      // final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
 
       final updatedTxs = await w.getTransactions(w.type);
 

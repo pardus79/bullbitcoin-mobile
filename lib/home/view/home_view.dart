@@ -2,9 +2,11 @@
 
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key, required this.title});
@@ -66,6 +68,14 @@ class _HomeViewState extends State<HomeView> {
                             ? const Icon(Icons.hourglass_empty)
                             : const Icon(Icons.check),
                     trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Wallet w = wallets[index];
+                      context.read<WalletBloc>().add(SelectWallet(wallet: w));
+                      // context.read<TxBloc>().add(LoadTxs(w: w));
+                      GoRouter.of(context).push('/wallet');
+                      // GoRouter.of(context).pushNamed('/wallet/${wallets[index].id}');
+                      // Navigator.pushNamed(context, '/wallet/${wallets[index].id}');
+                    },
                   );
                 },
                 itemCount: wallets.length,
@@ -81,12 +91,14 @@ class _HomeViewState extends State<HomeView> {
             onPressed: _action1,
             tooltip: 'Load',
             child: const Icon(Icons.front_loader),
+            heroTag: 'loadTag',
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: _sync,
             tooltip: 'Sync',
             child: const Icon(Icons.sync),
+            heroTag: 'syncTag',
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
