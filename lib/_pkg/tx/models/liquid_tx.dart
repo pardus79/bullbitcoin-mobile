@@ -28,6 +28,8 @@ class LiquidTx extends Tx with _$LiquidTx {
     }
 
     lwk.Tx t = tx;
-    return LiquidTx(id: t.txid, amount: t.amount, fee: t.fee ?? 0, type: TxType.Liquid, timestamp: 0);
+    final balances = t.balances;
+    int finalBalance = balances.where((b) => b.$1 == lwk.lTestAssetId).map((e) => e.$2).first ?? 0;
+    return LiquidTx(id: t.txid, amount: finalBalance, fee: t.fee ?? 0, type: TxType.Liquid, timestamp: t.timestamp);
   }
 }

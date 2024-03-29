@@ -16,8 +16,12 @@ class TxRepository {
       // final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
 
       final updatedTxs = await w.getTransactions(w.type);
+      final sortedTxs = updatedTxs.toList();
+      sortedTxs.sort(
+        (a, b) => b.timestamp - a.timestamp,
+      );
 
-      return (updatedTxs.toList(), null);
+      return (sortedTxs, null);
     } catch (e) {
       return (null, e);
     }

@@ -60,26 +60,6 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     return w.copyWith(lwkWallet: wallet);
   }
 
-  /*
-  @override
-  List<Map<String, dynamic>> getTransactions() {
-    return [
-      {
-        'id': 'l1',
-        'amount': 1000,
-        'date': '2022-01-01',
-        'comment': 'liquid txn sycned with lwk-dart',
-      },
-      {
-        'id': 'l2',
-        'amount': 3000,
-        'date': '2022-01-02',
-        'comment': 'liquid txn sycned with lwk-dart',
-      }
-    ];
-  }
-  */
-
   static Future<Wallet> syncWallet(LiquidWallet w) async {
     print('Syncing via lwk');
 
@@ -90,11 +70,10 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
     await w.lwkWallet?.sync(liquidElectrumUrl);
 
-    final bal = await w.lwkWallet?.balance();
-    final balance = bal?.lbtc ?? 0;
-    print('balance is $balance');
+    final balances = await w.lwkWallet?.balance();
+    int finalBalance = balances?.where((b) => b.$1 == lwk.lTestAssetId).map((e) => e.$2).first ?? 0;
 
-    return w.copyWith(balance: balance, lastSync: DateTime.now());
+    return w.copyWith(balance: finalBalance, lastSync: DateTime.now());
   }
 
   @override

@@ -1,7 +1,10 @@
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
+import 'package:bb_arch/tx/widgets/tx_list.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
+import 'package:bb_arch/wallet/widgets/wallet_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,17 +33,13 @@ class WalletView extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(wallet.name),
       ),
-      body: Center(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            Tx tx = txs[index];
-            return ListTile(
-              title: Text(tx.id),
-              subtitle: Text((DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000 ?? 0)).toString()),
-            );
-          },
-          itemCount: txs.length,
-        ),
+      body: Column(
+        children: [
+          WalletHeading(wallet: wallet, txs: txs),
+          Expanded(
+            child: TxList(txs: txs),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
           tooltip: 'Load Tx',

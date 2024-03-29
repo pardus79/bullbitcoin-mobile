@@ -4,6 +4,7 @@ import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
+import 'package:bb_arch/wallet/widgets/wallets_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -55,31 +56,7 @@ class _HomeViewState extends State<HomeView> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('${wallets[index].type.name}: ${wallets[index].network.name}'),
-                    subtitle: Text(wallets[index].balance.toString()),
-                    leading: syncStatus[index].name == 'loading'
-                        ? const CircularProgressIndicator()
-                        : syncStatus[index].name == 'initial'
-                            ? const Icon(Icons.hourglass_empty)
-                            : const Icon(Icons.check),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Wallet w = wallets[index];
-                      context.read<WalletBloc>().add(SelectWallet(wallet: w));
-                      // context.read<TxBloc>().add(LoadTxs(w: w));
-                      GoRouter.of(context).push('/wallet');
-                      // GoRouter.of(context).pushNamed('/wallet/${wallets[index].id}');
-                      // Navigator.pushNamed(context, '/wallet/${wallets[index].id}');
-                    },
-                  );
-                },
-                itemCount: wallets.length,
-              ),
+              child: WalletList(wallets: wallets, syncStatus: syncStatus),
             ),
           ],
         ),

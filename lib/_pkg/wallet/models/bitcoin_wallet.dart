@@ -85,24 +85,4 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
 
     return Future.wait(txsFutures);
   }
-
-  /*
-  @override
-  List<Map<String, dynamic>> getTransactions() {
-    return [
-      {
-        'id': '1',
-        'amount': 100,
-        'date': '2021-01-01',
-        'comment': 'btc txn sycned with bdk',
-      },
-      {
-        'id': '2',
-        'amount': 300,
-        'date': '2021-01-02',
-        'comment': 'btc txn sycned with bdk',
-      }
-    ];
-  }
-  */
 }

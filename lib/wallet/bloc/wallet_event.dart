@@ -16,6 +16,11 @@ class SyncWallet extends WalletEvent {
   SyncWallet({required this.walletId, required this.walletIndex});
 }
 
+class WalletSyncStatusUpdated extends WalletEvent {
+  final int walletIndex;
+  WalletSyncStatusUpdated({required this.walletIndex});
+}
+
 class SelectWallet extends WalletEvent {
   final Wallet wallet;
   SelectWallet({required this.wallet});

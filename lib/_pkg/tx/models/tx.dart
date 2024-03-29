@@ -26,6 +26,7 @@ abstract class Tx {
   int? received;
   int? sent;
   int? fee;
+  int? amount;
   int? height;
   String? label;
   String? toAddress;

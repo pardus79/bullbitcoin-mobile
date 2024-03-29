@@ -46,6 +46,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   // TODO: Or somehow dispatch SyncWallet for each wallet from here; Is it really needed?
+  // TODO: [UI Optimize]
+  // WalletList is built based on state.wallets. And each wallet update results in
+  // updating the entire state.wallets list. So entire list gets rebuilt, for each wallet sync.
+  // This could be avoided by storing wallet states more granularly, and having wallet specific sync events/updates.
   void _onSyncAllWallets(SyncAllWallets event, Emitter<WalletState> emit) async {
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 
