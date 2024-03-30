@@ -32,7 +32,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'}) async {
     return BitcoinWallet(
-        id: 'hi', name: name, balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
+        id: name, name: name, balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
   }
 
   static Future<BitcoinWallet> loadNativeSdk(BitcoinWallet w) async {

@@ -1,5 +1,6 @@
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,8 +51,9 @@ class WalletListItem extends StatelessWidget {
               : const Icon(Icons.check),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        Wallet w = wallet;
-        context.read<WalletBloc>().add(SelectWallet(wallet: w));
+        context.read<WalletBloc>().add(SelectWallet(wallet: wallet));
+        context.read<TxBloc>().add(LoadTxs(wallet: wallet));
+        context.read<TxBloc>().add(SyncTxs(wallet: wallet));
         GoRouter.of(context).push('/wallet');
       },
     );

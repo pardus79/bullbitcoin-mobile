@@ -160,18 +160,14 @@ class _$TxStateImpl implements _TxState {
             other is _$TxStateImpl &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other._txs, _txs) &&
-            const DeepCollectionEquality()
-                .equals(other.selectedTx, selectedTx) &&
+            (identical(other.selectedTx, selectedTx) ||
+                other.selectedTx == selectedTx) &&
             (identical(other.error, error) || other.error == error));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      status,
-      const DeepCollectionEquality().hash(_txs),
-      const DeepCollectionEquality().hash(selectedTx),
-      error);
+  int get hashCode => Object.hash(runtimeType, status,
+      const DeepCollectionEquality().hash(_txs), selectedTx, error);
 
   @JsonKey(ignore: true)
   @override

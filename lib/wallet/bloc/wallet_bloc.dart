@@ -51,6 +51,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   // updating the entire state.wallets list. So entire list gets rebuilt, for each wallet sync.
   // This could be avoided by storing wallet states more granularly, and having wallet specific sync events/updates.
   void _onSyncAllWallets(SyncAllWallets event, Emitter<WalletState> emit) async {
+    emit(state.copyWith(status: LoadStatus.loading));
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 
     List<Future<Wallet>> syncedFutures = state.wallets.map((w) => Wallet.syncWallet(w)).toList();
@@ -82,6 +83,9 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     }
 
     await completer.future;
+    await walletRepository.saveWallets(state.wallets);
+    // await Future.delayed(const Duration(seconds: 5));
+    emit(state.copyWith(status: LoadStatus.success));
     print('OnSyncAllWallets: DONE');
   }
 

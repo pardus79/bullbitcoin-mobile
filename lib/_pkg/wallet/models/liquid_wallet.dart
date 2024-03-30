@@ -31,7 +31,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
-      id: 'hi',
+      id: name,
       name: name,
       balance: 0,
       type: WalletType.Liquid,

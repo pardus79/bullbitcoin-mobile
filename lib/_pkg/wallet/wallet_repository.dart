@@ -43,23 +43,29 @@ class WalletRepository {
     throw UnimplementedError();
   }
 
+  Future<void> saveWallets(List<Wallet> wallets) async {
+    List<Map<String, dynamic>> walletsJson = wallets.map((wallet) => wallet.toJson()).toList();
+    String encoded = jsonEncode(walletsJson);
+    await storage.saveValue(key: 'wallets', value: encoded);
+  }
+
   Future<void> setupWallets() async {
     print('Setting up wallets: BEGIN');
     Wallet w1Bitcoin = await BitcoinWallet.setupNewWallet(
-        'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial', NetworkType.Testnet);
-    w1Bitcoin.id = 'Vegeta Testnet';
+        'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial', NetworkType.Testnet,
+        name: 'VegetaTestnet');
 
     Wallet w2Liquid = await LiquidWallet.setupNewWallet(
-        'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial', NetworkType.Testnet);
-    w2Liquid.id = 'Liquid Vegeta Testnet';
+        'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial', NetworkType.Testnet,
+        name: 'LiquidVegetaTestnet');
 
     Wallet w3Bitcoin = await BitcoinWallet.setupNewWallet(
-        'lumber tackle notice city expand cherry tonight people blue cactus forward scissors', NetworkType.Testnet);
-    w3Bitcoin.id = 'Naruto Testnet';
+        'lumber tackle notice city expand cherry tonight people blue cactus forward scissors', NetworkType.Testnet,
+        name: 'NarutoTestnet');
 
     Wallet w4Bitcoin = await BitcoinWallet.setupNewWallet(
-        'rookie urban exchange kit unfold memory assist blast access captain evolve happy', NetworkType.Testnet);
-    w4Bitcoin.id = 'bdk test Testnet';
+        'rookie urban exchange kit unfold memory assist blast access captain evolve happy', NetworkType.Testnet,
+        name: 'bdkTestTestnet');
 
     List<Wallet> wallets = [w1Bitcoin, w2Liquid, w3Bitcoin, w4Bitcoin];
 
@@ -67,6 +73,5 @@ class WalletRepository {
     String encoded = jsonEncode(walletsJson);
     await storage.saveValue(key: 'wallets', value: encoded);
     print('Setting up wallets: DONE');
-    // throw UnimplementedError();
   }
 }

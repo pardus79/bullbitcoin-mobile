@@ -35,21 +35,13 @@ class _HomeViewState extends State<HomeView> {
 
     print('HomeView.build');
 
-    if (loadStatus == LoadStatus.loading) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          loadStatus == LoadStatus.loading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

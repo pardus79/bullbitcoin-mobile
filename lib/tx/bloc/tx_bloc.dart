@@ -16,19 +16,34 @@ class TxBloc extends Bloc<TxEvent, TxState> {
 
   TxBloc({required this.txRepository}) : super(const TxState()) {
     on<LoadTxs>(_onLoadTxs);
+    on<SyncTxs>(_onSyncTxs);
     on<SelectTx>(_onSelectTx);
   }
 
   void _onLoadTxs(LoadTxs event, Emitter<TxState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
 
-    print('_onLoadTxs: ${event.w.name}');
+    print('_onLoadTxs: ${event.wallet.name}');
 
-    final (txs, err) = await txRepository.listTxs(event.w);
+    final (txs, err) = await txRepository.listTxs(event.wallet);
     if (err != null) {
       emit(state.copyWith(txs: [], status: LoadStatus.failure, error: err.toString()));
       return;
     }
+    emit(state.copyWith(txs: txs!, status: LoadStatus.success));
+  }
+
+  void _onSyncTxs(SyncTxs event, Emitter<TxState> emit) async {
+    emit(state.copyWith(status: LoadStatus.loading));
+
+    print('_onSyncTxs: ${event.wallet.name}');
+
+    final (txs, err) = await txRepository.syncTxs(event.wallet);
+    if (err != null) {
+      emit(state.copyWith(txs: [], status: LoadStatus.failure, error: err.toString()));
+      return;
+    }
+    await txRepository.saveTxs(event.wallet, txs!);
     emit(state.copyWith(txs: txs!, status: LoadStatus.success));
   }
 

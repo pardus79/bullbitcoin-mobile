@@ -9,13 +9,20 @@ class TxRepository {
 
   HiveStorage storage;
 
-  Future<(List<Tx>?, dynamic)> listTxs(Wallet w) async {
+  Future<(List<Tx>?, dynamic)> listTxs(Wallet wallet) async {
     try {
-      // final (txStr, _) = await storage.getValue('tx.${w.id}');
-      // List<dynamic> txsJson = jsonDecode(txStr!);
-      // final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
+      final (txStr, _) = await storage.getValue('tx.${wallet.id}');
+      List<dynamic> txsJson = jsonDecode(txStr!);
+      final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
+      return (txs, null);
+    } catch (e) {
+      return (null, e);
+    }
+  }
 
-      final updatedTxs = await w.getTransactions(w.type);
+  Future<(List<Tx>?, dynamic)> syncTxs(Wallet wallet) async {
+    try {
+      final updatedTxs = await wallet.getTransactions(wallet.type);
       final sortedTxs = updatedTxs.toList();
       sortedTxs.sort(
         (a, b) => b.timestamp - a.timestamp,
@@ -25,5 +32,11 @@ class TxRepository {
     } catch (e) {
       return (null, e);
     }
+  }
+
+  Future<void> saveTxs(Wallet wallet, List<Tx> txs) async {
+    List<Map<String, dynamic>> txsJson = txs.map((tx) => tx.toJson()).toList();
+    String encoded = jsonEncode(txsJson);
+    await storage.saveValue(key: 'tx.${wallet.id}', value: encoded);
   }
 }
