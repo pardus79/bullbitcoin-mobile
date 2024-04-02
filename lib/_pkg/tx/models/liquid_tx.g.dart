@@ -14,25 +14,29 @@ _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
       timestamp: json['timestamp'] as int,
       type: $enumDecode(_$TxTypeEnumMap, json['type']),
     )
-      ..received = json['received'] as int?
-      ..sent = json['sent'] as int?
       ..height = json['height'] as int?
       ..label = json['label'] as String?
-      ..toAddress = json['toAddress'] as String?
       ..psbt = json['psbt'] as String?
       ..broadcastTime = json['broadcastTime'] as int?
-      ..rbfEnabled = json['rbfEnabled'] as bool?;
+      ..rbfEnabled = json['rbfEnabled'] as bool?
+      ..version = json['version'] as int?
+      ..vsize = json['vsize'] as int?
+      ..weight = json['weight'] as int?
+      ..toAddress = json['toAddress'] as String?
+      ..walletId = json['walletId'] as String?;
 
 Map<String, dynamic> _$$LiquidTxImplToJson(_$LiquidTxImpl instance) =>
     <String, dynamic>{
-      'received': instance.received,
-      'sent': instance.sent,
       'height': instance.height,
       'label': instance.label,
-      'toAddress': instance.toAddress,
       'psbt': instance.psbt,
       'broadcastTime': instance.broadcastTime,
       'rbfEnabled': instance.rbfEnabled,
+      'version': instance.version,
+      'vsize': instance.vsize,
+      'weight': instance.weight,
+      'toAddress': instance.toAddress,
+      'walletId': instance.walletId,
       'id': instance.id,
       'amount': instance.amount,
       'fee': instance.fee,

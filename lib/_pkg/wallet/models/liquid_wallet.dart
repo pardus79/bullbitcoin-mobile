@@ -70,8 +70,11 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
     await w.lwkWallet?.sync(liquidElectrumUrl);
 
+    String assetIdToPick = w.network == NetworkType.Mainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
+
     final balances = await w.lwkWallet?.balance();
-    int finalBalance = balances?.where((b) => b.$1 == lwk.lTestAssetId).map((e) => e.$2).first ?? 0;
+    int finalBalance = balances?.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first ?? 0;
+    // int finalBalance = (await w.lwkWallet?.balance()) as int;
 
     return w.copyWith(balance: finalBalance, lastSync: DateTime.now());
   }
@@ -79,7 +82,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   @override
   Future<Iterable<Tx>> getTransactions(WalletType type) async {
     final txs = await lwkWallet?.txs();
-    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, type)) ?? [];
+    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 
     return Future.wait(txsFutures);
   }

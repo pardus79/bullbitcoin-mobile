@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:hex/hex.dart';
 
@@ -58,7 +59,7 @@ abstract class Tx {
     if (w.type == WalletType.Bitcoin) {
       return BitcoinTx.loadFromNative(tx, w as BitcoinWallet);
     } else if (w.type == WalletType.Liquid) {
-      return LiquidTx.loadFromNative(tx);
+      return LiquidTx.loadFromNative(tx, w as LiquidWallet);
     }
     throw UnimplementedError('Unsupported Tx subclass');
   }
