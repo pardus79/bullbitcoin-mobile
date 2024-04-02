@@ -11,6 +11,19 @@ import 'wallet.dart';
 part 'bitcoin_wallet.freezed.dart';
 part 'bitcoin_wallet.g.dart';
 
+extension NetworkTypeExtension on NetworkType {
+  bdk.Network get getBdkType {
+    switch (this) {
+      case NetworkType.Mainnet:
+        return bdk.Network.Bitcoin;
+      case NetworkType.Testnet:
+        return bdk.Network.Testnet;
+      case NetworkType.Signet:
+        return bdk.Network.Signet;
+    }
+  }
+}
+
 @freezed
 class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet({
@@ -81,7 +94,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   @override
   Future<Iterable<Tx>> getTransactions(WalletType type) async {
     final txs = await bdkWallet?.listTransactions(true);
-    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, type)) ?? [];
+    final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 
     return Future.wait(txsFutures);
   }

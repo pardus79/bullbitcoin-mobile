@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:hex/hex.dart';
 
 enum TxType { Bitcoin, Liquid, Lightning, Usdt }
 
@@ -20,20 +24,24 @@ extension TxTypeExtension on TxType {
 }
 
 abstract class Tx {
+  String id = '';
   TxType type = TxType.Bitcoin;
   int timestamp = 0;
-  String id = '';
-  int? received;
-  int? sent;
-  int? fee;
-  int? amount;
+  int amount = 0;
+  int fee = 0;
   int? height;
   String? label;
-  String? toAddress;
 
   String? psbt;
   int? broadcastTime;
   bool? rbfEnabled;
+
+  int? version;
+  int? vsize;
+  int? weight;
+
+  String? toAddress;
+  String? walletId;
 
   Map<String, dynamic> toJson();
 
@@ -46,12 +54,45 @@ abstract class Tx {
     throw UnimplementedError('Unsupported Tx subclass');
   }
 
-  static Future<Tx> loadFromNative(dynamic tx, WalletType type) async {
-    if (type == WalletType.Bitcoin) {
-      return BitcoinTx.loadFromNative(tx);
-    } else if (type == WalletType.Liquid) {
+  static Future<Tx> loadFromNative(dynamic tx, Wallet w) async {
+    if (w.type == WalletType.Bitcoin) {
+      return BitcoinTx.loadFromNative(tx, w as BitcoinWallet);
+    } else if (w.type == WalletType.Liquid) {
       return LiquidTx.loadFromNative(tx);
     }
     throw UnimplementedError('Unsupported Tx subclass');
   }
 }
+
+/*
+class Script {
+  final Uint8List inner;
+
+  const Script({
+    required this.inner,
+  });
+}
+
+class OutPoint {
+  OutPoint({required this.txid, required this.vout});
+  String txid;
+  int vout;
+}
+
+class TxIn {
+  TxIn({required this.previousOutput, required this.scriptSig, required this.sequence, this.witness = const []});
+
+  OutPoint previousOutput;
+  Script scriptSig;
+  int sequence;
+  List<String> witness;
+}
+
+class TxOut {
+
+  TxOut({required this.value, required this.scriptPubKey});
+
+  int value;
+  Script scriptPubKey;
+}
+*/
