@@ -9,39 +9,51 @@ part of 'liquid_tx.dart';
 _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
     _$LiquidTxImpl(
       id: json['id'] as String,
+      type: $enumDecode(_$TxTypeEnumMap, json['type']),
+      timestamp: json['timestamp'] as int,
       amount: json['amount'] as int,
       fee: json['fee'] as int,
-      timestamp: json['timestamp'] as int,
-      type: $enumDecode(_$TxTypeEnumMap, json['type']),
+      height: json['height'] as int,
+      label: json['label'] as String,
+      version: json['version'] as int,
+      vsize: json['vsize'] as int,
+      size: json['size'] as int,
+      weight: json['weight'] as int,
+      locktime: json['locktime'] as int,
+      inputs: (json['inputs'] as List<dynamic>)
+          .map((e) => LiquidTxIn.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      outputs: (json['outputs'] as List<dynamic>)
+          .map((e) => LiquidTxOut.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      toAddress: json['toAddress'] as String,
+      walletId: json['walletId'] as String?,
     )
-      ..height = json['height'] as int?
-      ..label = json['label'] as String?
       ..psbt = json['psbt'] as String?
       ..broadcastTime = json['broadcastTime'] as int?
-      ..rbfEnabled = json['rbfEnabled'] as bool?
-      ..version = json['version'] as int?
-      ..vsize = json['vsize'] as int?
-      ..weight = json['weight'] as int?
-      ..toAddress = json['toAddress'] as String?
-      ..walletId = json['walletId'] as String?;
+      ..rbfEnabled = json['rbfEnabled'] as bool?;
 
 Map<String, dynamic> _$$LiquidTxImplToJson(_$LiquidTxImpl instance) =>
     <String, dynamic>{
-      'height': instance.height,
-      'label': instance.label,
       'psbt': instance.psbt,
       'broadcastTime': instance.broadcastTime,
       'rbfEnabled': instance.rbfEnabled,
-      'version': instance.version,
-      'vsize': instance.vsize,
-      'weight': instance.weight,
-      'toAddress': instance.toAddress,
-      'walletId': instance.walletId,
       'id': instance.id,
+      'type': _$TxTypeEnumMap[instance.type]!,
+      'timestamp': instance.timestamp,
       'amount': instance.amount,
       'fee': instance.fee,
-      'timestamp': instance.timestamp,
-      'type': _$TxTypeEnumMap[instance.type]!,
+      'height': instance.height,
+      'label': instance.label,
+      'version': instance.version,
+      'vsize': instance.vsize,
+      'size': instance.size,
+      'weight': instance.weight,
+      'locktime': instance.locktime,
+      'inputs': instance.inputs,
+      'outputs': instance.outputs,
+      'toAddress': instance.toAddress,
+      'walletId': instance.walletId,
     };
 
 const _$TxTypeEnumMap = {
@@ -50,3 +62,43 @@ const _$TxTypeEnumMap = {
   TxType.Lightning: 'Lightning',
   TxType.Usdt: 'Usdt',
 };
+
+_$LiquidOutPointImpl _$$LiquidOutPointImplFromJson(Map<String, dynamic> json) =>
+    _$LiquidOutPointImpl(
+      txid: json['txid'] as String,
+      vout: json['vout'] as int,
+    );
+
+Map<String, dynamic> _$$LiquidOutPointImplToJson(
+        _$LiquidOutPointImpl instance) =>
+    <String, dynamic>{
+      'txid': instance.txid,
+      'vout': instance.vout,
+    };
+
+_$LiquidTxInImpl _$$LiquidTxInImplFromJson(Map<String, dynamic> json) =>
+    _$LiquidTxInImpl(
+      previousOutput: LiquidOutPoint.fromJson(
+          json['previousOutput'] as Map<String, dynamic>),
+      scriptSig: json['scriptSig'] as String,
+    );
+
+Map<String, dynamic> _$$LiquidTxInImplToJson(_$LiquidTxInImpl instance) =>
+    <String, dynamic>{
+      'previousOutput': instance.previousOutput,
+      'scriptSig': instance.scriptSig,
+    };
+
+_$LiquidTxOutImpl _$$LiquidTxOutImplFromJson(Map<String, dynamic> json) =>
+    _$LiquidTxOutImpl(
+      value: json['value'] as int,
+      scriptPubKey: json['scriptPubKey'] as String,
+      address: json['address'] as String,
+    );
+
+Map<String, dynamic> _$$LiquidTxOutImplToJson(_$LiquidTxOutImpl instance) =>
+    <String, dynamic>{
+      'value': instance.value,
+      'scriptPubKey': instance.scriptPubKey,
+      'address': instance.address,
+    };

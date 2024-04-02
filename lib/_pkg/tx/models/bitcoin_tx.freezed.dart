@@ -31,6 +31,7 @@ mixin _$BitcoinTx {
   int get version => throw _privateConstructorUsedError;
   int get vsize => throw _privateConstructorUsedError;
   int get weight => throw _privateConstructorUsedError;
+  int get locktime => throw _privateConstructorUsedError;
   List<BitcoinTxIn> get inputs => throw _privateConstructorUsedError;
   List<BitcoinTxOut> get outputs => throw _privateConstructorUsedError;
   String get toAddress => throw _privateConstructorUsedError;
@@ -59,6 +60,7 @@ abstract class $BitcoinTxCopyWith<$Res> {
       int version,
       int vsize,
       int weight,
+      int locktime,
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs,
       String toAddress,
@@ -89,6 +91,7 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
     Object? version = null,
     Object? vsize = null,
     Object? weight = null,
+    Object? locktime = null,
     Object? inputs = null,
     Object? outputs = null,
     Object? toAddress = null,
@@ -139,6 +142,10 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
           ? _value.weight
           : weight // ignore: cast_nullable_to_non_nullable
               as int,
+      locktime: null == locktime
+          ? _value.locktime
+          : locktime // ignore: cast_nullable_to_non_nullable
+              as int,
       inputs: null == inputs
           ? _value.inputs
           : inputs // ignore: cast_nullable_to_non_nullable
@@ -179,6 +186,7 @@ abstract class _$$BitcoinTxImplCopyWith<$Res>
       int version,
       int vsize,
       int weight,
+      int locktime,
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs,
       String toAddress,
@@ -207,6 +215,7 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
     Object? version = null,
     Object? vsize = null,
     Object? weight = null,
+    Object? locktime = null,
     Object? inputs = null,
     Object? outputs = null,
     Object? toAddress = null,
@@ -257,6 +266,10 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
           ? _value.weight
           : weight // ignore: cast_nullable_to_non_nullable
               as int,
+      locktime: null == locktime
+          ? _value.locktime
+          : locktime // ignore: cast_nullable_to_non_nullable
+              as int,
       inputs: null == inputs
           ? _value._inputs
           : inputs // ignore: cast_nullable_to_non_nullable
@@ -292,6 +305,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required this.version,
       required this.vsize,
       required this.weight,
+      required this.locktime,
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required this.toAddress,
@@ -325,6 +339,8 @@ class _$BitcoinTxImpl extends _BitcoinTx {
   final int vsize;
   @override
   final int weight;
+  @override
+  final int locktime;
   final List<BitcoinTxIn> _inputs;
   @override
   List<BitcoinTxIn> get inputs {
@@ -348,7 +364,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
 
   @override
   String toString() {
-    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, walletId: $walletId)';
+    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, walletId: $walletId)';
   }
 
   @override
@@ -369,6 +385,8 @@ class _$BitcoinTxImpl extends _BitcoinTx {
             (identical(other.version, version) || other.version == version) &&
             (identical(other.vsize, vsize) || other.vsize == vsize) &&
             (identical(other.weight, weight) || other.weight == weight) &&
+            (identical(other.locktime, locktime) ||
+                other.locktime == locktime) &&
             const DeepCollectionEquality().equals(other._inputs, _inputs) &&
             const DeepCollectionEquality().equals(other._outputs, _outputs) &&
             (identical(other.toAddress, toAddress) ||
@@ -392,6 +410,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       version,
       vsize,
       weight,
+      locktime,
       const DeepCollectionEquality().hash(_inputs),
       const DeepCollectionEquality().hash(_outputs),
       toAddress,
@@ -424,6 +443,7 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final int version,
       required final int vsize,
       required final int weight,
+      required final int locktime,
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required final String toAddress,
@@ -455,6 +475,8 @@ abstract class _BitcoinTx extends BitcoinTx {
   int get vsize;
   @override
   int get weight;
+  @override
+  int get locktime;
   @override
   List<BitcoinTxIn> get inputs;
   @override

@@ -11,6 +11,19 @@ import 'wallet.dart';
 part 'liquid_wallet.freezed.dart';
 part 'liquid_wallet.g.dart';
 
+extension NetworkTypeExtension on NetworkType {
+  lwk.Network get getLwkType {
+    switch (this) {
+      case NetworkType.Mainnet:
+        return lwk.Network.Mainnet;
+      case NetworkType.Testnet:
+        return lwk.Network.Testnet;
+      case NetworkType.Signet:
+        return lwk.Network.Testnet;
+    }
+  }
+}
+
 @freezed
 class LiquidWallet extends Wallet with _$LiquidWallet {
   factory LiquidWallet({

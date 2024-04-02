@@ -19,6 +19,7 @@ _$BitcoinTxImpl _$$BitcoinTxImplFromJson(Map<String, dynamic> json) =>
       version: json['version'] as int,
       vsize: json['vsize'] as int,
       weight: json['weight'] as int,
+      locktime: json['locktime'] as int,
       inputs: (json['inputs'] as List<dynamic>)
           .map((e) => BitcoinTxIn.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -46,6 +47,7 @@ Map<String, dynamic> _$$BitcoinTxImplToJson(_$BitcoinTxImpl instance) =>
       'version': instance.version,
       'vsize': instance.vsize,
       'weight': instance.weight,
+      'locktime': instance.locktime,
       'inputs': instance.inputs,
       'outputs': instance.outputs,
       'toAddress': instance.toAddress,

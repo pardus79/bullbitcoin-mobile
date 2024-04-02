@@ -30,6 +30,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required int version,
     required int vsize,
     required int weight,
+    required int locktime,
     required List<BitcoinTxIn> inputs,
     required List<BitcoinTxOut> outputs,
     required String toAddress,
@@ -51,6 +52,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     final version = await t.transaction?.version() ?? 0;
     final vsize = await t.transaction?.vsize() ?? 0;
     final weight = await t.transaction?.weight() ?? 0;
+    final locktime = await t.transaction?.lockTime() ?? 0;
 
     final ins = sTx['input'] as List;
     List<BitcoinTxIn> inputs = [];
@@ -78,6 +80,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
       version: version,
       vsize: vsize,
       weight: weight,
+      locktime: locktime,
       inputs: inputs,
       outputs: outputs,
       toAddress: outputs[0].address,

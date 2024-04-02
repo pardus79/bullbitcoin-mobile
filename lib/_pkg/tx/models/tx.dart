@@ -40,6 +40,7 @@ abstract class Tx {
   int? version;
   int? vsize;
   int? weight;
+  int? locktime;
 
   String? toAddress;
   String? walletId;
