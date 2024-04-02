@@ -51,7 +51,7 @@ class WalletCardDetails extends StatelessWidget {
   final bool hideSettings;
 
   static (Color, String) cardDetails(BuildContext context, Wallet wallet) {
-    final isTestnet = wallet.network == BBNetwork.Testnet;
+    final isTestnet = wallet.network == BBNetwork.Testnet || wallet.network == BBNetwork.LTestnet;
     final isWatchOnly = wallet.watchOnly();
 
     final darkMode =

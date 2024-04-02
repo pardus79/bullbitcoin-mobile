@@ -56,7 +56,7 @@ class ImportState with _$ImportState {
     @Default('') String errLoadingFile,
     @Default(false) bool savingWallet,
     @Default('') String errSavingWallet,
-    Wallet? savedWallet,
+    List<Wallet>? savedWallets,
     ColdCard? coldCard,
   }) = _ImportState;
   const ImportState._();

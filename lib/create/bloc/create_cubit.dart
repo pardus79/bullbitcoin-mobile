@@ -168,6 +168,21 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     if (state.mnemonic == null) return;
     emit(state.copyWith(saving: true, errSaving: ''));
 
+    final (mainnetWallets) = await firstTimeMainnet();
+    final (testnetWallets) = await firstTimeTestnet();
+
+    clearSensitive();
+
+    emit(
+      state.copyWith(
+        savedWallets: [...mainnetWallets, ...testnetWallets],
+        saving: false,
+        saved: true,
+      ),
+    );
+  }
+
+  Future<List<Wallet>> firstTimeMainnet() async {
     final mnemonic = state.mnemonic!.join(' ');
     final (seed, errMne) = await walletSensCreate.mnemonicSeed(
       mnemonic,
@@ -185,20 +200,8 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     );
     if (errCreating1 != null) {
       emit(state.copyWith(saving: false, errSaving: 'Error Creating Wallet'));
-      return;
+      return [];
     }
-
-    // var (walletInstant, errCreating2) = await walletSensCreate.oneFromBIP39(
-    //   seed: seed,
-    //   passphrase: '',
-    //   scriptType: ScriptType.bip84,
-    //   network: BBNetwork.Mainnet,
-    //   walletType: BBWalletType.instant,
-    // );
-    // if (errCreating2 != null) {
-    //   emit(state.copyWith(saving: false, errSaving: 'Error Creating Wallet'));
-    //   return;
-    // }
 
     walletSecure = walletSecure!.copyWith(name: 'Bull Wallet');
     // walletInstant = walletInstant!.copyWith(name: 'Instant Wallet');
@@ -214,21 +217,93 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     if (errSaving1 != null) {
       emit(state.copyWith(saving: false, errSaving: 'Error Saving Wallet'));
     }
-    // final errSaving2 =
-    //     await walletRepository.newWallet(wallet: walletInstant, hiveStore: hiveStorage);
-    // if (errSaving2 != null) {
-    //   emit(state.copyWith(saving: false, errSaving: 'Error Saving Wallet'));
-    // }
 
-    clearSensitive();
-
-    emit(
-      state.copyWith(
-        savedWallets: [walletSecure],
-        saving: false,
-        saved: true,
-      ),
+    var (liquidSecure, errLCreating1) = await walletSensCreate.oneLiquidFromBIP39(
+      seed: seed,
+      passphrase: '',
+      scriptType: ScriptType.bip84,
+      network: BBNetwork.LMainnet,
+      walletType: BBWalletType.secure,
     );
+    if (errLCreating1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Creating Liquid Wallet'));
+      return [];
+    }
+
+    liquidSecure = liquidSecure!.copyWith(name: 'Bull Liquid Wallet');
+
+    final errLSaving1 =
+        await walletRepository.newWallet(wallet: liquidSecure, hiveStore: hiveStorage);
+    if (errLSaving1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Saving Liquid Wallet'));
+    }
+
+    return [
+      walletSecure,
+      liquidSecure,
+    ];
+  }
+
+  Future<List<Wallet>> firstTimeTestnet() async {
+    final mnemonic = state.mnemonic!.join(' ');
+    final (seed, errMne) = await walletSensCreate.mnemonicSeed(
+      mnemonic,
+      BBNetwork.Testnet,
+    );
+    if (errMne != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Creating Seed'));
+    }
+    var (walletSecure, errCreating1) = await walletSensCreate.oneFromBIP39(
+      seed: seed!,
+      passphrase: '',
+      scriptType: ScriptType.bip84,
+      network: BBNetwork.Testnet,
+      walletType: BBWalletType.secure,
+    );
+    if (errCreating1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Creating Wallet'));
+      return [];
+    }
+
+    walletSecure = walletSecure!.copyWith(name: 'Bull Wallet');
+    // walletInstant = walletInstant!.copyWith(name: 'Instant Wallet');
+
+    final errSavingSeed =
+        await walletSensRepository.newSeed(seed: seed, secureStore: secureStorage);
+    if (errSavingSeed != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Saving Seed'));
+    }
+
+    final errSaving1 =
+        await walletRepository.newWallet(wallet: walletSecure, hiveStore: hiveStorage);
+    if (errSaving1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Saving Wallet'));
+    }
+
+    var (liquidSecure, errLCreating1) = await walletSensCreate.oneLiquidFromBIP39(
+      seed: seed,
+      passphrase: '',
+      scriptType: ScriptType.bip84,
+      network: BBNetwork.LTestnet,
+      walletType: BBWalletType.secure,
+    );
+    if (errLCreating1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Creating Liquid Wallet'));
+      return [];
+    }
+
+    liquidSecure = liquidSecure!.copyWith(name: 'Bull Liquid Wallet');
+
+    final errLSaving1 =
+        await walletRepository.newWallet(wallet: liquidSecure, hiveStore: hiveStorage);
+    if (errLSaving1 != null) {
+      emit(state.copyWith(saving: false, errSaving: 'Error Saving Liquid Wallet'));
+    }
+
+    return [
+      walletSecure,
+      liquidSecure,
+    ];
   }
 
   void clearSensitive() {

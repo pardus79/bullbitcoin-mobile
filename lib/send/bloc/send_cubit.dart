@@ -134,6 +134,9 @@ class SendCubit extends Cubit<SendState> {
       } else if (address.startsWith('ln')) {
         emit(state.copyWith(address: address));
         state.swapCubit.decodeInvoice(address);
+      } else if (address.startsWith('tl1')) {
+        // TODO: Cover all liquid address formats in both mainnet/testnet
+        emit(state.copyWith(address: address));
       } else
         emit(state.copyWith(address: address));
     } catch (e) {
@@ -264,9 +267,95 @@ class SendCubit extends Cubit<SendState> {
     emit(state.copyWith(downloadingFile: false, downloaded: true));
   }
 
+  void confirmLiquidClicked() async {
+    final lwkWallet = state.selectedWalletBloc!.state.lwkWallet;
+    if (lwkWallet == null) return;
+
+    emit(state.copyWith(sending: true, errSending: ''));
+
+    final wallet = state.selectedWalletBloc!.state.wallet;
+    final fee = networkFeesCubit
+        .state.feesList![networkFeesCubit.state.selectedFeesOption]; // fee must be available
+
+    final (buildResp, err) = await walletTx.buildLiquidTx(
+      wallet: wallet!,
+      lwkWallet: lwkWallet,
+      address: state.address,
+      amount: currencyCubit.state.amount,
+      sendAllCoin: state.sendAllCoin,
+      feeRate: 300,
+    );
+
+    if (err != null) {
+      emit(
+        state.copyWith(
+          errSending: err.toString(),
+          sending: false,
+        ),
+      );
+      return;
+    }
+
+    final (tx, feeAmt, pset) = buildResp!;
+
+    final (txBytes, errfinalize) = await walletTx.finalizeLiquidTx(
+      pset: pset,
+      lwkWallet: lwkWallet,
+      wallet: wallet,
+      secureStorage: secureStorage,
+    );
+
+    if (errfinalize != null) {
+      emit(
+        state.copyWith(
+          errSending: errfinalize.toString(),
+          sending: false,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        sending: false,
+        psbtSigned: 'signed',
+        psbtSignedFeeAmount: feeAmt,
+        tx: tx,
+        txBytes: txBytes,
+        signed: true,
+      ),
+    );
+
+    /*
+    final (txId, errBroadcast) = await walletTx.broadcastLiquidTxWithWallet(
+      txBytes: txBytes!,
+      wallet: wallet,
+      lwkWallet: lwkWallet,
+      transaction: tx!,
+    );
+
+
+    if (errBroadcast != null) {
+      emit(
+        state.copyWith(
+          errSending: errBroadcast.toString(),
+          sending: false,
+        ),
+      );
+      return;
+    }
+    */
+  }
+
   void confirmClickedd() async {
     if (state.sending) return;
     if (state.selectedWalletBloc == null) return;
+    final isLiquid = state.isLiquid();
+
+    if (isLiquid) {
+      confirmLiquidClicked();
+      return;
+    }
 
     final bdkWallet = state.selectedWalletBloc!.state.bdkWallet;
     if (bdkWallet == null) return;
@@ -378,8 +467,65 @@ class SendCubit extends Cubit<SendState> {
     }
   }
 
+  void sendLiquidClicked() async {
+    final lwkWallet = state.selectedWalletBloc!.state.lwkWallet;
+    if (lwkWallet == null) return;
+    final wallet = state.selectedWalletBloc!.state.wallet!;
+
+    emit(state.copyWith(sending: true, errSending: ''));
+
+    final (broadResp, errBroadcast) = await walletTx.broadcastLiquidTxWithWallet(
+      txBytes: state.txBytes!,
+      wallet: wallet,
+      lwkWallet: lwkWallet,
+      transaction: state.tx!,
+    );
+
+    if (errBroadcast != null) {
+      emit(
+        state.copyWith(
+          errSending: errBroadcast.toString(),
+          sending: false,
+        ),
+      );
+      return;
+    }
+
+    final (w, txid) = broadResp!;
+
+    final (_, updatedWallet) = await walletAddress.addAddressToWallet(
+      address: (null, state.address),
+      wallet: w,
+      label: state.note,
+      spentTxId: txid,
+      kind: AddressKind.external,
+      state: AddressStatus.used,
+    );
+
+    state.selectedWalletBloc!.add(
+      UpdateWallet(
+        updatedWallet,
+        updateTypes: [
+          UpdateWalletTypes.addresses,
+          UpdateWalletTypes.transactions,
+        ],
+      ),
+    );
+    Future.delayed(50.ms);
+    state.selectedWalletBloc!.add(SyncWallet());
+
+    emit(state.copyWith(sending: false, sent: true, txBytes: null));
+  }
+
   void sendClicked() async {
     if (state.selectedWalletBloc == null) return;
+
+    final isLiquid = state.isLiquid();
+
+    if (isLiquid) {
+      sendLiquidClicked();
+      return;
+    }
 
     emit(state.copyWith(sending: true, errSending: ''));
 

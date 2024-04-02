@@ -25,6 +25,7 @@ mixin _$SendState {
   String get errSending => throw _privateConstructorUsedError;
   bool get sent => throw _privateConstructorUsedError;
   String get psbt => throw _privateConstructorUsedError;
+  Uint8List? get txBytes => throw _privateConstructorUsedError;
   Transaction? get tx => throw _privateConstructorUsedError;
   bool get downloadingFile => throw _privateConstructorUsedError;
   String get errDownloadingFile => throw _privateConstructorUsedError;
@@ -59,6 +60,7 @@ abstract class $SendStateCopyWith<$Res> {
       String errSending,
       bool sent,
       String psbt,
+      Uint8List? txBytes,
       Transaction? tx,
       bool downloadingFile,
       String errDownloadingFile,
@@ -98,6 +100,7 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
     Object? errSending = null,
     Object? sent = null,
     Object? psbt = null,
+    Object? txBytes = freezed,
     Object? tx = freezed,
     Object? downloadingFile = null,
     Object? errDownloadingFile = null,
@@ -149,6 +152,10 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
           ? _value.psbt
           : psbt // ignore: cast_nullable_to_non_nullable
               as String,
+      txBytes: freezed == txBytes
+          ? _value.txBytes
+          : txBytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       tx: freezed == tx
           ? _value.tx
           : tx // ignore: cast_nullable_to_non_nullable
@@ -235,6 +242,7 @@ abstract class _$$SendStateImplCopyWith<$Res>
       String errSending,
       bool sent,
       String psbt,
+      Uint8List? txBytes,
       Transaction? tx,
       bool downloadingFile,
       String errDownloadingFile,
@@ -273,6 +281,7 @@ class __$$SendStateImplCopyWithImpl<$Res>
     Object? errSending = null,
     Object? sent = null,
     Object? psbt = null,
+    Object? txBytes = freezed,
     Object? tx = freezed,
     Object? downloadingFile = null,
     Object? errDownloadingFile = null,
@@ -324,6 +333,10 @@ class __$$SendStateImplCopyWithImpl<$Res>
           ? _value.psbt
           : psbt // ignore: cast_nullable_to_non_nullable
               as String,
+      txBytes: freezed == txBytes
+          ? _value.txBytes
+          : txBytes // ignore: cast_nullable_to_non_nullable
+              as Uint8List?,
       tx: freezed == tx
           ? _value.tx
           : tx // ignore: cast_nullable_to_non_nullable
@@ -393,6 +406,7 @@ class _$SendStateImpl extends _SendState {
       this.errSending = '',
       this.sent = false,
       this.psbt = '',
+      this.txBytes,
       this.tx,
       this.downloadingFile = false,
       this.errDownloadingFile = '',
@@ -437,6 +451,8 @@ class _$SendStateImpl extends _SendState {
   @JsonKey()
   final String psbt;
   @override
+  final Uint8List? txBytes;
+  @override
   final Transaction? tx;
   @override
   @JsonKey()
@@ -479,7 +495,7 @@ class _$SendStateImpl extends _SendState {
 
   @override
   String toString() {
-    return 'SendState(address: $address, note: $note, scanningAddress: $scanningAddress, errScanningAddress: $errScanningAddress, showSendButton: $showSendButton, sending: $sending, errSending: $errSending, sent: $sent, psbt: $psbt, tx: $tx, downloadingFile: $downloadingFile, errDownloadingFile: $errDownloadingFile, downloaded: $downloaded, disableRBF: $disableRBF, sendAllCoin: $sendAllCoin, selectedUtxos: $selectedUtxos, errAddresses: $errAddresses, signed: $signed, psbtSigned: $psbtSigned, psbtSignedFeeAmount: $psbtSignedFeeAmount, selectedWalletBloc: $selectedWalletBloc, swapCubit: $swapCubit)';
+    return 'SendState(address: $address, note: $note, scanningAddress: $scanningAddress, errScanningAddress: $errScanningAddress, showSendButton: $showSendButton, sending: $sending, errSending: $errSending, sent: $sent, psbt: $psbt, txBytes: $txBytes, tx: $tx, downloadingFile: $downloadingFile, errDownloadingFile: $errDownloadingFile, downloaded: $downloaded, disableRBF: $disableRBF, sendAllCoin: $sendAllCoin, selectedUtxos: $selectedUtxos, errAddresses: $errAddresses, signed: $signed, psbtSigned: $psbtSigned, psbtSignedFeeAmount: $psbtSignedFeeAmount, selectedWalletBloc: $selectedWalletBloc, swapCubit: $swapCubit)';
   }
 
   @override
@@ -500,6 +516,7 @@ class _$SendStateImpl extends _SendState {
                 other.errSending == errSending) &&
             (identical(other.sent, sent) || other.sent == sent) &&
             (identical(other.psbt, psbt) || other.psbt == psbt) &&
+            const DeepCollectionEquality().equals(other.txBytes, txBytes) &&
             (identical(other.tx, tx) || other.tx == tx) &&
             (identical(other.downloadingFile, downloadingFile) ||
                 other.downloadingFile == downloadingFile) &&
@@ -538,6 +555,7 @@ class _$SendStateImpl extends _SendState {
         errSending,
         sent,
         psbt,
+        const DeepCollectionEquality().hash(txBytes),
         tx,
         downloadingFile,
         errDownloadingFile,
@@ -571,6 +589,7 @@ abstract class _SendState extends SendState {
       final String errSending,
       final bool sent,
       final String psbt,
+      final Uint8List? txBytes,
       final Transaction? tx,
       final bool downloadingFile,
       final String errDownloadingFile,
@@ -604,6 +623,8 @@ abstract class _SendState extends SendState {
   bool get sent;
   @override
   String get psbt;
+  @override
+  Uint8List? get txBytes;
   @override
   Transaction? get tx;
   @override

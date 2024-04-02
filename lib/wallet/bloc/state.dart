@@ -2,6 +2,7 @@ import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:lwk_dart/lwk_dart.dart' as lwk;
 
 part 'state.freezed.dart';
 
@@ -10,6 +11,7 @@ class WalletState with _$WalletState {
   const factory WalletState({
     Wallet? wallet,
     bdk.Wallet? bdkWallet,
+    lwk.Wallet? lwkWallet,
     // List<Transaction>? txs,
     // Balance? balance,
     @Default('') String name,

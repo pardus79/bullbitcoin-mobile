@@ -4,6 +4,7 @@ import 'package:bb_mobile/_model/cold_card.dart';
 import 'package:bb_mobile/_model/seed.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/barcode.dart';
+import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bb_mobile/_pkg/file_picker.dart';
 import 'package:bb_mobile/_pkg/nfc.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
@@ -409,6 +410,58 @@ class ImportWalletCubit extends Cubit<ImportState> {
     emit(state.copyWith(importStep: ImportSteps.scanningWallets));
   }
 
+  // TODO: Liquid: Cleanup
+  void recoverLiquidWalletClicked() async {
+    // await checkWalletLabel();
+    if (state.errSavingWallet.isNotEmpty) return;
+
+    final List<String> words = [
+      'fossil',
+      'install',
+      'fever',
+      'ticket',
+      'wisdom',
+      'outer',
+      'broken',
+      'aspect',
+      'lucky',
+      'still',
+      'flavor',
+      'dial',
+    ];
+
+    final words12 = state.words12.toList();
+    words12[0] = (word: words[0], tapped: false);
+    words12[1] = (word: words[1], tapped: false);
+    words12[2] = (word: words[2], tapped: false);
+    words12[3] = (word: words[3], tapped: false);
+    words12[4] = (word: words[4], tapped: false);
+    words12[5] = (word: words[5], tapped: false);
+    words12[6] = (word: words[6], tapped: false);
+    words12[7] = (word: words[7], tapped: false);
+    words12[8] = (word: words[8], tapped: false);
+    words12[9] = (word: words[9], tapped: false);
+    words12[10] = (word: words[10], tapped: false);
+    words12[11] = (word: words[11], tapped: false);
+
+    emit(
+      state.copyWith(
+        words12: words12,
+      ),
+    );
+    //final words = state.importType == ImportTypes.words12 ? state.words12 : state.words24;
+    // emit(state.copyWith(errImporting: ''));
+    // for (final word in words)
+    //   if (word.word.isEmpty) {
+    //     emit(state.copyWith(errImporting: 'Please fill all words'));
+    //     return;
+    //   }
+    await _updateWalletDetailsForSelection();
+    if (state.errImporting.isNotEmpty) return;
+
+    emit(state.copyWith(importStep: ImportSteps.scanningWallets));
+  }
+
   Future _updateWalletDetailsForSelection() async {
     try {
       final type = state.importType;
@@ -431,6 +484,42 @@ class ImportWalletCubit extends Cubit<ImportState> {
             return;
           }
           wallets.addAll(ws!);
+
+          final (allWallets, readErr) =
+              await walletRepository.readAllWallets(hiveStore: hiveStorage);
+          bool liquidWalletExists = false;
+          if (readErr == null) {
+            for (final w in allWallets!) {
+              if ((network == BBNetwork.Mainnet && w.network == BBNetwork.LMainnet) ||
+                  (network == BBNetwork.Testnet && w.network == BBNetwork.LTestnet)) {
+                liquidWalletExists = true;
+              }
+            }
+          }
+
+          if (!liquidWalletExists) {
+            final (lseed, lErr) = await WalletSensitiveCreate().mnemonicSeed(
+              mnemonic,
+              network,
+            );
+
+            final (wsLiquid, wLiquidErrs) = await walletSensCreate.oneLiquidFromBIP39(
+              seed: lseed!,
+              passphrase: '',
+              network: (network == BBNetwork.LMainnet || network == BBNetwork.Mainnet)
+                  ? BBNetwork.LMainnet
+                  : BBNetwork.LTestnet,
+              walletType: BBWalletType.words,
+              scriptType: ScriptType.bip84,
+            );
+            if (wLiquidErrs != null) {
+              emit(state.copyWith(errImporting: 'Error creating liquid wallets from Bip 84'));
+              return;
+            }
+            wallets.addAll([wsLiquid!]);
+          }
+
+          emit(state.copyWith(walletDetails: wallets));
         case ImportTypes.words24:
           final mnemonic = state.words24.map((_) => _.word).join(' ');
           final passphrase = state.passPhrase.isEmpty ? '' : state.passPhrase;
@@ -522,6 +611,8 @@ class ImportWalletCubit extends Cubit<ImportState> {
   void saveClicked() async {
     emit(state.copyWith(savingWallet: true, errSavingWallet: ''));
 
+    final List<Wallet> selWallets = [];
+
     Wallet? selectedWallet = state.getSelectWalletDetails();
     if (selectedWallet == null) return;
     selectedWallet = (state.walletLabel != null && state.walletLabel != '')
@@ -530,11 +621,13 @@ class ImportWalletCubit extends Cubit<ImportState> {
 
     final network = networkCubit.state.testnet ? BBNetwork.Testnet : BBNetwork.Mainnet;
 
+    Seed? seed;
+    Err? sErr;
     if (selectedWallet.type == BBWalletType.words) {
       final mnemonic = (state.importType == ImportTypes.words12)
           ? state.words12.map((_) => _.word).join(' ')
           : state.words24.map((_) => _.word).join(' ');
-      final (seed, sErr) = await walletSensCreate.mnemonicSeed(mnemonic, network);
+      (seed, sErr) = await walletSensCreate.mnemonicSeed(mnemonic, network);
       if (sErr != null) {
         emit(state.copyWith(errImporting: 'Error creating mnemonicSeed'));
         return;
@@ -567,7 +660,6 @@ class ImportWalletCubit extends Cubit<ImportState> {
         }
       }
     }
-
     final err = await walletRepository.newWallet(
       wallet: selectedWallet,
       hiveStore: hiveStorage,
@@ -581,15 +673,67 @@ class ImportWalletCubit extends Cubit<ImportState> {
         ),
       );
     } else {
+      final wl = (state.walletLabel != null && state.walletLabel != '')
+          ? selectedWallet.copyWith(name: state.walletLabel)
+          : selectedWallet;
+      selWallets.add(wl);
+      /*
+      // TODO: Liquid: Moved to end
       emit(
         state.copyWith(
           savingWallet: false,
-          savedWallet: (state.walletLabel != null && state.walletLabel != '')
-              ? selectedWallet.copyWith(name: state.walletLabel)
-              : selectedWallet,
+          savedWallets: selWallets,
         ),
       );
+      */
     }
+
+    final (allWallets, readErr) = await walletRepository.readAllWallets(hiveStore: hiveStorage);
+    bool liquidWalletExists = false;
+    if (readErr == null) {
+      for (final w in allWallets!) {
+        if ((network == BBNetwork.Mainnet && w.network == BBNetwork.LMainnet) ||
+            (network == BBNetwork.Testnet && w.network == BBNetwork.LTestnet)) {
+          liquidWalletExists = true;
+        }
+      }
+    }
+
+    if (seed != null && !liquidWalletExists) {
+      await Future.delayed(const Duration(seconds: 1));
+      var (wsLiquid, wLiquidErrs) = await walletSensCreate.oneLiquidFromBIP39(
+        seed: seed,
+        passphrase: '',
+        network: (network == BBNetwork.LMainnet || network == BBNetwork.Mainnet)
+            ? BBNetwork.LMainnet
+            : BBNetwork.LTestnet,
+        walletType: BBWalletType.words,
+        scriptType: ScriptType.bip84,
+      );
+      if (wLiquidErrs != null) {
+        emit(state.copyWith(errImporting: 'Error creating liquid wallets from Bip 84'));
+        return;
+      }
+
+      wsLiquid = (state.walletLabel != null && state.walletLabel != '')
+          ? wsLiquid?.copyWith(name: 'Liquid ${state.walletLabel}')
+          : wsLiquid;
+
+      final liquidWalletErr = await walletRepository.newWallet(
+        wallet: wsLiquid!,
+        hiveStore: hiveStorage,
+      );
+
+      selWallets.add(wsLiquid);
+    }
+
+    emit(
+      state.copyWith(
+        savingWallet: false,
+        savedWallets: selWallets,
+      ),
+    );
+
     reset();
   }
 

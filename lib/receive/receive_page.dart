@@ -268,6 +268,7 @@ class SelectWalletType extends StatelessWidget {
       value: walletType,
       items: const {
         ReceiveWalletType.secure: 'Bitcoin',
+        ReceiveWalletType.liquid: 'Liquid',
         ReceiveWalletType.lightning: 'Lightning',
       },
       onChanged: (value) {

@@ -33,7 +33,16 @@ class ImportSelectWalletTypeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((ImportWalletCubit cubit) => cubit.state.walletDetails ?? []);
+    final wallets = context.select(
+      (ImportWalletCubit cubit) => cubit.state.walletDetails!,
+    );
+
+    // final wallets = context.select(
+    //   (ImportWalletCubit cubit) =>
+    //       cubit.state.walletDetails
+    //           ?.where((w) => w.network != BBNetwork.LMainnet && w.network != BBNetwork.LTestnet) ??
+    //       [],
+    // );
 
     final walletCubits = [
       for (final w in wallets)
@@ -58,13 +67,13 @@ class ImportSelectWalletTypeScreen extends StatelessWidget {
     ];
 
     return BlocListener<ImportWalletCubit, ImportState>(
-      listenWhen: (previous, current) => previous.savedWallet != current.savedWallet,
+      listenWhen: (previous, current) => previous.savedWallets != current.savedWallets,
       listener: (context, state) async {
-        if (state.savedWallet == null) return;
-        final wallet = state.savedWallet!;
-        locator<HomeCubit>().addWallets([wallet]);
+        if (state.savedWallets == null) return;
+        final wallets = state.savedWallets!;
+        locator<HomeCubit>().addWallets(wallets);
         await Future.delayed(300.milliseconds);
-        locator<HomeCubit>().changeMoveToIdx(wallet);
+        locator<HomeCubit>().changeMoveToIdx(wallets[0]);
         await Future.delayed(300.milliseconds);
         context.go('/home');
       },
@@ -226,9 +235,12 @@ class _ImportWalletTypeButton extends StatelessWidget {
     final selected =
         context.select((ImportWalletCubit cubit) => cubit.state.isSelected(scriptType));
 
-    final name = context.select(
+    var name = context.select(
       (ImportWalletCubit cubit) => cubit.state.walletName(scriptType),
     );
+    if (wallet.network == BBNetwork.LMainnet || wallet.network == BBNetwork.LTestnet) {
+      name = 'Liquid $name';
+    }
 
     final syncing = context.select((WalletBloc cubit) => cubit.state.syncing);
 

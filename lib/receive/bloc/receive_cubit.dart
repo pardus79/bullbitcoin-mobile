@@ -1,4 +1,5 @@
 import 'package:bb_mobile/_model/address.dart';
+import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
 import 'package:bb_mobile/_pkg/storage/secure_storage.dart';
 import 'package:bb_mobile/_pkg/wallet/address.dart';
@@ -71,20 +72,63 @@ class ReceiveCubit extends Cubit<ReceiveState> {
     if (state.walletBloc == null) return;
     emit(state.copyWith(loadingAddress: true, errLoadingAddress: ''));
 
-    final address = state.walletBloc!.state.wallet!.lastGeneratedAddress;
+    final Wallet wallet = state.walletBloc!.state.wallet!;
 
-    emit(
-      state.copyWith(
-        defaultAddress: address,
-      ),
-    );
-    final label = await walletAddress.getLabel(
-      address: address!.address,
-      wallet: state.walletBloc!.state.wallet!,
-    );
-    final labelUpdated = address.copyWith(label: label);
+    if (wallet.network == BBNetwork.Mainnet || wallet.network == BBNetwork.Testnet) {
+      emit(
+        state.copyWith(
+          defaultAddress: wallet.lastGeneratedAddress,
+        ),
+      );
 
-    if (label != null) emit(state.copyWith(privateLabel: label, defaultAddress: labelUpdated));
+      final (allWallets, errAllWallets) =
+          await walletRepository.readAllWallets(hiveStore: hiveStorage);
+      final walletNetwork = state.walletBloc!.state.wallet!.network;
+
+      Wallet? liquidWallet;
+      if (wallet.network == BBNetwork.Mainnet) {
+        liquidWallet = allWallets?.firstWhere(
+          (w) => w.network == BBNetwork.LMainnet && w.sourceFingerprint == wallet.sourceFingerprint,
+        );
+      } else {
+        liquidWallet = allWallets?.firstWhere(
+          (w) => w.network == BBNetwork.LTestnet && w.sourceFingerprint == wallet.sourceFingerprint,
+        );
+      }
+
+      emit(
+        state.copyWith(
+          defaultLiquidAddress: liquidWallet!.lastGeneratedAddress,
+        ),
+      );
+    } else if (wallet.network == BBNetwork.LMainnet || wallet.network == BBNetwork.LTestnet) {
+      emit(
+        state.copyWith(
+          defaultLiquidAddress: wallet.lastGeneratedAddress,
+        ),
+      );
+
+      final (allWallets, errAllWallets) =
+          await walletRepository.readAllWallets(hiveStore: hiveStorage);
+      final walletNetwork = state.walletBloc!.state.wallet!.network;
+
+      Wallet? btcWallet;
+      if (wallet.network == BBNetwork.LMainnet) {
+        btcWallet = allWallets?.firstWhere(
+          (w) => w.network == BBNetwork.Mainnet && w.sourceFingerprint == wallet.sourceFingerprint,
+        );
+      } else {
+        btcWallet = allWallets?.firstWhere(
+          (w) => w.network == BBNetwork.Testnet && w.sourceFingerprint == wallet.sourceFingerprint,
+        );
+      }
+
+      emit(
+        state.copyWith(
+          defaultAddress: btcWallet!.lastGeneratedAddress,
+        ),
+      );
+    }
 
     emit(
       state.copyWith(

@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
 
-enum ReceiveWalletType { secure, lightning }
+enum ReceiveWalletType { secure, lightning, liquid }
 
 @freezed
 class ReceiveState with _$ReceiveState {
@@ -14,6 +14,7 @@ class ReceiveState with _$ReceiveState {
     @Default(true) bool loadingAddress,
     @Default('') String errLoadingAddress,
     Address? defaultAddress,
+    Address? defaultLiquidAddress,
     @Default('') String privateLabel,
     @Default(false) bool savingLabel,
     @Default('') String errSavingLabel,
@@ -44,14 +45,19 @@ class ReceiveState with _$ReceiveState {
       return invoice;
     }
 
-    return defaultAddress!.address;
+    if (walletType == ReceiveWalletType.liquid) {
+      if (defaultLiquidAddress == null) return '';
+      return defaultLiquidAddress?.confidential ?? '[loading_address]';
+    }
+
+    return defaultAddress?.address ?? '[loading_address]';
   }
 
   bool showNewRequestButton() => savedDescription.isEmpty && savedInvoiceAmount == 0;
 
   bool showQR(SwapTx? swapTx) {
     return (swapTx != null && walletType == ReceiveWalletType.lightning) ||
-        (walletType == ReceiveWalletType.secure);
+        (walletType == ReceiveWalletType.secure || walletType == ReceiveWalletType.liquid);
   }
 
   bool isLn() => walletType == ReceiveWalletType.lightning;
