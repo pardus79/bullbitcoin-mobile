@@ -94,14 +94,60 @@ class SendCubit extends Cubit<SendState> {
   final FileStorage fileStorage;
   final SwapBoltz swapBoltz;
 
-  void dispose() {
-    currencyCubitSub.cancel();
-    swapCubitSub.cancel();
-    super.close();
-  }
-
   void updateWalletBloc(WalletBloc walletBloc) {
     emit(state.copyWith(selectedWalletBloc: walletBloc));
+    _updateShowSend(force: true);
+  }
+
+  void _updateShowSend({bool force = false}) {
+    final amount = currencyCubit.state.amount;
+    emit(state.copyWith(errSending: ''));
+    if (amount == 0) {
+      emit(state.copyWith(showSendButton: false));
+      return;
+    }
+    if (state.selectedUtxos.isNotEmpty) {
+      final hasEnoughCoinns = state.selectedAddressesHasEnoughCoins(amount);
+      emit(state.copyWith(showSendButton: hasEnoughCoinns));
+      if (!hasEnoughCoinns)
+        emit(state.copyWith(errSending: 'Selected UTXOs do not cover Transaction Amount & Fees'));
+      return;
+    }
+    if (amount == 0) {
+      emit(state.copyWith(showSendButton: false));
+      return;
+    }
+
+    if (force) {
+      final enoughBalance = state.selectedWalletBloc!.state.balanceSats() >= amount;
+      emit(
+        state.copyWith(
+          showSendButton: enoughBalance,
+          errSending: 'This wallet does not have enough balance',
+        ),
+      );
+      return;
+    }
+
+    final walletBloc = homeCubit.state.firstWalletWithEnoughBalance(
+      amount,
+      networkCubit.state.getBBNetwork(),
+    );
+    if (walletBloc == null) {
+      emit(state.copyWith(showSendButton: false, errSending: 'No wallet with enough balance'));
+      return;
+    }
+
+    emit(state.copyWith(showSendButton: true, selectedWalletBloc: walletBloc));
+  }
+
+  void disabledDropdownClicked() {
+    emit(
+      state.copyWith(
+        errSending:
+            'Please enter payment destination and amount before selecting a wallet. We will select select the best wallet for this transaction. You can override the wallet choice after.',
+      ),
+    );
   }
 
   void swapCubitStateChanged(SwapState swapState) {
@@ -132,8 +178,23 @@ class SendCubit extends Cubit<SendState> {
           emit(state.copyWith(note: label));
         }
       } else if (address.startsWith('ln')) {
-        emit(state.copyWith(address: address));
-        state.swapCubit.decodeInvoice(address);
+// <<<<<<< HEAD
+//         emit(state.copyWith(address: address));
+//         state.swapCubit.decodeInvoice(address);
+//       } else if (address.startsWith('tl1')) {
+//         // TODO: Cover all liquid address formats in both mainnet/testnet
+//         emit(state.copyWith(address: address));
+// =======
+        if (state.checkIfMainWalletSelected()) {
+          emit(state.copyWith(address: address));
+          state.swapCubit.decodeInvoice(address);
+        } else {
+          emit(
+            state.copyWith(
+              errScanningAddress: 'Lightning invoices can only be sent from main wallets',
+            ),
+          );
+        }
       } else if (address.startsWith('tl1')) {
         // TODO: Cover all liquid address formats in both mainnet/testnet
         emit(state.copyWith(address: address));
@@ -209,28 +270,6 @@ class SendCubit extends Cubit<SendState> {
 
   void clearSelectedUtxos() {
     emit(state.copyWith(selectedUtxos: []));
-  }
-
-  void _updateShowSend() {
-    final amount = currencyCubit.state.amount;
-    emit(state.copyWith(errSending: ''));
-    if (amount == 0) {
-      emit(state.copyWith(showSendButton: false));
-      return;
-    }
-    if (state.selectedUtxos.isEmpty) {
-      if (state.selectedWalletBloc == null) return;
-
-      if (amount > 0 && state.selectedWalletBloc!.state.balanceSats() >= amount)
-        emit(state.copyWith(showSendButton: true));
-      else
-        emit(state.copyWith(showSendButton: false));
-    } else {
-      final hasEnoughCoinns = state.selectedAddressesHasEnoughCoins(amount);
-      emit(state.copyWith(showSendButton: hasEnoughCoinns));
-      if (!hasEnoughCoinns)
-        emit(state.copyWith(errSending: 'Selected UTXOs do not cover Transaction Amount & Fees'));
-    }
   }
 
   void downloadPSBTClicked() async {
@@ -385,7 +424,12 @@ class SendCubit extends Cubit<SendState> {
         : networkFeesCubit
             .state.feesList![networkFeesCubit.state.selectedFeesOption]; // fee must be available
 
-    final enableRbf = isLn ? false : !state.disableRBF;
+    final bool enableRbf;
+    if (isLn)
+      enableRbf = false;
+    else
+      enableRbf = !state.disableRBF;
+
     // final enableRbf = !isLn && !state.disableRBF;
     emit(state.copyWith(sending: true, errSending: ''));
 
@@ -592,5 +636,11 @@ class SendCubit extends Cubit<SendState> {
     state.selectedWalletBloc!.add(SyncWallet());
 
     emit(state.copyWith(sending: false, sent: true));
+  }
+
+  void dispose() {
+    currencyCubitSub.cancel();
+    swapCubitSub.cancel();
+    super.close();
   }
 }

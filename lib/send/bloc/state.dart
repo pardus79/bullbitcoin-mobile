@@ -82,4 +82,11 @@ class SendState with _$SendState {
     }
     return '';
   }
+
+  bool showButtons() {
+    // if (!showSendButton && selectedWalletBloc != null) return true;
+    return showSendButton;
+  }
+
+  bool checkIfMainWalletSelected() => selectedWalletBloc?.state.wallet?.mainWallet ?? false;
 }

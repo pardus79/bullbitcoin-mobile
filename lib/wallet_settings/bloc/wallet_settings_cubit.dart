@@ -376,6 +376,8 @@ class WalletSettingsCubit extends Cubit<WalletSettingsState> {
   // TODO: Liquid: Logic to delete liquid wallet
   void deleteWalletClicked() async {
     emit(state.copyWith(deleting: true, errDeleting: ''));
+    walletBloc.add(KillSync());
+    await Future.delayed(200.ms);
     final mnemonicFingerprint = state.wallet.getRelatedSeedStorageString();
     final sourceFingerprint = state.wallet.sourceFingerprint;
     final walletNetwork = state.wallet.network;

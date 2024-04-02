@@ -19,6 +19,7 @@ import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/controls.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/_ui/components/text_input.dart';
+import 'package:bb_mobile/_ui/warning.dart';
 import 'package:bb_mobile/currency/amount_input.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
@@ -163,7 +164,7 @@ class _Screen extends StatelessWidget {
     final signed = context.select((SendCubit cubit) => cubit.state.signed);
     final sent = context.select((SendCubit cubit) => cubit.state.sent);
     final isLn = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
-
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
     return ColoredBox(
       color: sent ? Colors.green : context.colour.background,
       child: SingleChildScrollView(
@@ -184,18 +185,21 @@ class _Screen extends StatelessWidget {
                 const AddressField(),
                 const Gap(24),
                 const AmountField(),
-                if (!isLn) ...[
-                  const Gap(24),
-                  const NetworkFees(),
+                if (showSend) ...[
+                  if (!isLn) ...[
+                    const Gap(24),
+                    const NetworkFees(),
+                  ],
+                  const Gap(8),
+                  const AdvancedOptions(),
+                  const Gap(48),
                 ],
-                const Gap(8),
-                const AdvancedOptions(),
-                const Gap(48),
               ],
-              if (!sent) ...[
+              if (!sent && showSend) ...[
                 const _SendButton(),
-                const Gap(80),
               ],
+              const SendErrDisplay(),
+              const Gap(80),
             ],
           ),
         ),
@@ -205,12 +209,12 @@ class _Screen extends StatelessWidget {
 }
 
 class WalletSelectionDropDown extends StatelessWidget {
-  const WalletSelectionDropDown({super.key});
+  const WalletSelectionDropDown();
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showSendButton);
-    if (!showSend) return const SizedBox(height: 55);
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
+    // if (!showSend) return const SizedBox(height: 55);
 
     final network = context.select((NetworkCubit _) => _.state.getBBNetwork());
     final walletBlocs = context.select((HomeCubit _) => _.state.walletBlocsFromNetwork(network));
@@ -218,16 +222,34 @@ class WalletSelectionDropDown extends StatelessWidget {
 
     final walletBloc = selectedWalletBloc ?? walletBlocs.first;
 
-    return BBDropDown<WalletBloc>(
-      items: {
-        for (final wallet in walletBlocs)
-          wallet: wallet.state.wallet!.name ?? wallet.state.wallet!.sourceFingerprint,
+    return GestureDetector(
+      onTap: () {
+        if (!showSend) context.read<SendCubit>().disabledDropdownClicked();
+        print(':::::::yo');
       },
-      value: walletBloc,
-      onChanged: (bloc) {
-        context.read<SendCubit>().updateWalletBloc(bloc);
-      },
-    ).animate().fadeIn();
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: showSend ? 1 : 0.3,
+        // child: Container(
+        //   height: 100,
+        //   width: 100,
+        //   color: Colors.amber,
+        // ),
+        child: AbsorbPointer(
+          absorbing: !showSend,
+          child: BBDropDown<WalletBloc>(
+            items: {
+              for (final wallet in walletBlocs)
+                wallet: wallet.state.wallet!.name ?? wallet.state.wallet!.sourceFingerprint,
+            },
+            value: walletBloc,
+            onChanged: (bloc) {
+              context.read<SendCubit>().updateWalletBloc(bloc);
+            },
+          ).animate().fadeIn(),
+        ),
+      ),
+    );
   }
 }
 
@@ -236,7 +258,7 @@ class _Balance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
     if (!showSend) return const SizedBox(height: 24);
 
     return const Center(child: SendWalletBalance()).animate().fadeIn();
@@ -291,9 +313,7 @@ class _AddressFieldState extends State<AddressField> {
                 icon: const FaIcon(FontAwesomeIcons.paste),
               ),
               IconButton(
-                onPressed: () {
-                  context.read<SendCubit>().scanAddress();
-                },
+                onPressed: context.read<SendCubit>().scanAddress,
                 icon: FaIcon(
                   FontAwesomeIcons.barcode,
                   color: context.colour.onBackground,
@@ -301,9 +321,7 @@ class _AddressFieldState extends State<AddressField> {
               ),
             ],
           ),
-          onChanged: (txt) {
-            context.read<SendCubit>().updateAddress(txt);
-          },
+          onChanged: context.read<SendCubit>().updateAddress,
         ),
       ],
     );
@@ -363,7 +381,7 @@ class NetworkFees extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
     if (!showSend) return const SizedBox(height: 55);
 
     return const SelectFeesButton().animate().fadeIn();
@@ -375,7 +393,7 @@ class AdvancedOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
     if (!showSend) return const SizedBox(height: 55);
 
     final text = context.select((SendCubit cubit) => cubit.state.advancedOptionsButtonText());
@@ -389,20 +407,36 @@ class AdvancedOptions extends StatelessWidget {
   }
 }
 
+class SendErrDisplay extends StatelessWidget {
+  const SendErrDisplay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final err = context.select((SendCubit cubit) => cubit.state.errWithSwap());
+
+    if (err.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 24),
+      child: Center(child: BBText.error(err)),
+    );
+  }
+}
+
 class _SendButton extends StatelessWidget {
   const _SendButton();
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
     if (!showSend) return const SizedBox(height: 55);
+    final enableButton = context.select((SendCubit cubit) => cubit.state.showSendButton);
 
     final watchOnly = context.select((WalletBloc cubit) => cubit.state.wallet!.watchOnly());
 
     final generatingInv = context.select((SwapCubit cubit) => cubit.state.generatingSwapInv);
     final sendingg = context.select((SendCubit cubit) => cubit.state.sending);
     final sending = generatingInv || sendingg;
-    final err = context.select((SendCubit cubit) => cubit.state.errWithSwap());
+    // final err = context.select((SendCubit cubit) => cubit.state.errWithSwap());
 
     final signed = context.select((SendCubit cubit) => cubit.state.signed);
 
@@ -417,7 +451,8 @@ class _SendButton extends StatelessWidget {
               PSBTPopUp.openPopUp(context);
             },
             child: BBButton.big(
-              disabled: !showSend,
+              // disabled: !showSend,
+              disabled: !enableButton,
               loading: sending,
               leftIcon: Icons.send,
               onPressed: () async {
@@ -439,24 +474,15 @@ class _SendButton extends StatelessWidget {
             ),
           ),
         ),
-        const Gap(16),
-        if (err.isNotEmpty)
-          Center(
-            child: BBText.error(
-              err,
-            ),
-          ),
+        // const Gap(16),
+        // if (err.isNotEmpty)
+        //   Center(
+        //     child: BBText.error(
+        //       err,
+        //     ),
+        //   ),
       ],
     ).animate().fadeIn();
-  }
-}
-
-class HighFeeWarning extends StatelessWidget {
-  const HighFeeWarning({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
 
@@ -724,6 +750,58 @@ class TxSuccess extends StatelessWidget {
             // const Gap(240),
           ],
         ).animate().fadeIn(),
+      ),
+    );
+  }
+}
+
+class HighFeeWarning extends StatelessWidget {
+  const HighFeeWarning({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // const fees = 10;
+    // const amt = 10;
+    // const recAmt = 10;
+    const feesStr = '';
+    const feeFiatStr = '';
+    const amtStr = '';
+    const amtFiatStr = '';
+    const recAmtStr = '';
+    const recAmtFiatStr = '';
+    return WarningContainer(
+      title: 'High Fee Warning',
+      info: 'Ask the sender of the payment if he can pay you using the Lightning Network instead.',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const BBText.body('Bitcoin Network fees are currently high.'),
+          const BBText.body(
+            'When receive a regular Bitcoin Network transaction in the Instant Payment Wallet, you must pay Bitcoin Netowkr fees and Swap fees',
+          ),
+          const Gap(8),
+          const BBText.body('The current Network Fee is:'),
+          const BBText.body(feesStr, isBold: true),
+          const BBText.body('~ $feeFiatStr'),
+          const Gap(8),
+          const BBText.body('Amount you send:'),
+          const BBText.body(amtStr, isBold: true),
+          const BBText.body('~ $amtFiatStr'),
+          const Gap(8),
+          const BBText.body('Minimum recommended amount:'),
+          const BBText.body(recAmtStr, isBold: true),
+          const BBText.body('~ $recAmtFiatStr'),
+          const Gap(32),
+          BBButton.big(
+            label: 'Continue anyways',
+            leftIcon: Icons.send,
+            onPressed: () {},
+          ),
+          BBButton.big(
+            label: 'Use Secure Wallet',
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }

@@ -19,9 +19,14 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     required this.walletRepository,
     required this.walletSensRepository,
     required this.networkCubit,
-    bool fromHome = false,
-  }) : super(const CreateWalletState()) {
-    createMne(fromHome: fromHome);
+    // bool fromHome = false,
+    bool mainWallet = false,
+  }) : super(
+          CreateWalletState(
+            mainWallet: mainWallet,
+          ),
+        ) {
+    createMne();
   }
 
   final SettingsCubit settingsCubit;
@@ -52,7 +57,7 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
       ),
     );
 
-    if (fromHome) firstTime();
+    // if (fromHome) firstTime();
   }
 
   void passPhraseChanged(String text) {
@@ -88,6 +93,8 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
   void confirmClicked() async {
     if (state.mnemonic == null) return;
     emit(state.copyWith(saving: true, errSaving: ''));
+
+    final createSecureAndMain = state.mainWallet;
 
     final label = state.walletLabel;
     if (label == null || label == '') {
@@ -153,7 +160,6 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     if (wsErr != null) {
       emit(state.copyWith(saving: false, errSaving: 'Error Saving Wallet'));
     }
-    clearSensitive();
 
     emit(
       state.copyWith(
@@ -162,11 +168,6 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
         savedWallets: [updatedWallet],
       ),
     );
-  }
-
-  void firstTime() async {
-    if (state.mnemonic == null) return;
-    emit(state.copyWith(saving: true, errSaving: ''));
 
     final (mainnetWallets) = await firstTimeMainnet();
     final (testnetWallets) = await firstTimeTestnet();
@@ -206,11 +207,11 @@ class CreateWalletCubit extends Cubit<CreateWalletState> {
     walletSecure = walletSecure!.copyWith(name: 'Bull Wallet');
     // walletInstant = walletInstant!.copyWith(name: 'Instant Wallet');
 
-    final errSavingSeed =
-        await walletSensRepository.newSeed(seed: seed, secureStore: secureStorage);
-    if (errSavingSeed != null) {
-      emit(state.copyWith(saving: false, errSaving: 'Error Saving Seed'));
-    }
+    //   final errSavingSeed =
+    //       await walletSensRepository.newSeed(seed: seed, secureStore: secureStorage);
+    //   if (errSavingSeed != null) {
+    //     emit(state.copyWith(saving: false, errSaving: 'Error Saving Seed'));
+    //   }
 
     final errSaving1 =
         await walletRepository.newWallet(wallet: walletSecure, hiveStore: hiveStorage);

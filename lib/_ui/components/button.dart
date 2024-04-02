@@ -4,6 +4,7 @@ import 'package:bb_mobile/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 
@@ -26,11 +27,14 @@ class BBButton extends StatelessWidget {
     this.loading = false,
     this.loadingText,
     this.fillWidth = false,
+    this.leftSvgAsset,
   })  : type = _ButtonType.big,
         isBlue = null,
         isRed = null,
         statusText = null,
-        centered = null;
+        centered = null,
+        onSurface = null,
+        fontSize = null;
 
   const BBButton.text({
     required this.label,
@@ -42,10 +46,13 @@ class BBButton extends StatelessWidget {
     this.isBlue = true,
     this.centered = false,
     this.buttonKey,
+    this.onSurface = false,
+    this.fontSize,
   })  : type = _ButtonType.text,
         filled = false,
         statusText = null,
         leftIcon = null,
+        leftSvgAsset = null,
         fillWidth = true;
 
   const BBButton.textWithRightArrow({
@@ -61,8 +68,11 @@ class BBButton extends StatelessWidget {
         isRed = null,
         statusText = null,
         centered = null,
+        leftSvgAsset = null,
         leftIcon = null,
-        fillWidth = true;
+        fillWidth = true,
+        onSurface = null,
+        fontSize = null;
 
   const BBButton.textWithLeftArrow({
     required this.label,
@@ -78,7 +88,10 @@ class BBButton extends StatelessWidget {
         statusText = null,
         centered = null,
         leftIcon = null,
-        fillWidth = true;
+        leftSvgAsset = null,
+        fillWidth = true,
+        onSurface = null,
+        fontSize = null;
 
   const BBButton.textWithStatusAndRightArrow({
     required this.label,
@@ -94,7 +107,10 @@ class BBButton extends StatelessWidget {
         filled = false,
         centered = null,
         leftIcon = null,
-        fillWidth = true;
+        leftSvgAsset = null,
+        fillWidth = true,
+        onSurface = null,
+        fontSize = null;
 
   final String label;
   final String? statusText;
@@ -106,7 +122,10 @@ class BBButton extends StatelessWidget {
   final bool? centered;
   final _ButtonType type;
   final IconData? leftIcon;
+  final String? leftSvgAsset;
   final bool fillWidth;
+  final double? fontSize;
+  final bool? onSurface;
 
   final bool loading;
   final String? loadingText;
@@ -147,7 +166,16 @@ class BBButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (leftIcon != null) ...[
+                if (leftSvgAsset != null) ...[
+                  SvgPicture.asset(
+                    leftSvgAsset!,
+                    colorFilter: ColorFilter.mode(
+                      context.colour.onBackground,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  const Gap(16),
+                ] else if (leftIcon != null) ...[
                   Icon(
                     leftIcon,
                     color: context.colour.onBackground,
@@ -255,6 +283,8 @@ class BBButton extends StatelessWidget {
                 label,
                 isBlue: isBlue ?? false,
                 isRed: isRed ?? false,
+                fontSize: fontSize,
+                onSurface: onSurface ?? false,
               ),
               if (centered ?? false) const Spacer(),
             ],

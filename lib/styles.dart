@@ -96,9 +96,9 @@ class Themes {
     ),
     scaffoldBackgroundColor: _Colours.darkGray,
     visualDensity: VisualDensity.comfortable,
-    brightness: Brightness.dark,
+    // brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
       backgroundColor: _Colours.darkGray,
       elevation: 2,
       shadowColor: NewColours.offWhite,
@@ -115,6 +115,7 @@ extension ThemeExtension on BuildContext {
 (TextTheme, String) buildFonts(bool isTest) {
   final family = GoogleFonts.inter().fontFamily!;
   final theme = GoogleFonts.interTextTheme();
+  // final f2 = GoogleFonts.bebasNeue().fontFamily!;
 
   if (isTest) {
     return (theme, family);

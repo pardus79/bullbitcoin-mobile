@@ -153,6 +153,7 @@ class _Screen extends StatelessWidget {
     final showQR = context.select((ReceiveCubit x) => x.state.showQR(swapTx));
 
     final watchOnly = context.select((WalletBloc x) => x.state.wallet!.watchOnly());
+    final mainWallet = context.select((ReceiveCubit x) => x.state.checkIfMainWalletSelected());
 
     return SingleChildScrollView(
       child: Padding(
@@ -163,7 +164,7 @@ class _Screen extends StatelessWidget {
             const Gap(32),
             const ReceiveWalletsDropDown(),
             const Gap(24),
-            if (!watchOnly) ...[
+            if (!watchOnly && mainWallet) ...[
               const SelectWalletType(),
               const Gap(48),
             ],
@@ -206,9 +207,7 @@ class ReceiveWalletsDropDown extends StatelessWidget {
           wallet: wallet.state.wallet!.name ?? wallet.state.wallet!.sourceFingerprint,
       },
       value: walletBloc,
-      onChanged: (bloc) {
-        context.read<ReceiveCubit>().updateWalletBloc(bloc);
-      },
+      onChanged: context.read<ReceiveCubit>().updateWalletBloc,
     );
   }
 }
@@ -219,7 +218,7 @@ class WalletActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLn = context.select((ReceiveCubit x) => x.state.isLn());
-    if (!isLn) return const SizedBox.shrink();
+    if (isLn) return const SizedBox.shrink();
 
     final swap = context.select((SwapCubit _) => _.state.swapTx);
     final show = context.select((ReceiveCubit _) => _.state.showQR(swap));
@@ -234,7 +233,8 @@ class WalletActions extends StatelessWidget {
           BBButton.big(
             buttonKey: UIKeys.receiveRequestPaymentButton,
             label: 'Request payment',
-            leftIcon: Icons.send,
+            // leftIcon: Icons.send,
+            leftSvgAsset: 'assets/request-payment.svg',
             onPressed: () {
               CreateInvoice.openPopUp(context);
             },
@@ -243,7 +243,8 @@ class WalletActions extends StatelessWidget {
         BBButton.big(
           buttonKey: UIKeys.receiveGenerateAddressButton,
           label: 'Get new address',
-          leftIcon: Icons.send,
+          // leftIcon: Icons.send,
+          leftSvgAsset: 'assets/new-address.svg',
           onPressed: () {
             context.read<ReceiveCubit>().generateNewAddress();
           },
@@ -421,17 +422,17 @@ class ReceiveDisplayAddress extends StatefulWidget {
 class _ReceiveDisplayAddressState extends State<ReceiveDisplayAddress> {
   bool showToast = false;
 
-  void _copyClicked() async {
-    if (!mounted) return;
-    setState(() {
-      showToast = true;
-    });
-    await Future.delayed(const Duration(seconds: 2));
-    if (!mounted) return;
-    setState(() {
-      showToast = false;
-    });
-  }
+  // void _copyClicked() async {
+  //   if (!mounted) return;
+  //   setState(() {
+  //     showToast = true;
+  //   });
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   if (!mounted) return;
+  //   setState(() {
+  //     showToast = false;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
