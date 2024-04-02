@@ -590,19 +590,23 @@ class WalletTx {
         if (idxUnsignedTx != -1) {
           if (tx.txid == unsignedTxs[idxUnsignedTx].txid) unsignedTxs.removeAt(idxUnsignedTx);
         }
+        final assetToPick =
+            wallet.network == BBNetwork.LMainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
+        final balances = tx.balances;
+        final finalBalance = balances.where((e) => e.$1 == assetToPick).map((e) => e.$2).first;
         final txObj = Transaction(
           txid: tx.txid,
-          received: tx.kind == 'outgoing' ? 0 : tx.amount,
-          sent: tx.kind == 'outgoing' ? tx.amount : 0,
+          received: tx.kind == 'outgoing' ? 0 : finalBalance,
+          sent: tx.kind == 'outgoing' ? finalBalance : 0,
           fee: tx.fee ?? 0,
           height: 100,
-          timestamp: 0,
+          timestamp: tx.timestamp,
           rbfEnabled: false,
           outAddrs: storedTx?.outAddrs ??
               tx.outputs
                   .map(
                     (e) => Address(
-                      address: e.address,
+                      address: e.scriptPubkey,
                       kind: AddressKind.deposit,
                       state: AddressStatus.active,
                     ),

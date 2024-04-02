@@ -67,13 +67,13 @@ class ImportSelectWalletTypeScreen extends StatelessWidget {
     ];
 
     return BlocListener<ImportWalletCubit, ImportState>(
-      listenWhen: (previous, current) => previous.savedWallet != current.savedWallet,
+      listenWhen: (previous, current) => previous.savedWallets != current.savedWallets,
       listener: (context, state) async {
-        if (state.savedWallet == null) return;
-        final wallet = state.savedWallet!;
-        locator<HomeCubit>().addWallets([wallet]);
+        if (state.savedWallets == null) return;
+        final wallets = state.savedWallets!;
+        locator<HomeCubit>().addWallets(wallets);
         await Future.delayed(300.milliseconds);
-        locator<HomeCubit>().changeMoveToIdx(wallet);
+        locator<HomeCubit>().changeMoveToIdx(wallets[0]);
         await Future.delayed(300.milliseconds);
         context.go('/home');
       },

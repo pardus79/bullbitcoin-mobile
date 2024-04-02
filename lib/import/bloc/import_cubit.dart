@@ -611,6 +611,8 @@ class ImportWalletCubit extends Cubit<ImportState> {
   void saveClicked() async {
     emit(state.copyWith(savingWallet: true, errSavingWallet: ''));
 
+    final List<Wallet> selWallets = [];
+
     Wallet? selectedWallet = state.getSelectWalletDetails();
     if (selectedWallet == null) return;
     selectedWallet = (state.walletLabel != null && state.walletLabel != '')
@@ -671,22 +673,22 @@ class ImportWalletCubit extends Cubit<ImportState> {
         ),
       );
     } else {
+      final wl = (state.walletLabel != null && state.walletLabel != '')
+          ? selectedWallet.copyWith(name: state.walletLabel)
+          : selectedWallet;
+      selWallets.add(wl);
+      /*
+      // TODO: Liquid: Moved to end
       emit(
         state.copyWith(
           savingWallet: false,
-          savedWallet: (state.walletLabel != null && state.walletLabel != '')
-              ? selectedWallet.copyWith(name: state.walletLabel)
-              : selectedWallet,
+          savedWallets: selWallets,
         ),
       );
+      */
     }
 
     final (allWallets, readErr) = await walletRepository.readAllWallets(hiveStore: hiveStorage);
-    emit(
-      state.copyWith(
-        savedWallet: null,
-      ),
-    );
     bool liquidWalletExists = false;
     if (readErr == null) {
       for (final w in allWallets!) {
@@ -722,12 +724,15 @@ class ImportWalletCubit extends Cubit<ImportState> {
         hiveStore: hiveStorage,
       );
 
-      emit(
-        state.copyWith(
-          savedWallet: wsLiquid,
-        ),
-      );
+      selWallets.add(wsLiquid);
     }
+
+    emit(
+      state.copyWith(
+        savingWallet: false,
+        savedWallets: selWallets,
+      ),
+    );
 
     reset();
   }

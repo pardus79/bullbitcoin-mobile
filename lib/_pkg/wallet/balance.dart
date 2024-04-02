@@ -40,15 +40,17 @@ class WalletBalance {
     required Wallet wallet,
   }) async {
     try {
-      final lwkbalance = await lwkWallet.balance();
+      final assetToPick = wallet.network == BBNetwork.LMainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
+      final balances = await lwkWallet.balance();
+      final finalBalance = balances.where((e) => e.$1 == assetToPick).map((e) => e.$2).first;
 
       final balance = Balance(
-        confirmed: lwkbalance.lbtc,
+        confirmed: finalBalance,
         untrustedPending: 0,
         immature: 0,
         trustedPending: 0,
-        spendable: lwkbalance.lbtc,
-        total: lwkbalance.lbtc,
+        spendable: finalBalance,
+        total: finalBalance,
       );
 
       final w = wallet.copyWith(balance: balance.total, fullBalance: balance);
