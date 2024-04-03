@@ -14,6 +14,7 @@ part 'liquid_tx.g.dart';
 
 const hexDecoder = HexDecoder();
 
+// TODO: Update LiquitTx to manage USDT, based on requirement
 @freezed
 class LiquidTx extends Tx with _$LiquidTx {
   factory LiquidTx({
@@ -49,14 +50,12 @@ class LiquidTx extends Tx with _$LiquidTx {
     final balances = t.balances;
     int finalBalance = balances.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first;
 
-    // final ins = sTx['input'] as List;
     List<LiquidTxIn> inputs = [];
     for (int i = 0; i < t.inputs.length; i++) {
       final txIn = await LiquidTxIn.fromNative(t.inputs[i]);
       inputs.add(txIn);
     }
 
-    // final outs = sTx['output'] as List;
     List<LiquidTxOut> outputs = [];
     for (int i = 0; i < t.outputs.length; i++) {
       final txOut = await LiquidTxOut.fromNative(t.outputs[i], wallet.network);
@@ -76,8 +75,8 @@ class LiquidTx extends Tx with _$LiquidTx {
       size: 0,
       weight: 0,
       locktime: 0,
-      inputs: [],
-      outputs: [],
+      inputs: inputs,
+      outputs: outputs,
       toAddress: '',
       walletId: wallet.id, //
     );
@@ -91,6 +90,7 @@ class LiquidOutPoint with _$LiquidOutPoint {
   factory LiquidOutPoint.fromJson(Map<String, dynamic> json) => _$LiquidOutPointFromJson(json);
 }
 
+// TODO: Incomplete: Need update in lwk-dart
 @freezed
 class LiquidTxIn with _$LiquidTxIn {
   static Future<LiquidTxIn> fromNative(lwk.TxOut txIn) async {
@@ -114,11 +114,12 @@ class LiquidTxIn with _$LiquidTxIn {
   factory LiquidTxIn.fromJson(Map<String, dynamic> json) => _$LiquidTxInFromJson(json);
 }
 
+// TODO: Incomplete: Need update in lwk-dart
 @freezed
 class LiquidTxOut with _$LiquidTxOut {
   static Future<LiquidTxOut> fromNative(lwk.TxOut txOut, NetworkType network) async {
     try {
-      return LiquidTxOut(value: txOut.unblinded.value, scriptPubKey: txOut.scriptPubkey, address: '');
+      return LiquidTxOut(value: txOut.unblinded.value, scriptPubKey: txOut.scriptPubkey, address: txOut.scriptPubkey);
     } catch (e) {
       print('Error: $e');
       return LiquidTxOut(value: 0, scriptPubKey: '', address: '');

@@ -35,6 +35,7 @@ mixin _$BitcoinTx {
   List<BitcoinTxIn> get inputs => throw _privateConstructorUsedError;
   List<BitcoinTxOut> get outputs => throw _privateConstructorUsedError;
   String get toAddress => throw _privateConstructorUsedError;
+  List<String> get labels => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -64,6 +65,7 @@ abstract class $BitcoinTxCopyWith<$Res> {
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs,
       String toAddress,
+      List<String> labels,
       String? walletId});
 }
 
@@ -95,6 +97,7 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
     Object? inputs = null,
     Object? outputs = null,
     Object? toAddress = null,
+    Object? labels = null,
     Object? walletId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -158,6 +161,10 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
               as String,
+      labels: null == labels
+          ? _value.labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -190,6 +197,7 @@ abstract class _$$BitcoinTxImplCopyWith<$Res>
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs,
       String toAddress,
+      List<String> labels,
       String? walletId});
 }
 
@@ -219,6 +227,7 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
     Object? inputs = null,
     Object? outputs = null,
     Object? toAddress = null,
+    Object? labels = null,
     Object? walletId = freezed,
   }) {
     return _then(_$BitcoinTxImpl(
@@ -282,6 +291,10 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
               as String,
+      labels: null == labels
+          ? _value._labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -309,9 +322,11 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required this.toAddress,
+      required final List<String> labels = const [],
       required this.walletId})
       : _inputs = inputs,
         _outputs = outputs,
+        _labels = labels,
         super._();
 
   factory _$BitcoinTxImpl.fromJson(Map<String, dynamic> json) =>
@@ -359,12 +374,21 @@ class _$BitcoinTxImpl extends _BitcoinTx {
 
   @override
   final String toAddress;
+  final List<String> _labels;
+  @override
+  @JsonKey()
+  List<String> get labels {
+    if (_labels is EqualUnmodifiableListView) return _labels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_labels);
+  }
+
   @override
   final String? walletId;
 
   @override
   String toString() {
-    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, walletId: $walletId)';
+    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, labels: $labels, walletId: $walletId)';
   }
 
   @override
@@ -391,6 +415,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
             const DeepCollectionEquality().equals(other._outputs, _outputs) &&
             (identical(other.toAddress, toAddress) ||
                 other.toAddress == toAddress) &&
+            const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -414,6 +439,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       const DeepCollectionEquality().hash(_inputs),
       const DeepCollectionEquality().hash(_outputs),
       toAddress,
+      const DeepCollectionEquality().hash(_labels),
       walletId);
 
   @JsonKey(ignore: true)
@@ -447,6 +473,7 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required final String toAddress,
+      required final List<String> labels,
       required final String? walletId}) = _$BitcoinTxImpl;
   _BitcoinTx._() : super._();
 
@@ -483,6 +510,8 @@ abstract class _BitcoinTx extends BitcoinTx {
   List<BitcoinTxOut> get outputs;
   @override
   String get toAddress;
+  @override
+  List<String> get labels;
   @override
   String? get walletId;
   @override

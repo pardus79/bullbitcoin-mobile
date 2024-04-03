@@ -34,6 +34,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required List<BitcoinTxIn> inputs,
     required List<BitcoinTxOut> outputs,
     required String toAddress,
+    @Default([]) required List<String> labels,
     required String? walletId,
   }) = _BitcoinTx;
   BitcoinTx._();

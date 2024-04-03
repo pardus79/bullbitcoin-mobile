@@ -43,6 +43,8 @@ abstract class Tx {
   int? locktime;
 
   String? toAddress;
+
+  List<String>? labels;
   String? walletId;
 
   Map<String, dynamic> toJson();

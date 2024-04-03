@@ -31,13 +31,16 @@ _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
     )
       ..psbt = json['psbt'] as String?
       ..broadcastTime = json['broadcastTime'] as int?
-      ..rbfEnabled = json['rbfEnabled'] as bool?;
+      ..rbfEnabled = json['rbfEnabled'] as bool?
+      ..labels =
+          (json['labels'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$$LiquidTxImplToJson(_$LiquidTxImpl instance) =>
     <String, dynamic>{
       'psbt': instance.psbt,
       'broadcastTime': instance.broadcastTime,
       'rbfEnabled': instance.rbfEnabled,
+      'labels': instance.labels,
       'id': instance.id,
       'type': _$TxTypeEnumMap[instance.type]!,
       'timestamp': instance.timestamp,

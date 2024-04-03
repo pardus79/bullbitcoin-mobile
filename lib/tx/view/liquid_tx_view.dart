@@ -1,5 +1,6 @@
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
+import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
@@ -43,17 +44,16 @@ class LiquidTxView extends StatelessWidget {
               Text(tx?.type.name ?? ''),
               const SizedBox(height: 8),
               const Text('Inputs'),
-              if (tx is BitcoinTx)
+              if (tx is LiquidTx)
                 ...tx.inputs.map((e) {
                   return Column(children: [
                     Text('- ${e.previousOutput.toString()}'),
-                    ...e.witness.map((w) => Text('    - $w')).toList(),
                     const SizedBox(height: 4),
                   ]);
                 }).toList(),
               const SizedBox(height: 8),
               const Text('Outputs'),
-              if (tx is BitcoinTx)
+              if (tx is LiquidTx)
                 ...tx.outputs.map((e) {
                   return Text('- ${e.address}');
                 }).toList(),

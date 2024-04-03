@@ -27,6 +27,10 @@ _$BitcoinTxImpl _$$BitcoinTxImplFromJson(Map<String, dynamic> json) =>
           .map((e) => BitcoinTxOut.fromJson(e as Map<String, dynamic>))
           .toList(),
       toAddress: json['toAddress'] as String,
+      labels: (json['labels'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       walletId: json['walletId'] as String?,
     )
       ..psbt = json['psbt'] as String?
@@ -51,6 +55,7 @@ Map<String, dynamic> _$$BitcoinTxImplToJson(_$BitcoinTxImpl instance) =>
       'inputs': instance.inputs,
       'outputs': instance.outputs,
       'toAddress': instance.toAddress,
+      'labels': instance.labels,
       'walletId': instance.walletId,
     };
 

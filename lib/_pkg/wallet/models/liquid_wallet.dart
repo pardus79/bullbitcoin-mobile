@@ -24,6 +24,7 @@ extension NetworkTypeExtension on NetworkType {
   }
 }
 
+// TODO: Update LiquitWallet to manage USDT, based on requirement
 @freezed
 class LiquidWallet extends Wallet with _$LiquidWallet {
   factory LiquidWallet({
