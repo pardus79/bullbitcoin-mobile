@@ -26,7 +26,6 @@ mixin _$BitcoinTx {
   int get amount => throw _privateConstructorUsedError;
   int get fee => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
-  String get label => throw _privateConstructorUsedError;
   bool get rbfEnabled => throw _privateConstructorUsedError;
   int get version => throw _privateConstructorUsedError;
   int get vsize => throw _privateConstructorUsedError;
@@ -56,7 +55,6 @@ abstract class $BitcoinTxCopyWith<$Res> {
       int amount,
       int fee,
       int height,
-      String label,
       bool rbfEnabled,
       int version,
       int vsize,
@@ -88,7 +86,6 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
-    Object? label = null,
     Object? rbfEnabled = null,
     Object? version = null,
     Object? vsize = null,
@@ -125,10 +122,6 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
       rbfEnabled: null == rbfEnabled
           ? _value.rbfEnabled
           : rbfEnabled // ignore: cast_nullable_to_non_nullable
@@ -188,7 +181,6 @@ abstract class _$$BitcoinTxImplCopyWith<$Res>
       int amount,
       int fee,
       int height,
-      String label,
       bool rbfEnabled,
       int version,
       int vsize,
@@ -218,7 +210,6 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
-    Object? label = null,
     Object? rbfEnabled = null,
     Object? version = null,
     Object? vsize = null,
@@ -255,10 +246,6 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
       rbfEnabled: null == rbfEnabled
           ? _value.rbfEnabled
           : rbfEnabled // ignore: cast_nullable_to_non_nullable
@@ -313,7 +300,6 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required this.amount,
       required this.fee,
       required this.height,
-      required this.label,
       required this.rbfEnabled,
       required this.version,
       required this.vsize,
@@ -322,7 +308,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required this.toAddress,
-      required final List<String> labels = const [],
+      final List<String> labels = const [],
       required this.walletId})
       : _inputs = inputs,
         _outputs = outputs,
@@ -344,8 +330,6 @@ class _$BitcoinTxImpl extends _BitcoinTx {
   final int fee;
   @override
   final int height;
-  @override
-  final String label;
   @override
   final bool rbfEnabled;
   @override
@@ -388,7 +372,7 @@ class _$BitcoinTxImpl extends _BitcoinTx {
 
   @override
   String toString() {
-    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, labels: $labels, walletId: $walletId)';
+    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, labels: $labels, walletId: $walletId)';
   }
 
   @override
@@ -403,7 +387,6 @@ class _$BitcoinTxImpl extends _BitcoinTx {
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.fee, fee) || other.fee == fee) &&
             (identical(other.height, height) || other.height == height) &&
-            (identical(other.label, label) || other.label == label) &&
             (identical(other.rbfEnabled, rbfEnabled) ||
                 other.rbfEnabled == rbfEnabled) &&
             (identical(other.version, version) || other.version == version) &&
@@ -430,7 +413,6 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       amount,
       fee,
       height,
-      label,
       rbfEnabled,
       version,
       vsize,
@@ -464,7 +446,6 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final int amount,
       required final int fee,
       required final int height,
-      required final String label,
       required final bool rbfEnabled,
       required final int version,
       required final int vsize,
@@ -473,7 +454,7 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final List<BitcoinTxIn> inputs,
       required final List<BitcoinTxOut> outputs,
       required final String toAddress,
-      required final List<String> labels,
+      final List<String> labels,
       required final String? walletId}) = _$BitcoinTxImpl;
   _BitcoinTx._() : super._();
 
@@ -492,8 +473,6 @@ abstract class _BitcoinTx extends BitcoinTx {
   int get fee;
   @override
   int get height;
-  @override
-  String get label;
   @override
   bool get rbfEnabled;
   @override

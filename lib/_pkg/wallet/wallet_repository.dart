@@ -27,7 +27,7 @@ class WalletRepository {
     }
   }
 
-  Future<(List<Wallet>?, dynamic)> loadAllWallets() async {
+  Future<(List<Wallet>?, dynamic)> loadWallets() async {
     try {
       final (walletsStr, _) = await storage.getValue('wallets');
       List<dynamic> walletsJson = jsonDecode(walletsStr!);
@@ -43,7 +43,7 @@ class WalletRepository {
     throw UnimplementedError();
   }
 
-  Future<void> saveWallets(List<Wallet> wallets) async {
+  Future<void> persistWallets(List<Wallet> wallets) async {
     List<Map<String, dynamic>> walletsJson = wallets.map((wallet) => wallet.toJson()).toList();
     String encoded = jsonEncode(walletsJson);
     await storage.saveValue(key: 'wallets', value: encoded);

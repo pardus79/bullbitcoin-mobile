@@ -67,36 +67,3 @@ abstract class Tx {
     throw UnimplementedError('Unsupported Tx subclass');
   }
 }
-
-/*
-class Script {
-  final Uint8List inner;
-
-  const Script({
-    required this.inner,
-  });
-}
-
-class OutPoint {
-  OutPoint({required this.txid, required this.vout});
-  String txid;
-  int vout;
-}
-
-class TxIn {
-  TxIn({required this.previousOutput, required this.scriptSig, required this.sequence, this.witness = const []});
-
-  OutPoint previousOutput;
-  Script scriptSig;
-  int sequence;
-  List<String> witness;
-}
-
-class TxOut {
-
-  TxOut({required this.value, required this.scriptPubKey});
-
-  int value;
-  Script scriptPubKey;
-}
-*/

@@ -5,7 +5,7 @@ import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 
 class TxRepository {
-  TxRepository({required this.storage}) {}
+  TxRepository({required this.storage});
 
   HiveStorage storage;
 
@@ -20,9 +20,15 @@ class TxRepository {
     }
   }
 
+  // TODO: Pass List<Tx> as another parameter, which has list of Txs to be merged with
   Future<(List<Tx>?, dynamic)> syncTxs(Wallet wallet) async {
     try {
-      final updatedTxs = await wallet.getTransactions(wallet.type);
+      // TODO: Ideally wallet.getTxs should be split as fetchTxs and processTxs
+      // So first time a tx is fetched from bdk (Not existing in local storage), or unconfirmed txs, it is processed.
+      // which means, first time tx is fetched or for unconfirmed txs, it's inputs, outputs and other fields are processed.
+      // Then, next time, when the same tx is fetched, it's ignored and local Tx version is used.
+
+      final updatedTxs = await wallet.getTxs(wallet.type);
       final sortedTxs = updatedTxs.toList();
       sortedTxs.sort(
         (a, b) => b.timestamp - a.timestamp,
@@ -34,7 +40,7 @@ class TxRepository {
     }
   }
 
-  Future<void> saveTxs(Wallet wallet, List<Tx> txs) async {
+  Future<void> persistTxs(Wallet wallet, List<Tx> txs) async {
     List<Map<String, dynamic>> txsJson = txs.map((tx) => tx.toJson()).toList();
     String encoded = jsonEncode(txsJson);
     await storage.saveValue(key: 'tx.${wallet.id}', value: encoded);

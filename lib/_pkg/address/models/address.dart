@@ -2,6 +2,9 @@ import 'dart:core';
 
 import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 
 enum AddressKind {
   deposit,
@@ -56,12 +59,21 @@ abstract class Address {
     throw UnimplementedError('Unsupported Address subclass');
   }
 
-  // static Future<Tx> loadFromNative(dynamic tx, Wallet w) async {
-  //   if (w.type == WalletType.Bitcoin) {
-  //     return BitcoinTx.loadFromNative(tx, w as BitcoinWallet);
-  //   } else if (w.type == WalletType.Liquid) {
-  //     return LiquidTx.loadFromNative(tx, w as LiquidWallet);
-  //   }
-  //   throw UnimplementedError('Unsupported Tx subclass');
-  // }
+  static Future<Address> getLastUnused(Wallet w) {
+    if (w.type == WalletType.Bitcoin) {
+      return BitcoinAddress.getLastUnused(w as BitcoinWallet);
+    } else if (w.type == WalletType.Liquid) {
+      return LiquidAddress.getLastUnused(w as LiquidWallet);
+    }
+    throw UnimplementedError('Unsupported Address subclass');
+  }
+
+  static Future<Address> loadFromNative(dynamic addr, Wallet w) async {
+    if (w.type == WalletType.Bitcoin) {
+      return BitcoinAddress.loadFromNative(addr, w as BitcoinWallet);
+    } else if (w.type == WalletType.Liquid) {
+      return LiquidAddress.loadFromNative(addr, w as LiquidWallet);
+    }
+    throw UnimplementedError('Unsupported Tx subclass');
+  }
 }

@@ -14,7 +14,6 @@ _$BitcoinTxImpl _$$BitcoinTxImplFromJson(Map<String, dynamic> json) =>
       amount: json['amount'] as int,
       fee: json['fee'] as int,
       height: json['height'] as int,
-      label: json['label'] as String,
       rbfEnabled: json['rbfEnabled'] as bool,
       version: json['version'] as int,
       vsize: json['vsize'] as int,
@@ -33,11 +32,13 @@ _$BitcoinTxImpl _$$BitcoinTxImplFromJson(Map<String, dynamic> json) =>
           const [],
       walletId: json['walletId'] as String?,
     )
+      ..label = json['label'] as String?
       ..psbt = json['psbt'] as String?
       ..broadcastTime = json['broadcastTime'] as int?;
 
 Map<String, dynamic> _$$BitcoinTxImplToJson(_$BitcoinTxImpl instance) =>
     <String, dynamic>{
+      'label': instance.label,
       'psbt': instance.psbt,
       'broadcastTime': instance.broadcastTime,
       'id': instance.id,
@@ -46,7 +47,6 @@ Map<String, dynamic> _$$BitcoinTxImplToJson(_$BitcoinTxImpl instance) =>
       'amount': instance.amount,
       'fee': instance.fee,
       'height': instance.height,
-      'label': instance.label,
       'rbfEnabled': instance.rbfEnabled,
       'version': instance.version,
       'vsize': instance.vsize,

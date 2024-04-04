@@ -25,7 +25,6 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required int amount,
     required int fee,
     required int height,
-    required String label,
     required bool rbfEnabled,
     required int version,
     required int vsize,
@@ -34,7 +33,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required List<BitcoinTxIn> inputs,
     required List<BitcoinTxOut> outputs,
     required String toAddress,
-    @Default([]) required List<String> labels,
+    @Default([]) List<String> labels,
     required String? walletId,
   }) = _BitcoinTx;
   BitcoinTx._();
@@ -76,7 +75,7 @@ class BitcoinTx extends Tx with _$BitcoinTx {
       amount: t.sent - t.received,
       fee: t.fee ?? 0,
       height: t.confirmationTime?.height ?? 0,
-      label: '',
+      labels: [],
       rbfEnabled: isRbf,
       version: version,
       vsize: vsize,
