@@ -34,7 +34,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   void _onLoadAllWallets(LoadAllWallets event, Emitter<WalletState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
 
-    final (wallets, err) = await walletRepository.loadAllWallets();
+    final (wallets, err) = await walletRepository.loadWallets();
     if (err != null) {
       emit(state.copyWith(wallets: [], syncWalletStatus: [], status: LoadStatus.failure, error: err.toString()));
       return;
@@ -83,7 +83,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     }
 
     await completer.future;
-    await walletRepository.saveWallets(state.wallets);
+    await walletRepository.persistWallets(state.wallets);
     // await Future.delayed(const Duration(seconds: 5));
     emit(state.copyWith(status: LoadStatus.success));
     print('OnSyncAllWallets: DONE');

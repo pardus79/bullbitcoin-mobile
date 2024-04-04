@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/address/models/address.dart';
+import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -44,9 +46,24 @@ class LightningWallet extends Wallet with _$LightningWallet {
   */
 
   @override
-  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(WalletType type) async {
     // final txs = await lwkWallet?.txs();
 
     return [] as Iterable<Tx>;
+  }
+
+  @override
+  Future<Address> getAddress(int index) async {
+    return BitcoinAddress(
+        address: 'address',
+        index: 0,
+        kind: AddressKind.deposit,
+        status: AddressStatus.unused,
+        type: AddressType.Lightning,
+        balance: 0,
+        spendable: true,
+        labels: [],
+        txId: '',
+        walletId: '');
   }
 }

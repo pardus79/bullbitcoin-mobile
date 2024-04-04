@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
+import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 
 enum WalletType { Bitcoin, Liquid, Lightning, Usdt }
 
@@ -87,5 +89,7 @@ abstract class Wallet {
     throw UnimplementedError('Unsupported Wallet subclass');
   }
 
-  Future<Iterable<Tx>> getTransactions(WalletType bitcoin);
+  Future<Iterable<Tx>> getTxs(WalletType type);
+
+  Future<Address> getAddress(int index);
 }

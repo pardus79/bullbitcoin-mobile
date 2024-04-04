@@ -17,19 +17,6 @@ class WalletView extends StatelessWidget {
     final loadStatus = context.select((TxBloc cubit) => cubit.state.status);
     final txs = context.select((TxBloc cubit) => cubit.state.txs);
 
-/*
-    if (loadStatus == LoadStatus.loading) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(wallet.name),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-    */
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -40,19 +27,34 @@ class WalletView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          WalletHeading(wallet: wallet, txs: txs),
+          WalletHeader(wallet: wallet, txs: txs),
           Expanded(
             child: TxList(txs: txs),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-          tooltip: 'Load Tx',
-          heroTag: 'loadTx',
-          onPressed: () {
-            context.read<TxBloc>().add(SyncTxs(wallet: wallet));
-          },
-          child: const Icon(Icons.front_loader)),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              context.read<TxBloc>().add(SyncTxs(wallet: wallet));
+            },
+            tooltip: 'Load Tx',
+            heroTag: 'loadTag',
+            child: const Icon(Icons.sync),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              context.read<TxBloc>().add(SyncTxs(wallet: wallet));
+            },
+            tooltip: 'Sync',
+            heroTag: 'syncTag',
+            child: const Icon(Icons.cloud_sync),
+          ),
+        ],
+      ),
     );
   }
 }

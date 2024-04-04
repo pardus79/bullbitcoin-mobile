@@ -1,3 +1,4 @@
+import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
@@ -8,16 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
-  const App({super.key, required this.storage, required this.walletRepository, required this.txRepository});
+  const App(
+      {super.key,
+      required this.storage,
+      required this.walletRepository,
+      required this.txRepository,
+      required this.addressRepository});
 
   final HiveStorage storage;
   final WalletRepository walletRepository;
   final TxRepository txRepository;
+  final AddressRepository addressRepository;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [RepositoryProvider.value(value: walletRepository), RepositoryProvider.value(value: txRepository)],
+      providers: [
+        RepositoryProvider.value(value: walletRepository),
+        RepositoryProvider.value(value: txRepository),
+        RepositoryProvider.value(value: addressRepository)
+      ],
       child: MultiBlocProvider(providers: [
         BlocProvider(
             create: (_) => WalletBloc(walletRepository: walletRepository)

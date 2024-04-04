@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
+import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/constants.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
@@ -77,27 +78,41 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   static Future<Wallet> syncWallet(LiquidWallet w) async {
     print('Syncing via lwk');
 
-    if (w.lwkWallet == null) {
-      print('Wallet is not loaded with bdk. Loading it now');
-      w = await loadNativeSdk(w);
+    try {
+      if (w.lwkWallet == null) {
+        print('Wallet is not loaded with lwk. Loading it now');
+        w = await loadNativeSdk(w);
+      }
+
+      print('sync 1');
+      await w.lwkWallet?.sync(liquidElectrumUrl);
+      print('sync 2');
+
+      String assetIdToPick = w.network == NetworkType.Mainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
+
+      print('sync 3');
+      final balances = await w.lwkWallet?.balance();
+      int finalBalance = balances?.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first ?? 0;
+      print('sync 4');
+
+      return w.copyWith(balance: finalBalance, lastSync: DateTime.now());
+    } catch (e) {
+      print('Error syncing wallet: $e');
+      return w;
     }
-
-    await w.lwkWallet?.sync(liquidElectrumUrl);
-
-    String assetIdToPick = w.network == NetworkType.Mainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
-
-    final balances = await w.lwkWallet?.balance();
-    int finalBalance = balances?.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first ?? 0;
-    // int finalBalance = (await w.lwkWallet?.balance()) as int;
-
-    return w.copyWith(balance: finalBalance, lastSync: DateTime.now());
   }
 
   @override
-  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(WalletType type) async {
     final txs = await lwkWallet?.txs();
     final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 
     return Future.wait(txsFutures);
+  }
+
+  @override
+  Future<Address> getAddress(int index) async {
+    final lwkAddress = await lwkWallet?.addressAtIndex(index);
+    return Address.loadFromNative(lwkAddress, this);
   }
 }

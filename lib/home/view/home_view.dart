@@ -59,15 +59,15 @@ class _HomeViewState extends State<HomeView> {
           FloatingActionButton(
             onPressed: _action1,
             tooltip: 'Load',
-            child: const Icon(Icons.front_loader),
             heroTag: 'loadTag',
+            child: const Icon(Icons.sync),
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: _sync,
             tooltip: 'Sync',
-            child: const Icon(Icons.sync),
             heroTag: 'syncTag',
+            child: const Icon(Icons.cloud_sync),
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.

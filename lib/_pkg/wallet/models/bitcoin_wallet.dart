@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
+import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/constants.dart';
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
@@ -92,10 +93,15 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   }
 
   @override
-  Future<Iterable<Tx>> getTransactions(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(WalletType type) async {
     final txs = await bdkWallet?.listTransactions(true);
     final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 
     return Future.wait(txsFutures);
+  }
+
+  Future<Address> getAddress(int index) async {
+    final bdkAddress = await bdkWallet?.getAddress(addressIndex: bdk.AddressIndex.peek(index: index));
+    return Address.loadFromNative(bdkAddress, this);
   }
 }

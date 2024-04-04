@@ -1,9 +1,13 @@
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/address/bloc/addr_bloc.dart';
+import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-class WalletHeading extends StatelessWidget {
-  const WalletHeading({
+class WalletHeader extends StatelessWidget {
+  const WalletHeader({
     super.key,
     required this.wallet,
     required this.txs,
@@ -42,6 +46,19 @@ class WalletHeading extends StatelessWidget {
                   // Sync button action
                 },
                 child: Text('Sync'),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  context.read<AddrBloc>().add(LoadAddresses(wallet: wallet));
+                  context.read<AddrBloc>().add(SyncAddresss(oldAddresses: [], wallet: wallet));
+                  GoRouter.of(context).push('/address-list');
+                },
+                child: const Text('Address'),
               ),
             ],
           ),
