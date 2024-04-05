@@ -2,6 +2,7 @@ import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
+import 'package:bb_arch/address/bloc/addr_bloc.dart';
 import 'package:bb_arch/router.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
@@ -35,6 +36,7 @@ class App extends StatelessWidget {
               ..add(LoadAllWallets())
               ..add(SyncAllWallets())),
         BlocProvider(create: (_) => TxBloc(txRepository: txRepository)),
+        BlocProvider(create: (_) => AddrBloc(addrRepository: addressRepository)),
       ], child: const AppView()),
     );
   }

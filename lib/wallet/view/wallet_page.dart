@@ -12,12 +12,12 @@ class WalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final txRepository = context.read<TxRepository>();
-    final addressRepository = context.read<AddressRepository>();
+    // final txRepository = context.read<TxRepository>();
+    // final addressRepository = context.read<AddressRepository>();
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => WalletPageCubit()),
-        BlocProvider(create: (_) => AddrBloc(addrRepository: addressRepository)),
+        // BlocProvider(create: (_) => AddrBloc(addrRepository: addressRepository)),
       ],
       child: const WalletView(),
     );

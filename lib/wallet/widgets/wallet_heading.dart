@@ -54,9 +54,25 @@ class WalletHeader extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
+                  // TODO:
+                  // All `push` creates a child of MaterialApp
+                  // So the widget tree looks like this
+                  //  AppView
+                  //    MaterialApp
+                  //      HomePage
+                  //      WalletPage
+                  //      AddressPage (So AddrBloc initalized with WalletPage is not accessible to AddressPage, since they are now siblings)
+                  // rather than
+                  //  AppView
+                  //    MaterialApp
+                  //      HomePage
+                  //        WalletPage
+                  //          AddressPage (So AddrBloc initalized with WalletPage is accessible to AddressPage)
+                  // TODO: Need to find a way to nest widgets.
+                  // For now, moving AddrBloc to AppView to test out Address functionality
                   context.read<AddrBloc>().add(LoadAddresses(wallet: wallet));
                   context.read<AddrBloc>().add(SyncAddresss(oldAddresses: [], wallet: wallet));
-                  GoRouter.of(context).push('/address-list');
+                  GoRouter.of(context).push('/wallet/address-list');
                 },
                 child: const Text('Address'),
               ),
