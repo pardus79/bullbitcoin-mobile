@@ -30,6 +30,8 @@ mixin _$BitcoinAddress {
   List<String>? get labels => throw _privateConstructorUsedError;
   int get txCount => throw _privateConstructorUsedError;
   List<String> get txIds => throw _privateConstructorUsedError;
+  List<String> get receiveTxIds => throw _privateConstructorUsedError;
+  List<String> get sendTxIds => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,6 +57,8 @@ abstract class $BitcoinAddressCopyWith<$Res> {
       List<String>? labels,
       int txCount,
       List<String> txIds,
+      List<String> receiveTxIds,
+      List<String> sendTxIds,
       String? walletId});
 }
 
@@ -81,6 +85,8 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
     Object? labels = freezed,
     Object? txCount = null,
     Object? txIds = null,
+    Object? receiveTxIds = null,
+    Object? sendTxIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -124,6 +130,14 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
           ? _value.txIds
           : txIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      receiveTxIds: null == receiveTxIds
+          ? _value.receiveTxIds
+          : receiveTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      sendTxIds: null == sendTxIds
+          ? _value.sendTxIds
+          : sendTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -151,6 +165,8 @@ abstract class _$$BitcoinAddressImplCopyWith<$Res>
       List<String>? labels,
       int txCount,
       List<String> txIds,
+      List<String> receiveTxIds,
+      List<String> sendTxIds,
       String? walletId});
 }
 
@@ -175,6 +191,8 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
     Object? labels = freezed,
     Object? txCount = null,
     Object? txIds = null,
+    Object? receiveTxIds = null,
+    Object? sendTxIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_$BitcoinAddressImpl(
@@ -218,6 +236,14 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
           ? _value._txIds
           : txIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      receiveTxIds: null == receiveTxIds
+          ? _value._receiveTxIds
+          : receiveTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      sendTxIds: null == sendTxIds
+          ? _value._sendTxIds
+          : sendTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -240,9 +266,13 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       final List<String>? labels = const [],
       this.txCount = 0,
       final List<String> txIds = const [],
+      final List<String> receiveTxIds = const [],
+      final List<String> sendTxIds = const [],
       required this.walletId})
       : _labels = labels,
         _txIds = txIds,
+        _receiveTxIds = receiveTxIds,
+        _sendTxIds = sendTxIds,
         super._();
 
   factory _$BitcoinAddressImpl.fromJson(Map<String, dynamic> json) =>
@@ -287,12 +317,30 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
     return EqualUnmodifiableListView(_txIds);
   }
 
+  final List<String> _receiveTxIds;
+  @override
+  @JsonKey()
+  List<String> get receiveTxIds {
+    if (_receiveTxIds is EqualUnmodifiableListView) return _receiveTxIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_receiveTxIds);
+  }
+
+  final List<String> _sendTxIds;
+  @override
+  @JsonKey()
+  List<String> get sendTxIds {
+    if (_sendTxIds is EqualUnmodifiableListView) return _sendTxIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sendTxIds);
+  }
+
   @override
   final String? walletId;
 
   @override
   String toString() {
-    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, walletId: $walletId)';
+    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, walletId: $walletId)';
   }
 
   @override
@@ -311,6 +359,10 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.txCount, txCount) || other.txCount == txCount) &&
             const DeepCollectionEquality().equals(other._txIds, _txIds) &&
+            const DeepCollectionEquality()
+                .equals(other._receiveTxIds, _receiveTxIds) &&
+            const DeepCollectionEquality()
+                .equals(other._sendTxIds, _sendTxIds) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -329,6 +381,8 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       const DeepCollectionEquality().hash(_labels),
       txCount,
       const DeepCollectionEquality().hash(_txIds),
+      const DeepCollectionEquality().hash(_receiveTxIds),
+      const DeepCollectionEquality().hash(_sendTxIds),
       walletId);
 
   @JsonKey(ignore: true)
@@ -358,6 +412,8 @@ abstract class _BitcoinAddress extends BitcoinAddress {
       final List<String>? labels,
       final int txCount,
       final List<String> txIds,
+      final List<String> receiveTxIds,
+      final List<String> sendTxIds,
       required final String? walletId}) = _$BitcoinAddressImpl;
   _BitcoinAddress._() : super._();
 
@@ -384,6 +440,10 @@ abstract class _BitcoinAddress extends BitcoinAddress {
   int get txCount;
   @override
   List<String> get txIds;
+  @override
+  List<String> get receiveTxIds;
+  @override
+  List<String> get sendTxIds;
   @override
   String? get walletId;
   @override

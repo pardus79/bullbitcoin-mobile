@@ -43,7 +43,7 @@ class AddressRepository {
         // Pick from Txs
         if (wallet.type == WalletType.Bitcoin) {
           BitcoinAddress finalBitcoinAddr = addr as BitcoinAddress;
-          final Set<(BitcoinTx, Address)> txsPaidToThisAddress = {};
+          final Set<BitcoinTx> txsPaidToThisAddress = {};
 
           // Loop to check again receive txs to this address
           for (int i = 0; i < txs.length; i++) {
@@ -56,8 +56,9 @@ class AddressRepository {
                 finalBitcoinAddr = finalBitcoinAddr.copyWith(
                     status: AddressStatus.used,
                     txCount: finalBitcoinAddr.txCount + 1,
-                    balance: finalBitcoinAddr.balance + out.value);
-                txsPaidToThisAddress.add((btx, finalBitcoinAddr));
+                    balance: finalBitcoinAddr.balance + out.value,
+                    receiveTxIds: [...finalBitcoinAddr.receiveTxIds, btx.id]);
+                txsPaidToThisAddress.add(btx);
                 break;
               }
             }
@@ -72,19 +73,22 @@ class AddressRepository {
               final txin = btx.inputs[j];
 
               for (int k = 0; k < txsPaidToThisAddress.length; k++) {
-                final (paidTx, fAddr) = txsPaidToThisAddress.elementAt(k);
+                final paidTx = txsPaidToThisAddress.elementAt(k);
                 if (paidTx.id == txin.previousOutput.txid &&
                     paidTx.outputs[txin.previousOutput.vout].address == finalBitcoinAddr.address) {
                   // Single txn spending from multiple UTXOs should be counted only once.
                   if (txnCounted) {
                     finalBitcoinAddr = finalBitcoinAddr.copyWith(
-                        status: AddressStatus.used,
-                        balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value);
+                      status: AddressStatus.used,
+                      balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
+                    );
                   } else {
                     finalBitcoinAddr = finalBitcoinAddr.copyWith(
-                        status: AddressStatus.used,
-                        txCount: finalBitcoinAddr.txCount + 1,
-                        balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value);
+                      status: AddressStatus.used,
+                      txCount: finalBitcoinAddr.txCount + 1,
+                      balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
+                      sendTxIds: [...finalBitcoinAddr.sendTxIds, btx.id],
+                    );
                     txnCounted = true;
                   }
                 }

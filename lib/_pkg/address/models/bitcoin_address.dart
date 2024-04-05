@@ -19,6 +19,8 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
     @Default([]) List<String>? labels,
     @Default(0) int txCount,
     @Default([]) List<String> txIds,
+    @Default([]) List<String> receiveTxIds,
+    @Default([]) List<String> sendTxIds,
     required String? walletId,
   }) = _BitcoinAddress;
   BitcoinAddress._();

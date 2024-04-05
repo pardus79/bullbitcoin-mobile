@@ -47,6 +47,8 @@ abstract class Address {
   List<String>? labels;
   int txCount = 0;
   List<String> txIds = [];
+  List<String> receiveTxIds = [];
+  List<String> sendTxIds = [];
   String? walletId;
 
   Map<String, dynamic> toJson();

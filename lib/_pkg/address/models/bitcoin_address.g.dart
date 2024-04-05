@@ -23,6 +23,14 @@ _$BitcoinAddressImpl _$$BitcoinAddressImplFromJson(Map<String, dynamic> json) =>
       txIds:
           (json['txIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
+      receiveTxIds: (json['receiveTxIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      sendTxIds: (json['sendTxIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       walletId: json['walletId'] as String?,
     )..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
 
@@ -40,6 +48,8 @@ Map<String, dynamic> _$$BitcoinAddressImplToJson(
       'labels': instance.labels,
       'txCount': instance.txCount,
       'txIds': instance.txIds,
+      'receiveTxIds': instance.receiveTxIds,
+      'sendTxIds': instance.sendTxIds,
       'walletId': instance.walletId,
     };
 

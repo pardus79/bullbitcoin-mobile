@@ -25,11 +25,19 @@ _$LiquidAddressImpl _$$LiquidAddressImplFromJson(Map<String, dynamic> json) =>
           (json['txIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
       walletId: json['walletId'] as String?,
-    )..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
+    )
+      ..state = $enumDecode(_$AddressStatusEnumMap, json['state'])
+      ..receiveTxIds = (json['receiveTxIds'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList()
+      ..sendTxIds =
+          (json['sendTxIds'] as List<dynamic>).map((e) => e as String).toList();
 
 Map<String, dynamic> _$$LiquidAddressImplToJson(_$LiquidAddressImpl instance) =>
     <String, dynamic>{
       'state': _$AddressStatusEnumMap[instance.state]!,
+      'receiveTxIds': instance.receiveTxIds,
+      'sendTxIds': instance.sendTxIds,
       'address': instance.address,
       'confidentialAddress': instance.confidentialAddress,
       'index': instance.index,

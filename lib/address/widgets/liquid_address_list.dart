@@ -27,7 +27,7 @@ class LiquidAddressList extends StatelessWidget {
           onTap: () {
             print('AddressList: addr: $addr');
             context.read<AddrBloc>().add(SelectAddress(address: addr));
-            // GoRouter.of(context).push('wallet/address');
+            // GoRouter.of(context).push('/wallet/address');
           },
         );
       },

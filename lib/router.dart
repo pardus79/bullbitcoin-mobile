@@ -1,4 +1,5 @@
 import 'package:bb_arch/address/view/addr_list_page.dart';
+import 'package:bb_arch/address/view/addr_page.dart';
 import 'package:bb_arch/home/home.dart';
 import 'package:bb_arch/tx/view/tx_page.dart';
 import 'package:bb_arch/wallet/view/wallet_page.dart';
@@ -31,6 +32,11 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
             path: 'address-list',
             builder: (context, state) {
               return const AddressListPage();
+            }),
+        GoRoute(
+            path: 'address',
+            builder: (context, state) {
+              return const AddressPage();
             }),
       ]),
 ]);
