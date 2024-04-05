@@ -31,6 +31,7 @@ class AddressRepository {
 
       for (var i = 0; i <= lastUnused.index; i++) {
         final addr = await wallet.getAddress(i);
+        print(addr.address);
         // TODO: How to make contains work with manually implementing == operator? in Address
         // bool exists = oldAddresses.contains(addr);
         // Address finalAddr = exists ? oldAddresses.firstWhere((element) => element.address == addr.address) : addr;
@@ -40,6 +41,8 @@ class AddressRepository {
         if (wallet.type == WalletType.Bitcoin) {
           BitcoinAddress finalBitcoinAddr = addr as BitcoinAddress;
           final Set<(BitcoinTx, Address)> txsPaidToThisAddress = {};
+
+          // Loop to check again receive txs to this address
           for (int i = 0; i < txs.length; i++) {
             final Tx tx = txs[i];
             final BitcoinTx btx = tx as BitcoinTx;
@@ -47,20 +50,19 @@ class AddressRepository {
             for (int j = 0; j < btx.outputs.length; j++) {
               final out = btx.outputs[j];
               if (out.address == finalBitcoinAddr.address) {
-                // if (out.address.endsWith('628y')) {
-                //   print('Found: ${out.address} in ${btx.id}');
-                // }
-                finalBitcoinAddr =
-                    finalBitcoinAddr.copyWith(status: AddressStatus.used, txCount: finalBitcoinAddr.txCount + 1);
+                finalBitcoinAddr = finalBitcoinAddr.copyWith(
+                    status: AddressStatus.used,
+                    txCount: finalBitcoinAddr.txCount + 1,
+                    balance: finalBitcoinAddr.balance + out.value);
                 txsPaidToThisAddress.add((btx, finalBitcoinAddr));
                 break;
               }
             }
-            //if (finalBitcoinAddr.address.endsWith('628y') && btx.id.endsWith('e394')) {
-            //  print(btx.id);
-            //}
           }
+
+          // Loop to check against spent txs from this address
           for (int i = 0; i < txs.length; i++) {
+            bool txnCounted = false;
             final Tx tx = txs[i];
             final BitcoinTx btx = tx as BitcoinTx;
             for (int j = 0; j < btx.inputs.length; j++) {
@@ -70,39 +72,26 @@ class AddressRepository {
                 final (paidTx, fAddr) = txsPaidToThisAddress.elementAt(k);
                 if (paidTx.id == txin.previousOutput.txid &&
                     paidTx.outputs[txin.previousOutput.vout].address == finalBitcoinAddr.address) {
-                  finalBitcoinAddr =
-                      finalBitcoinAddr.copyWith(status: AddressStatus.used, txCount: finalBitcoinAddr.txCount + 1);
+                  // Single txn spending from multiple UTXOs should be counted only once.
+                  if (txnCounted) {
+                    finalBitcoinAddr = finalBitcoinAddr.copyWith(
+                        status: AddressStatus.used,
+                        balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value);
+                  } else {
+                    finalBitcoinAddr = finalBitcoinAddr.copyWith(
+                        status: AddressStatus.used,
+                        txCount: finalBitcoinAddr.txCount + 1,
+                        balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value);
+                    txnCounted = true;
+                  }
                 }
               }
-
-              // TODO: Also have to match txout
-              // if (txsPaidToThisAddress.map((t) => t.id).contains(txin.previousOutput.txid)) {
-              //   finalBitcoinAddr =
-              //       finalBitcoinAddr.copyWith(status: AddressStatus.used, txCount: finalBitcoinAddr.txCount + 1);
-              // }
             }
           }
           addresses.add(finalBitcoinAddr);
         }
-        /*
-        final address = await bdkWallet.getAddress(
-          addressIndex: bdk.AddressIndex.peek(index: i),
-        );
-        final contain = wallet.myAddressBook.where(
-          (element) => element.address == address.address,
-        );
-        if (contain.isEmpty)
-          addresses.add(
-            Address(
-              address: address.address,
-              index: address.index,
-              kind: AddressKind.deposit,
-              state: AddressStatus.unused,
-            ),
-          );
-          */
       }
-      // Future.delayed(const Duration(milliseconds: 1600));
+
       addresses.sort((a, b) {
         return b.index.compareTo(a.index);
       });
