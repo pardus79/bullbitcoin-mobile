@@ -21,7 +21,7 @@ class AddressListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet);
-    final addresses = context.select((AddrBloc cubit) => cubit.state.addresses);
+    final addresses = context.select((AddrBloc cubit) => cubit.state.depositAddresses);
 
     Widget listView;
     if (wallet?.type == WalletType.Bitcoin) {
@@ -40,7 +40,31 @@ class AddressListView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: listView,
+          child: Column(
+            children: [
+              SegmentedButton<String>(
+                segments: const <ButtonSegment<String>>[
+                  ButtonSegment<String>(
+                    value: 'deposit',
+                    label: Text('Deposit'),
+                  ),
+                  ButtonSegment<String>(
+                    value: 'change',
+                    label: Text('Change'),
+                  ),
+                  ButtonSegment<String>(
+                    value: 'confidential',
+                    label: Text('Confidential'),
+                  ),
+                ],
+                selected: const <String>{'deposit'},
+                onSelectionChanged: (Set<String> newSelection) {
+                  print('onSelectionChanged: $newSelection');
+                },
+              ),
+              listView,
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

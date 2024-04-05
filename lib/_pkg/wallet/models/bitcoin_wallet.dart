@@ -100,8 +100,15 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     return Future.wait(txsFutures);
   }
 
-  Future<Address> getAddress(int index) async {
-    final bdkAddress = await bdkWallet?.getAddress(addressIndex: bdk.AddressIndex.peek(index: index));
-    return Address.loadFromNative(bdkAddress, this);
+  @override
+  Future<Address> getAddress(int index, AddressKind kind) async {
+    bdk.AddressInfo? bdkAddress;
+
+    if (kind == AddressKind.deposit) {
+      bdkAddress = await bdkWallet?.getAddress(addressIndex: bdk.AddressIndex.peek(index: index));
+    } else {
+      bdkAddress = await bdkWallet?.getInternalAddress(addressIndex: bdk.AddressIndex.peek(index: index));
+    }
+    return Address.loadFromNative(bdkAddress, this, kind);
   }
 }

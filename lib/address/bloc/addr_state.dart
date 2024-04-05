@@ -8,7 +8,7 @@ part 'addr_state.freezed.dart';
 class AddressState with _$AddressState {
   const factory AddressState({
     @Default(LoadStatus.initial) LoadStatus status,
-    @Default([]) List<Address> addresses,
+    @Default([]) List<Address> depositAddresses,
     @Default(null) Address? selectedAddress,
     @Default('') String error,
   }) = _AddressState;

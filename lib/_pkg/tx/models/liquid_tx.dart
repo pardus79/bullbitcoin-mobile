@@ -5,7 +5,6 @@ import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hex/hex.dart';
 // import 'package:json_annotation/json_annotation.dart';
-import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
 import 'tx.dart';
 

@@ -53,11 +53,11 @@ class LightningWallet extends Wallet with _$LightningWallet {
   }
 
   @override
-  Future<Address> getAddress(int index) async {
+  Future<Address> getAddress(int index, AddressKind kind) async {
     return BitcoinAddress(
         address: 'address',
         index: 0,
-        kind: AddressKind.deposit,
+        kind: kind,
         status: AddressStatus.unused,
         type: AddressType.Lightning,
         balance: 0,

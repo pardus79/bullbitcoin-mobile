@@ -91,5 +91,5 @@ abstract class Wallet {
 
   Future<Iterable<Tx>> getTxs(WalletType type);
 
-  Future<Address> getAddress(int index);
+  Future<Address> getAddress(int index, AddressKind kind);
 }

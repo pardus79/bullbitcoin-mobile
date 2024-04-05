@@ -111,8 +111,8 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   }
 
   @override
-  Future<Address> getAddress(int index) async {
+  Future<Address> getAddress(int index, AddressKind kind) async {
     final lwkAddress = await lwkWallet?.addressAtIndex(index);
-    return Address.loadFromNative(lwkAddress, this);
+    return Address.loadFromNative(lwkAddress, this, kind);
   }
 }

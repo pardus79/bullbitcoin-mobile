@@ -29,10 +29,10 @@ class AddrBloc extends Bloc<AddressEvent, AddressState> {
 
     final (ads, err) = await addrRepository.listAddresses(event.wallet);
     if (err != null) {
-      emit(state.copyWith(addresses: [], status: LoadStatus.failure, error: err.toString()));
+      emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: err.toString()));
       return;
     }
-    emit(state.copyWith(addresses: ads ?? [], status: LoadStatus.success));
+    emit(state.copyWith(depositAddresses: ads ?? [], status: LoadStatus.success));
   }
 
   void _onSyncAddresses(SyncAddresss event, Emitter<AddressState> emit) async {
@@ -40,14 +40,14 @@ class AddrBloc extends Bloc<AddressEvent, AddressState> {
 
     print('_onSyncAddresses: ${event.wallet.name}');
 
-    final (ads, err) = await addrRepository.syncAddresses(event.txs, event.oldAddresses, event.wallet);
+    final (ads, err) = await addrRepository.syncAddresses(event.txs, event.oldAddresses, event.kind, event.wallet);
     if (err != null) {
-      emit(state.copyWith(addresses: [], status: LoadStatus.failure, error: err.toString()));
+      emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: err.toString()));
       return;
     }
 
     await addrRepository.persistAddresses(event.wallet, ads!);
-    emit(state.copyWith(addresses: ads, status: LoadStatus.success));
+    emit(state.copyWith(depositAddresses: ads, status: LoadStatus.success));
   }
 
   void _onSelectAddress(SelectAddress event, Emitter<AddressState> emit) async {

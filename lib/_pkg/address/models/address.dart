@@ -60,18 +60,18 @@ abstract class Address {
     throw UnimplementedError('Unsupported Address subclass');
   }
 
-  static Future<Address> getLastUnused(Wallet w) {
+  static Future<Address> getLastUnused(Wallet w, AddressKind kind) {
     if (w.type == WalletType.Bitcoin) {
-      return BitcoinAddress.getLastUnused(w as BitcoinWallet);
+      return BitcoinAddress.getLastUnused(w as BitcoinWallet, kind);
     } else if (w.type == WalletType.Liquid) {
       return LiquidAddress.getLastUnused(w as LiquidWallet);
     }
     throw UnimplementedError('Unsupported Address subclass');
   }
 
-  static Future<Address> loadFromNative(dynamic addr, Wallet w) async {
+  static Future<Address> loadFromNative(dynamic addr, Wallet w, AddressKind kind) async {
     if (w.type == WalletType.Bitcoin) {
-      return BitcoinAddress.loadFromNative(addr, w as BitcoinWallet);
+      return BitcoinAddress.loadFromNative(addr, w as BitcoinWallet, kind);
     } else if (w.type == WalletType.Liquid) {
       return LiquidAddress.loadFromNative(addr, w as LiquidWallet);
     }

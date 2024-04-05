@@ -1,3 +1,4 @@
+import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
@@ -71,10 +72,12 @@ class WalletHeader extends StatelessWidget {
                   //      HomePage
                   //        WalletPage
                   //          AddressPage (So AddrBloc initalized with WalletPage is accessible to AddressPage)
-                  // TODO: Need to find a way to nest widgets.
+                  // TODO: Need to find a way to nest widgets via Routing.
                   // For now, moving AddrBloc to AppView to test out Address functionality
                   context.read<AddrBloc>().add(LoadAddresses(wallet: wallet));
-                  context.read<AddrBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet));
+                  context
+                      .read<AddrBloc>()
+                      .add(SyncAddresss(txs: txs, oldAddresses: [], kind: AddressKind.deposit, wallet: wallet));
                   GoRouter.of(context).push('/wallet/address-list');
                 },
                 child: const Text('Address'),

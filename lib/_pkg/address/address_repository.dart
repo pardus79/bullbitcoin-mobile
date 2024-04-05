@@ -23,14 +23,17 @@ class AddressRepository {
     }
   }
 
-  Future<(List<Address>?, dynamic)> syncAddresses(List<Tx> txs, List<Address> oldAddresses, Wallet wallet) async {
+  // TODO: Potential optimization: Do this sync/merge only if txlist.length, lastUnused, wallet balance differ from what's there in storage.
+  // Otherwise, skip this operation and go with previous calculation that is stored in storage.
+  Future<(List<Address>?, dynamic)> syncAddresses(
+      List<Tx> txs, List<Address> oldAddresses, AddressKind kind, Wallet wallet) async {
     try {
-      final lastUnused = await Address.getLastUnused(wallet);
+      final lastUnused = await Address.getLastUnused(wallet, kind);
 
       List<Address> addresses = [];
 
       for (var i = 0; i <= lastUnused.index; i++) {
-        final addr = await wallet.getAddress(i);
+        final addr = await wallet.getAddress(i, kind);
         print(addr.address);
         // TODO: How to make contains work with manually implementing == operator? in Address
         // bool exists = oldAddresses.contains(addr);

@@ -25,21 +25,29 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
 
   factory BitcoinAddress.fromJson(Map<String, dynamic> json) => _$BitcoinAddressFromJson(json);
 
-  static Future<BitcoinAddress> getLastUnused(BitcoinWallet wallet) async {
-    final lastUnused = await wallet.bdkWallet!.getAddress(
-      addressIndex: const bdk.AddressIndex.lastUnused(),
-    );
+  static Future<BitcoinAddress> getLastUnused(BitcoinWallet wallet, AddressKind kind) async {
+    bdk.AddressInfo lastUnused;
+
+    if (kind == AddressKind.deposit) {
+      lastUnused = await wallet.bdkWallet!.getAddress(
+        addressIndex: const bdk.AddressIndex.lastUnused(),
+      );
+    } else {
+      lastUnused = await wallet.bdkWallet!.getInternalAddress(
+        addressIndex: const bdk.AddressIndex.lastUnused(),
+      );
+    }
 
     return BitcoinAddress(
         address: lastUnused.address,
         index: lastUnused.index,
-        kind: AddressKind.deposit,
+        kind: kind,
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
         walletId: wallet.id);
   }
 
-  static Future<Address> loadFromNative(dynamic addr, BitcoinWallet wallet) async {
+  static Future<Address> loadFromNative(dynamic addr, BitcoinWallet wallet, AddressKind kind) async {
     if (addr is! bdk.AddressInfo) {
       throw TypeError();
     }
@@ -47,7 +55,7 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
     return BitcoinAddress(
         address: addr.address,
         index: addr.index,
-        kind: AddressKind.deposit,
+        kind: kind,
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
         walletId: wallet.id);
