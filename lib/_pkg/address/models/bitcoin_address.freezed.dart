@@ -28,7 +28,8 @@ mixin _$BitcoinAddress {
   int get balance => throw _privateConstructorUsedError;
   bool get spendable => throw _privateConstructorUsedError;
   List<String>? get labels => throw _privateConstructorUsedError;
-  String? get txId => throw _privateConstructorUsedError;
+  int get txCount => throw _privateConstructorUsedError;
+  List<String> get txIds => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,7 +53,8 @@ abstract class $BitcoinAddressCopyWith<$Res> {
       int balance,
       bool spendable,
       List<String>? labels,
-      String? txId,
+      int txCount,
+      List<String> txIds,
       String? walletId});
 }
 
@@ -77,7 +79,8 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
     Object? balance = null,
     Object? spendable = null,
     Object? labels = freezed,
-    Object? txId = freezed,
+    Object? txCount = null,
+    Object? txIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -113,10 +116,14 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
           ? _value.labels
           : labels // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      txId: freezed == txId
-          ? _value.txId
-          : txId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      txCount: null == txCount
+          ? _value.txCount
+          : txCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      txIds: null == txIds
+          ? _value.txIds
+          : txIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -142,7 +149,8 @@ abstract class _$$BitcoinAddressImplCopyWith<$Res>
       int balance,
       bool spendable,
       List<String>? labels,
-      String? txId,
+      int txCount,
+      List<String> txIds,
       String? walletId});
 }
 
@@ -165,7 +173,8 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
     Object? balance = null,
     Object? spendable = null,
     Object? labels = freezed,
-    Object? txId = freezed,
+    Object? txCount = null,
+    Object? txIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_$BitcoinAddressImpl(
@@ -201,10 +210,14 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
           ? _value._labels
           : labels // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      txId: freezed == txId
-          ? _value.txId
-          : txId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      txCount: null == txCount
+          ? _value.txCount
+          : txCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      txIds: null == txIds
+          ? _value._txIds
+          : txIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -222,12 +235,14 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       required this.kind,
       required this.status,
       required this.type,
-      required this.balance,
-      required this.spendable,
-      required final List<String>? labels,
-      required this.txId,
+      this.balance = 0,
+      this.spendable = true,
+      final List<String>? labels = const [],
+      this.txCount = 0,
+      final List<String> txIds = const [],
       required this.walletId})
       : _labels = labels,
+        _txIds = txIds,
         super._();
 
   factory _$BitcoinAddressImpl.fromJson(Map<String, dynamic> json) =>
@@ -244,11 +259,14 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
   @override
   final AddressType type;
   @override
+  @JsonKey()
   final int balance;
   @override
+  @JsonKey()
   final bool spendable;
   final List<String>? _labels;
   @override
+  @JsonKey()
   List<String>? get labels {
     final value = _labels;
     if (value == null) return null;
@@ -258,13 +276,23 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
   }
 
   @override
-  final String? txId;
+  @JsonKey()
+  final int txCount;
+  final List<String> _txIds;
+  @override
+  @JsonKey()
+  List<String> get txIds {
+    if (_txIds is EqualUnmodifiableListView) return _txIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_txIds);
+  }
+
   @override
   final String? walletId;
 
   @override
   String toString() {
-    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txId: $txId, walletId: $walletId)';
+    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, walletId: $walletId)';
   }
 
   @override
@@ -281,7 +309,8 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
             (identical(other.spendable, spendable) ||
                 other.spendable == spendable) &&
             const DeepCollectionEquality().equals(other._labels, _labels) &&
-            (identical(other.txId, txId) || other.txId == txId) &&
+            (identical(other.txCount, txCount) || other.txCount == txCount) &&
+            const DeepCollectionEquality().equals(other._txIds, _txIds) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -298,7 +327,8 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       balance,
       spendable,
       const DeepCollectionEquality().hash(_labels),
-      txId,
+      txCount,
+      const DeepCollectionEquality().hash(_txIds),
       walletId);
 
   @JsonKey(ignore: true)
@@ -323,10 +353,11 @@ abstract class _BitcoinAddress extends BitcoinAddress {
       required final AddressKind kind,
       required final AddressStatus status,
       required final AddressType type,
-      required final int balance,
-      required final bool spendable,
-      required final List<String>? labels,
-      required final String? txId,
+      final int balance,
+      final bool spendable,
+      final List<String>? labels,
+      final int txCount,
+      final List<String> txIds,
       required final String? walletId}) = _$BitcoinAddressImpl;
   _BitcoinAddress._() : super._();
 
@@ -350,7 +381,9 @@ abstract class _BitcoinAddress extends BitcoinAddress {
   @override
   List<String>? get labels;
   @override
-  String? get txId;
+  int get txCount;
+  @override
+  List<String> get txIds;
   @override
   String? get walletId;
   @override

@@ -13,11 +13,16 @@ _$BitcoinAddressImpl _$$BitcoinAddressImplFromJson(Map<String, dynamic> json) =>
       kind: $enumDecode(_$AddressKindEnumMap, json['kind']),
       status: $enumDecode(_$AddressStatusEnumMap, json['status']),
       type: $enumDecode(_$AddressTypeEnumMap, json['type']),
-      balance: json['balance'] as int,
-      spendable: json['spendable'] as bool,
-      labels:
-          (json['labels'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      txId: json['txId'] as String?,
+      balance: json['balance'] as int? ?? 0,
+      spendable: json['spendable'] as bool? ?? true,
+      labels: (json['labels'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      txCount: json['txCount'] as int? ?? 0,
+      txIds:
+          (json['txIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
       walletId: json['walletId'] as String?,
     )..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
 
@@ -33,7 +38,8 @@ Map<String, dynamic> _$$BitcoinAddressImplToJson(
       'balance': instance.balance,
       'spendable': instance.spendable,
       'labels': instance.labels,
-      'txId': instance.txId,
+      'txCount': instance.txCount,
+      'txIds': instance.txIds,
       'walletId': instance.walletId,
     };
 

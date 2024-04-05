@@ -6,7 +6,7 @@ import 'package:lwk_dart/lwk_dart.dart' as lwk;
 part 'liquid_address.freezed.dart';
 part 'liquid_address.g.dart';
 
-// TODO: Update LiquitAddress, based on requirement
+// TODO: Update LiquidAddress, based on requirement
 @freezed
 class LiquidAddress extends Address with _$LiquidAddress {
   factory LiquidAddress({
@@ -16,10 +16,11 @@ class LiquidAddress extends Address with _$LiquidAddress {
     required AddressKind kind,
     required AddressStatus status,
     required AddressType type,
-    required int balance,
-    required bool spendable,
-    required List<String>? labels,
-    required String? txId,
+    @Default(0) int balance,
+    @Default(true) bool spendable,
+    @Default([]) List<String>? labels,
+    @Default(0) int txCount,
+    @Default([]) List<String> txIds,
     required String? walletId,
   }) = _LiquidAddress;
   LiquidAddress._();
@@ -36,10 +37,6 @@ class LiquidAddress extends Address with _$LiquidAddress {
         kind: AddressKind.deposit,
         status: AddressStatus.unused,
         type: AddressType.Liquid,
-        balance: 0,
-        spendable: true,
-        labels: [],
-        txId: '',
         walletId: wallet.id);
   }
 
@@ -55,10 +52,6 @@ class LiquidAddress extends Address with _$LiquidAddress {
         kind: AddressKind.deposit,
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
-        balance: 0,
-        spendable: true,
-        labels: [],
-        txId: '',
         walletId: wallet.id);
   }
 }

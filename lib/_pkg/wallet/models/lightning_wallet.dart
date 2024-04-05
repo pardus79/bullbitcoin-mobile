@@ -63,7 +63,6 @@ class LightningWallet extends Wallet with _$LightningWallet {
         balance: 0,
         spendable: true,
         labels: [],
-        txId: '',
         walletId: '');
   }
 }

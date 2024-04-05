@@ -14,10 +14,11 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
     required AddressKind kind,
     required AddressStatus status,
     required AddressType type,
-    required int balance,
-    required bool spendable,
-    required List<String>? labels,
-    required String? txId,
+    @Default(0) int balance,
+    @Default(true) bool spendable,
+    @Default([]) List<String>? labels,
+    @Default(0) int txCount,
+    @Default([]) List<String> txIds,
     required String? walletId,
   }) = _BitcoinAddress;
   BitcoinAddress._();
@@ -35,10 +36,6 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
         kind: AddressKind.deposit,
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
-        balance: 0,
-        spendable: true,
-        labels: [],
-        txId: '',
         walletId: wallet.id);
   }
 
@@ -53,10 +50,6 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
         kind: AddressKind.deposit,
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
-        balance: 0,
-        spendable: true,
-        labels: [],
-        txId: '',
         walletId: wallet.id);
   }
 }

@@ -45,7 +45,8 @@ abstract class Address {
   int balance = 0;
   bool spendable = true;
   List<String>? labels;
-  String? txId;
+  int txCount = 0;
+  List<String> txIds = [];
   String? walletId;
 
   Map<String, dynamic> toJson();

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/misc.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/address/bloc/addr_state.dart';
@@ -39,14 +40,14 @@ class AddrBloc extends Bloc<AddressEvent, AddressState> {
 
     print('_onSyncAddresses: ${event.wallet.name}');
 
-    final (ads, err) = await addrRepository.syncAddresses(event.oldAddresses, event.wallet);
+    final (ads, err) = await addrRepository.syncAddresses(event.txs, event.oldAddresses, event.wallet);
     if (err != null) {
       emit(state.copyWith(addresses: [], status: LoadStatus.failure, error: err.toString()));
       return;
     }
-    // await txRepository.persistTxs(event.wallet, txs!);
-    // */
-    emit(state.copyWith(addresses: ads!, status: LoadStatus.success));
+
+    await addrRepository.persistAddresses(event.wallet, ads!);
+    emit(state.copyWith(addresses: ads, status: LoadStatus.success));
   }
 
   void _onSelectAddress(SelectAddress event, Emitter<AddressState> emit) async {

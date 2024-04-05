@@ -1,6 +1,7 @@
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
+import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,8 @@ class WalletHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final txs = context.select((TxBloc cubit) => cubit.state.txs);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -71,7 +74,7 @@ class WalletHeader extends StatelessWidget {
                   // TODO: Need to find a way to nest widgets.
                   // For now, moving AddrBloc to AppView to test out Address functionality
                   context.read<AddrBloc>().add(LoadAddresses(wallet: wallet));
-                  context.read<AddrBloc>().add(SyncAddresss(oldAddresses: [], wallet: wallet));
+                  context.read<AddrBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet));
                   GoRouter.of(context).push('/wallet/address-list');
                 },
                 child: const Text('Address'),

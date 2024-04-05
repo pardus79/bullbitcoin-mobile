@@ -22,7 +22,7 @@ class BitcoinAddressList extends StatelessWidget {
         BitcoinAddress addr = addresses[index];
         return ListTile(
           title: Text(addr.address),
-          subtitle: Text(addr.index.toString()),
+          subtitle: Text('Index: ${addr.index.toString()}, Tx: ${addr.txCount.toString()}'),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             print('AddressList: addr: $addr');
