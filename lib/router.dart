@@ -10,6 +10,7 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 // ignore: slash_for_doc_comments
 /**
+ * TODO:
  * Ideal routes:
  *  / - HomePage
  *  /wallet/{walletId} - WalletPage
@@ -19,6 +20,10 @@ final navigatorKey = GlobalKey<NavigatorState>();
  *  /wallet/{walletId}/settings - WalletSettingsPage
  *  /send - SendPage
  *  /receive - ReceivePage
+ * This way, we can have navs from Tx to Address page and then to a different Tx.
+ * And able to navigate back with h/w back button.
+ * Since state will be updated based on route url paramters.
+ * Will have good cache at repo layer, to avoid unnecessary network calls.
  */
 final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/', routes: <RouteBase>[
   GoRoute(

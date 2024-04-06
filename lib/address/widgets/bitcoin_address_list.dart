@@ -27,7 +27,7 @@ class BitcoinAddressList extends StatelessWidget {
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             print('AddressList: addr: $addr');
-            context.read<AddrBloc>().add(SelectAddress(address: addr));
+            context.read<AddressBloc>().add(SelectAddress(address: addr));
             GoRouter.of(context).push('/wallet/address');
           },
         );

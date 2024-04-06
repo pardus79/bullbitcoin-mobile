@@ -9,7 +9,7 @@ class AddressListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loading = context.select((AddrBloc cubit) => cubit.state.status == LoadStatus.loading);
+    final loading = context.select((AddressBloc cubit) => cubit.state.status == LoadStatus.loading);
 
     if (loading) {
       return Scaffold(

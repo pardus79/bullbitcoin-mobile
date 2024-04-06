@@ -13,10 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'addr_event.dart';
 
-class AddrBloc extends Bloc<AddressEvent, AddressState> {
+class AddressBloc extends Bloc<AddressEvent, AddressState> {
   final AddressRepository addrRepository;
 
-  AddrBloc({required this.addrRepository}) : super(const AddressState()) {
+  AddressBloc({required this.addrRepository}) : super(const AddressState()) {
     on<LoadAddresses>(_onLoadAddresses);
     on<SyncAddresss>(_onSyncAddresses);
     on<SelectAddress>(_onSelectAddress);

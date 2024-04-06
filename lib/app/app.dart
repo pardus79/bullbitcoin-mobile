@@ -36,7 +36,7 @@ class App extends StatelessWidget {
               ..add(LoadAllWallets())
               ..add(SyncAllWallets())),
         BlocProvider(create: (_) => TxBloc(txRepository: txRepository)),
-        BlocProvider(create: (_) => AddrBloc(addrRepository: addressRepository)),
+        BlocProvider(create: (_) => AddressBloc(addrRepository: addressRepository)),
       ], child: const AppView()),
     );
   }

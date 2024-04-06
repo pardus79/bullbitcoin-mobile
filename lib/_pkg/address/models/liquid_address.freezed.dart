@@ -20,8 +20,9 @@ LiquidAddress _$LiquidAddressFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LiquidAddress {
-  String get address => throw _privateConstructorUsedError;
-  String get confidentialAddress => throw _privateConstructorUsedError;
+  String get address =>
+      throw _privateConstructorUsedError; // THIS IS CONFIDENTIAL ADDRESS
+  String get regularAddress => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
   AddressKind get kind => throw _privateConstructorUsedError;
   AddressStatus get status => throw _privateConstructorUsedError;
@@ -31,6 +32,8 @@ mixin _$LiquidAddress {
   List<String>? get labels => throw _privateConstructorUsedError;
   int get txCount => throw _privateConstructorUsedError;
   List<String> get txIds => throw _privateConstructorUsedError;
+  List<String> get receiveTxIds => throw _privateConstructorUsedError;
+  List<String> get sendTxIds => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,7 +50,7 @@ abstract class $LiquidAddressCopyWith<$Res> {
   @useResult
   $Res call(
       {String address,
-      String confidentialAddress,
+      String regularAddress,
       int index,
       AddressKind kind,
       AddressStatus status,
@@ -57,6 +60,8 @@ abstract class $LiquidAddressCopyWith<$Res> {
       List<String>? labels,
       int txCount,
       List<String> txIds,
+      List<String> receiveTxIds,
+      List<String> sendTxIds,
       String? walletId});
 }
 
@@ -74,7 +79,7 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
   @override
   $Res call({
     Object? address = null,
-    Object? confidentialAddress = null,
+    Object? regularAddress = null,
     Object? index = null,
     Object? kind = null,
     Object? status = null,
@@ -84,6 +89,8 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
     Object? labels = freezed,
     Object? txCount = null,
     Object? txIds = null,
+    Object? receiveTxIds = null,
+    Object? sendTxIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_value.copyWith(
@@ -91,9 +98,9 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String,
-      confidentialAddress: null == confidentialAddress
-          ? _value.confidentialAddress
-          : confidentialAddress // ignore: cast_nullable_to_non_nullable
+      regularAddress: null == regularAddress
+          ? _value.regularAddress
+          : regularAddress // ignore: cast_nullable_to_non_nullable
               as String,
       index: null == index
           ? _value.index
@@ -131,6 +138,14 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
           ? _value.txIds
           : txIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      receiveTxIds: null == receiveTxIds
+          ? _value.receiveTxIds
+          : receiveTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      sendTxIds: null == sendTxIds
+          ? _value.sendTxIds
+          : sendTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -149,7 +164,7 @@ abstract class _$$LiquidAddressImplCopyWith<$Res>
   @useResult
   $Res call(
       {String address,
-      String confidentialAddress,
+      String regularAddress,
       int index,
       AddressKind kind,
       AddressStatus status,
@@ -159,6 +174,8 @@ abstract class _$$LiquidAddressImplCopyWith<$Res>
       List<String>? labels,
       int txCount,
       List<String> txIds,
+      List<String> receiveTxIds,
+      List<String> sendTxIds,
       String? walletId});
 }
 
@@ -174,7 +191,7 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? address = null,
-    Object? confidentialAddress = null,
+    Object? regularAddress = null,
     Object? index = null,
     Object? kind = null,
     Object? status = null,
@@ -184,6 +201,8 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
     Object? labels = freezed,
     Object? txCount = null,
     Object? txIds = null,
+    Object? receiveTxIds = null,
+    Object? sendTxIds = null,
     Object? walletId = freezed,
   }) {
     return _then(_$LiquidAddressImpl(
@@ -191,9 +210,9 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String,
-      confidentialAddress: null == confidentialAddress
-          ? _value.confidentialAddress
-          : confidentialAddress // ignore: cast_nullable_to_non_nullable
+      regularAddress: null == regularAddress
+          ? _value.regularAddress
+          : regularAddress // ignore: cast_nullable_to_non_nullable
               as String,
       index: null == index
           ? _value.index
@@ -231,6 +250,14 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
           ? _value._txIds
           : txIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      receiveTxIds: null == receiveTxIds
+          ? _value._receiveTxIds
+          : receiveTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      sendTxIds: null == sendTxIds
+          ? _value._sendTxIds
+          : sendTxIds // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -244,7 +271,7 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
 class _$LiquidAddressImpl extends _LiquidAddress {
   _$LiquidAddressImpl(
       {required this.address,
-      required this.confidentialAddress,
+      required this.regularAddress,
       required this.index,
       required this.kind,
       required this.status,
@@ -254,9 +281,13 @@ class _$LiquidAddressImpl extends _LiquidAddress {
       final List<String>? labels = const [],
       this.txCount = 0,
       final List<String> txIds = const [],
+      final List<String> receiveTxIds = const [],
+      final List<String> sendTxIds = const [],
       required this.walletId})
       : _labels = labels,
         _txIds = txIds,
+        _receiveTxIds = receiveTxIds,
+        _sendTxIds = sendTxIds,
         super._();
 
   factory _$LiquidAddressImpl.fromJson(Map<String, dynamic> json) =>
@@ -264,8 +295,9 @@ class _$LiquidAddressImpl extends _LiquidAddress {
 
   @override
   final String address;
+// THIS IS CONFIDENTIAL ADDRESS
   @override
-  final String confidentialAddress;
+  final String regularAddress;
   @override
   final int index;
   @override
@@ -303,12 +335,30 @@ class _$LiquidAddressImpl extends _LiquidAddress {
     return EqualUnmodifiableListView(_txIds);
   }
 
+  final List<String> _receiveTxIds;
+  @override
+  @JsonKey()
+  List<String> get receiveTxIds {
+    if (_receiveTxIds is EqualUnmodifiableListView) return _receiveTxIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_receiveTxIds);
+  }
+
+  final List<String> _sendTxIds;
+  @override
+  @JsonKey()
+  List<String> get sendTxIds {
+    if (_sendTxIds is EqualUnmodifiableListView) return _sendTxIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sendTxIds);
+  }
+
   @override
   final String? walletId;
 
   @override
   String toString() {
-    return 'LiquidAddress(address: $address, confidentialAddress: $confidentialAddress, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, walletId: $walletId)';
+    return 'LiquidAddress(address: $address, regularAddress: $regularAddress, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, walletId: $walletId)';
   }
 
   @override
@@ -317,8 +367,8 @@ class _$LiquidAddressImpl extends _LiquidAddress {
         (other.runtimeType == runtimeType &&
             other is _$LiquidAddressImpl &&
             (identical(other.address, address) || other.address == address) &&
-            (identical(other.confidentialAddress, confidentialAddress) ||
-                other.confidentialAddress == confidentialAddress) &&
+            (identical(other.regularAddress, regularAddress) ||
+                other.regularAddress == regularAddress) &&
             (identical(other.index, index) || other.index == index) &&
             (identical(other.kind, kind) || other.kind == kind) &&
             (identical(other.status, status) || other.status == status) &&
@@ -329,6 +379,10 @@ class _$LiquidAddressImpl extends _LiquidAddress {
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.txCount, txCount) || other.txCount == txCount) &&
             const DeepCollectionEquality().equals(other._txIds, _txIds) &&
+            const DeepCollectionEquality()
+                .equals(other._receiveTxIds, _receiveTxIds) &&
+            const DeepCollectionEquality()
+                .equals(other._sendTxIds, _sendTxIds) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -338,7 +392,7 @@ class _$LiquidAddressImpl extends _LiquidAddress {
   int get hashCode => Object.hash(
       runtimeType,
       address,
-      confidentialAddress,
+      regularAddress,
       index,
       kind,
       status,
@@ -348,6 +402,8 @@ class _$LiquidAddressImpl extends _LiquidAddress {
       const DeepCollectionEquality().hash(_labels),
       txCount,
       const DeepCollectionEquality().hash(_txIds),
+      const DeepCollectionEquality().hash(_receiveTxIds),
+      const DeepCollectionEquality().hash(_sendTxIds),
       walletId);
 
   @JsonKey(ignore: true)
@@ -367,7 +423,7 @@ class _$LiquidAddressImpl extends _LiquidAddress {
 abstract class _LiquidAddress extends LiquidAddress {
   factory _LiquidAddress(
       {required final String address,
-      required final String confidentialAddress,
+      required final String regularAddress,
       required final int index,
       required final AddressKind kind,
       required final AddressStatus status,
@@ -377,6 +433,8 @@ abstract class _LiquidAddress extends LiquidAddress {
       final List<String>? labels,
       final int txCount,
       final List<String> txIds,
+      final List<String> receiveTxIds,
+      final List<String> sendTxIds,
       required final String? walletId}) = _$LiquidAddressImpl;
   _LiquidAddress._() : super._();
 
@@ -385,8 +443,8 @@ abstract class _LiquidAddress extends LiquidAddress {
 
   @override
   String get address;
-  @override
-  String get confidentialAddress;
+  @override // THIS IS CONFIDENTIAL ADDRESS
+  String get regularAddress;
   @override
   int get index;
   @override
@@ -405,6 +463,10 @@ abstract class _LiquidAddress extends LiquidAddress {
   int get txCount;
   @override
   List<String> get txIds;
+  @override
+  List<String> get receiveTxIds;
+  @override
+  List<String> get sendTxIds;
   @override
   String? get walletId;
   @override

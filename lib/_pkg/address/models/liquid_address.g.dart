@@ -9,7 +9,7 @@ part of 'liquid_address.dart';
 _$LiquidAddressImpl _$$LiquidAddressImplFromJson(Map<String, dynamic> json) =>
     _$LiquidAddressImpl(
       address: json['address'] as String,
-      confidentialAddress: json['confidentialAddress'] as String,
+      regularAddress: json['regularAddress'] as String,
       index: json['index'] as int,
       kind: $enumDecode(_$AddressKindEnumMap, json['kind']),
       status: $enumDecode(_$AddressStatusEnumMap, json['status']),
@@ -24,22 +24,22 @@ _$LiquidAddressImpl _$$LiquidAddressImplFromJson(Map<String, dynamic> json) =>
       txIds:
           (json['txIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const [],
+      receiveTxIds: (json['receiveTxIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      sendTxIds: (json['sendTxIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       walletId: json['walletId'] as String?,
-    )
-      ..state = $enumDecode(_$AddressStatusEnumMap, json['state'])
-      ..receiveTxIds = (json['receiveTxIds'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList()
-      ..sendTxIds =
-          (json['sendTxIds'] as List<dynamic>).map((e) => e as String).toList();
+    )..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
 
 Map<String, dynamic> _$$LiquidAddressImplToJson(_$LiquidAddressImpl instance) =>
     <String, dynamic>{
       'state': _$AddressStatusEnumMap[instance.state]!,
-      'receiveTxIds': instance.receiveTxIds,
-      'sendTxIds': instance.sendTxIds,
       'address': instance.address,
-      'confidentialAddress': instance.confidentialAddress,
+      'regularAddress': instance.regularAddress,
       'index': instance.index,
       'kind': _$AddressKindEnumMap[instance.kind]!,
       'status': _$AddressStatusEnumMap[instance.status]!,
@@ -49,6 +49,8 @@ Map<String, dynamic> _$$LiquidAddressImplToJson(_$LiquidAddressImpl instance) =>
       'labels': instance.labels,
       'txCount': instance.txCount,
       'txIds': instance.txIds,
+      'receiveTxIds': instance.receiveTxIds,
+      'sendTxIds': instance.sendTxIds,
       'walletId': instance.walletId,
     };
 
@@ -56,6 +58,7 @@ const _$AddressKindEnumMap = {
   AddressKind.deposit: 'deposit',
   AddressKind.change: 'change',
   AddressKind.external: 'external',
+  AddressKind.confidential: 'confidential',
 };
 
 const _$AddressStatusEnumMap = {

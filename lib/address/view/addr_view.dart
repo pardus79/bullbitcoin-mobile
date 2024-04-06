@@ -21,7 +21,7 @@ class AddressView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet);
-    final address = context.select((AddrBloc cubit) => cubit.state.selectedAddress);
+    final address = context.select((AddressBloc cubit) => cubit.state.selectedAddress);
 
     return Scaffold(
       appBar: AppBar(

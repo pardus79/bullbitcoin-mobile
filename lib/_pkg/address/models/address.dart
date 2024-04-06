@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -79,5 +80,35 @@ abstract class Address {
       return LiquidAddress.loadFromNative(addr, w as LiquidWallet);
     }
     throw UnimplementedError('Unsupported Tx subclass');
+  }
+
+  static Future<List<Address>> syncAddresses(
+      List<Tx> txs, Address lastUnused, List<Address> oldAddresses, Wallet wallet, AddressKind kind) async {
+    List<Address> addresses = [];
+
+    for (var i = 0; i <= lastUnused.index; i++) {
+      final addr = await wallet.getAddress(i, kind);
+      print(addr.address);
+      // TODO: How to make contains work with manually implementing == operator? in Address
+      // bool exists = oldAddresses.contains(addr);
+      // Address finalAddr = exists ? oldAddresses.firstWhere((element) => element.address == addr.address) : addr;
+      // Address finalAddr = addr;
+
+      // Pick from Txs
+      if (wallet.type == WalletType.Bitcoin) {
+        Address finalBitcoinAddr =
+            BitcoinAddress.processAddress(txs, lastUnused, oldAddresses, wallet, kind, addr as BitcoinAddress);
+        addresses.add(finalBitcoinAddr);
+      } else if (wallet.type == WalletType.Liquid) {
+        Address finalBitcoinAddr =
+            LiquidAddress.processAddress(txs, lastUnused, oldAddresses, wallet, kind, addr as LiquidAddress);
+        addresses.add(finalBitcoinAddr);
+      }
+    }
+
+    addresses.sort((a, b) {
+      return b.index.compareTo(a.index);
+    });
+    return addresses;
   }
 }

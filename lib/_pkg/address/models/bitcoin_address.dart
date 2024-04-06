@@ -1,5 +1,8 @@
 import 'package:bb_arch/_pkg/address/models/address.dart';
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 
@@ -61,5 +64,66 @@ class BitcoinAddress extends Address with _$BitcoinAddress {
         status: AddressStatus.unused,
         type: AddressType.Bitcoin,
         walletId: wallet.id);
+  }
+
+  // TODO: Think of optimizing this function. Got 4 nested loops: 3 inside the function, 1 outside
+  static Address processAddress(List<Tx> txs, Address lastUnused, List<Address> oldAddresses, Wallet wallet,
+      AddressKind kind, BitcoinAddress finalBitcoinAddr) {
+    final Set<BitcoinTx> txsPaidToThisAddress = {};
+
+    // Loop to check receive txs to this address
+    for (int i = 0; i < txs.length; i++) {
+      final Tx tx = txs[i];
+      final BitcoinTx btx = tx as BitcoinTx;
+
+      for (int j = 0; j < btx.outputs.length; j++) {
+        final out = btx.outputs[j];
+        if (out.address == finalBitcoinAddr.address) {
+          finalBitcoinAddr = finalBitcoinAddr.copyWith(
+              status: AddressStatus.used,
+              txCount: finalBitcoinAddr.txCount + 1,
+              balance: finalBitcoinAddr.balance + out.value,
+              receiveTxIds: [...finalBitcoinAddr.receiveTxIds, btx.id]);
+          txsPaidToThisAddress.add(btx);
+          break;
+        }
+      }
+    }
+
+    // Loop to check spent txs from this address
+    for (int i = 0; i < txs.length; i++) {
+      bool txnCounted = false;
+      final Tx tx = txs[i];
+      final BitcoinTx btx = tx as BitcoinTx;
+
+      for (int j = 0; j < btx.inputs.length; j++) {
+        final txin = btx.inputs[j];
+
+        for (int k = 0; k < txsPaidToThisAddress.length; k++) {
+          final paidTx = txsPaidToThisAddress.elementAt(k);
+
+          if (paidTx.id == txin.previousOutput.txid &&
+              paidTx.outputs[txin.previousOutput.vout].address == finalBitcoinAddr.address) {
+            // Single txn spending from multiple UTXOs should be counted only once.
+            if (txnCounted) {
+              finalBitcoinAddr = finalBitcoinAddr.copyWith(
+                status: AddressStatus.used,
+                balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
+              );
+            } else {
+              finalBitcoinAddr = finalBitcoinAddr.copyWith(
+                status: AddressStatus.used,
+                txCount: finalBitcoinAddr.txCount + 1,
+                balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
+                sendTxIds: [...finalBitcoinAddr.sendTxIds, btx.id],
+              );
+              txnCounted = true;
+            }
+          }
+        }
+      }
+    }
+
+    return finalBitcoinAddr;
   }
 }

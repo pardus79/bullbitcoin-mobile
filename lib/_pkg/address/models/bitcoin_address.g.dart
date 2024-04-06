@@ -57,6 +57,7 @@ const _$AddressKindEnumMap = {
   AddressKind.deposit: 'deposit',
   AddressKind.change: 'change',
   AddressKind.external: 'external',
+  AddressKind.confidential: 'confidential',
 };
 
 const _$AddressStatusEnumMap = {

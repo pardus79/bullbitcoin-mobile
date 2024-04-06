@@ -30,78 +30,7 @@ class AddressRepository {
     try {
       final lastUnused = await Address.getLastUnused(wallet, kind);
 
-      List<Address> addresses = [];
-
-      for (var i = 0; i <= lastUnused.index; i++) {
-        final addr = await wallet.getAddress(i, kind);
-        print(addr.address);
-        // TODO: How to make contains work with manually implementing == operator? in Address
-        // bool exists = oldAddresses.contains(addr);
-        // Address finalAddr = exists ? oldAddresses.firstWhere((element) => element.address == addr.address) : addr;
-        // Address finalAddr = addr;
-
-        // Pick from Txs
-        if (wallet.type == WalletType.Bitcoin) {
-          BitcoinAddress finalBitcoinAddr = addr as BitcoinAddress;
-          final Set<BitcoinTx> txsPaidToThisAddress = {};
-
-          // Loop to check again receive txs to this address
-          for (int i = 0; i < txs.length; i++) {
-            final Tx tx = txs[i];
-            final BitcoinTx btx = tx as BitcoinTx;
-
-            for (int j = 0; j < btx.outputs.length; j++) {
-              final out = btx.outputs[j];
-              if (out.address == finalBitcoinAddr.address) {
-                finalBitcoinAddr = finalBitcoinAddr.copyWith(
-                    status: AddressStatus.used,
-                    txCount: finalBitcoinAddr.txCount + 1,
-                    balance: finalBitcoinAddr.balance + out.value,
-                    receiveTxIds: [...finalBitcoinAddr.receiveTxIds, btx.id]);
-                txsPaidToThisAddress.add(btx);
-                break;
-              }
-            }
-          }
-
-          // Loop to check against spent txs from this address
-          for (int i = 0; i < txs.length; i++) {
-            bool txnCounted = false;
-            final Tx tx = txs[i];
-            final BitcoinTx btx = tx as BitcoinTx;
-            for (int j = 0; j < btx.inputs.length; j++) {
-              final txin = btx.inputs[j];
-
-              for (int k = 0; k < txsPaidToThisAddress.length; k++) {
-                final paidTx = txsPaidToThisAddress.elementAt(k);
-                if (paidTx.id == txin.previousOutput.txid &&
-                    paidTx.outputs[txin.previousOutput.vout].address == finalBitcoinAddr.address) {
-                  // Single txn spending from multiple UTXOs should be counted only once.
-                  if (txnCounted) {
-                    finalBitcoinAddr = finalBitcoinAddr.copyWith(
-                      status: AddressStatus.used,
-                      balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
-                    );
-                  } else {
-                    finalBitcoinAddr = finalBitcoinAddr.copyWith(
-                      status: AddressStatus.used,
-                      txCount: finalBitcoinAddr.txCount + 1,
-                      balance: finalBitcoinAddr.balance - paidTx.outputs[txin.previousOutput.vout].value,
-                      sendTxIds: [...finalBitcoinAddr.sendTxIds, btx.id],
-                    );
-                    txnCounted = true;
-                  }
-                }
-              }
-            }
-          }
-          addresses.add(finalBitcoinAddr);
-        }
-      }
-
-      addresses.sort((a, b) {
-        return b.index.compareTo(a.index);
-      });
+      List<Address> addresses = await Address.syncAddresses(txs, lastUnused, oldAddresses, wallet, kind);
 
       return (addresses, null);
     } catch (e) {
