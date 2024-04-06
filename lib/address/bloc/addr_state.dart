@@ -9,7 +9,9 @@ class AddressState with _$AddressState {
   const factory AddressState({
     @Default(LoadStatus.initial) LoadStatus status,
     @Default([]) List<Address> depositAddresses,
+    @Default([]) List<Address> changeAddresses,
     @Default(null) Address? selectedAddress,
+    @Default(AddressKind.deposit) AddressKind selectedAddressKind,
     @Default('') String error,
   }) = _AddressState;
 }

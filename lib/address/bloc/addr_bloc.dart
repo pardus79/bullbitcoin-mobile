@@ -20,6 +20,7 @@ class AddrBloc extends Bloc<AddressEvent, AddressState> {
     on<LoadAddresses>(_onLoadAddresses);
     on<SyncAddresss>(_onSyncAddresses);
     on<SelectAddress>(_onSelectAddress);
+    on<ChangeSelectedAddressKind>(_changeSelectedAddressKind);
   }
 
   void _onLoadAddresses(LoadAddresses event, Emitter<AddressState> emit) async {
@@ -40,17 +41,29 @@ class AddrBloc extends Bloc<AddressEvent, AddressState> {
 
     print('_onSyncAddresses: ${event.wallet.name}');
 
-    final (ads, err) = await addrRepository.syncAddresses(event.txs, event.oldAddresses, event.kind, event.wallet);
-    if (err != null) {
-      emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: err.toString()));
+    final (depositAddresses, depositErr) =
+        await addrRepository.syncAddresses(event.txs, event.oldAddresses, AddressKind.deposit, event.wallet);
+    if (depositErr != null) {
+      emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: depositErr.toString()));
+      return;
+    }
+    final (changeAddresses, changeErr) =
+        await addrRepository.syncAddresses(event.txs, event.oldAddresses, AddressKind.change, event.wallet);
+    if (changeErr != null) {
+      emit(state.copyWith(changeAddresses: [], status: LoadStatus.failure, error: changeErr.toString()));
       return;
     }
 
-    await addrRepository.persistAddresses(event.wallet, ads!);
-    emit(state.copyWith(depositAddresses: ads, status: LoadStatus.success));
+    // await addrRepository.persistAddresses(event.wallet, depositAddresses!);
+    emit(state.copyWith(
+        depositAddresses: depositAddresses!, changeAddresses: changeAddresses!, status: LoadStatus.success));
   }
 
   void _onSelectAddress(SelectAddress event, Emitter<AddressState> emit) async {
     emit(state.copyWith(selectedAddress: event.address));
+  }
+
+  void _changeSelectedAddressKind(ChangeSelectedAddressKind event, Emitter<AddressState> emit) async {
+    emit(state.copyWith(selectedAddressKind: event.kind));
   }
 }

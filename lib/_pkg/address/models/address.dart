@@ -10,6 +10,7 @@ enum AddressKind {
   deposit,
   change,
   external,
+  confidential,
 }
 
 enum AddressStatus {

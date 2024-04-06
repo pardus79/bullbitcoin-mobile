@@ -18,7 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AddressState {
   LoadStatus get status => throw _privateConstructorUsedError;
   List<Address> get depositAddresses => throw _privateConstructorUsedError;
+  List<Address> get changeAddresses => throw _privateConstructorUsedError;
   Address? get selectedAddress => throw _privateConstructorUsedError;
+  AddressKind get selectedAddressKind => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -35,7 +37,9 @@ abstract class $AddressStateCopyWith<$Res> {
   $Res call(
       {LoadStatus status,
       List<Address> depositAddresses,
+      List<Address> changeAddresses,
       Address? selectedAddress,
+      AddressKind selectedAddressKind,
       String error});
 }
 
@@ -54,7 +58,9 @@ class _$AddressStateCopyWithImpl<$Res, $Val extends AddressState>
   $Res call({
     Object? status = null,
     Object? depositAddresses = null,
+    Object? changeAddresses = null,
     Object? selectedAddress = freezed,
+    Object? selectedAddressKind = null,
     Object? error = null,
   }) {
     return _then(_value.copyWith(
@@ -66,10 +72,18 @@ class _$AddressStateCopyWithImpl<$Res, $Val extends AddressState>
           ? _value.depositAddresses
           : depositAddresses // ignore: cast_nullable_to_non_nullable
               as List<Address>,
+      changeAddresses: null == changeAddresses
+          ? _value.changeAddresses
+          : changeAddresses // ignore: cast_nullable_to_non_nullable
+              as List<Address>,
       selectedAddress: freezed == selectedAddress
           ? _value.selectedAddress
           : selectedAddress // ignore: cast_nullable_to_non_nullable
               as Address?,
+      selectedAddressKind: null == selectedAddressKind
+          ? _value.selectedAddressKind
+          : selectedAddressKind // ignore: cast_nullable_to_non_nullable
+              as AddressKind,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -89,7 +103,9 @@ abstract class _$$AddressStateImplCopyWith<$Res>
   $Res call(
       {LoadStatus status,
       List<Address> depositAddresses,
+      List<Address> changeAddresses,
       Address? selectedAddress,
+      AddressKind selectedAddressKind,
       String error});
 }
 
@@ -106,7 +122,9 @@ class __$$AddressStateImplCopyWithImpl<$Res>
   $Res call({
     Object? status = null,
     Object? depositAddresses = null,
+    Object? changeAddresses = null,
     Object? selectedAddress = freezed,
+    Object? selectedAddressKind = null,
     Object? error = null,
   }) {
     return _then(_$AddressStateImpl(
@@ -118,10 +136,18 @@ class __$$AddressStateImplCopyWithImpl<$Res>
           ? _value._depositAddresses
           : depositAddresses // ignore: cast_nullable_to_non_nullable
               as List<Address>,
+      changeAddresses: null == changeAddresses
+          ? _value._changeAddresses
+          : changeAddresses // ignore: cast_nullable_to_non_nullable
+              as List<Address>,
       selectedAddress: freezed == selectedAddress
           ? _value.selectedAddress
           : selectedAddress // ignore: cast_nullable_to_non_nullable
               as Address?,
+      selectedAddressKind: null == selectedAddressKind
+          ? _value.selectedAddressKind
+          : selectedAddressKind // ignore: cast_nullable_to_non_nullable
+              as AddressKind,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -136,9 +162,12 @@ class _$AddressStateImpl implements _AddressState {
   const _$AddressStateImpl(
       {this.status = LoadStatus.initial,
       final List<Address> depositAddresses = const [],
+      final List<Address> changeAddresses = const [],
       this.selectedAddress = null,
+      this.selectedAddressKind = AddressKind.deposit,
       this.error = ''})
-      : _depositAddresses = depositAddresses;
+      : _depositAddresses = depositAddresses,
+        _changeAddresses = changeAddresses;
 
   @override
   @JsonKey()
@@ -153,16 +182,28 @@ class _$AddressStateImpl implements _AddressState {
     return EqualUnmodifiableListView(_depositAddresses);
   }
 
+  final List<Address> _changeAddresses;
+  @override
+  @JsonKey()
+  List<Address> get changeAddresses {
+    if (_changeAddresses is EqualUnmodifiableListView) return _changeAddresses;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_changeAddresses);
+  }
+
   @override
   @JsonKey()
   final Address? selectedAddress;
+  @override
+  @JsonKey()
+  final AddressKind selectedAddressKind;
   @override
   @JsonKey()
   final String error;
 
   @override
   String toString() {
-    return 'AddressState(status: $status, depositAddresses: $depositAddresses, selectedAddress: $selectedAddress, error: $error)';
+    return 'AddressState(status: $status, depositAddresses: $depositAddresses, changeAddresses: $changeAddresses, selectedAddress: $selectedAddress, selectedAddressKind: $selectedAddressKind, error: $error)';
   }
 
   @override
@@ -173,8 +214,12 @@ class _$AddressStateImpl implements _AddressState {
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._depositAddresses, _depositAddresses) &&
+            const DeepCollectionEquality()
+                .equals(other._changeAddresses, _changeAddresses) &&
             (identical(other.selectedAddress, selectedAddress) ||
                 other.selectedAddress == selectedAddress) &&
+            (identical(other.selectedAddressKind, selectedAddressKind) ||
+                other.selectedAddressKind == selectedAddressKind) &&
             (identical(other.error, error) || other.error == error));
   }
 
@@ -183,7 +228,9 @@ class _$AddressStateImpl implements _AddressState {
       runtimeType,
       status,
       const DeepCollectionEquality().hash(_depositAddresses),
+      const DeepCollectionEquality().hash(_changeAddresses),
       selectedAddress,
+      selectedAddressKind,
       error);
 
   @JsonKey(ignore: true)
@@ -197,7 +244,9 @@ abstract class _AddressState implements AddressState {
   const factory _AddressState(
       {final LoadStatus status,
       final List<Address> depositAddresses,
+      final List<Address> changeAddresses,
       final Address? selectedAddress,
+      final AddressKind selectedAddressKind,
       final String error}) = _$AddressStateImpl;
 
   @override
@@ -205,7 +254,11 @@ abstract class _AddressState implements AddressState {
   @override
   List<Address> get depositAddresses;
   @override
+  List<Address> get changeAddresses;
+  @override
   Address? get selectedAddress;
+  @override
+  AddressKind get selectedAddressKind;
   @override
   String get error;
   @override

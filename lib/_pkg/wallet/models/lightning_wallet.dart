@@ -27,24 +27,6 @@ class LightningWallet extends Wallet with _$LightningWallet {
     return LightningWallet(id: 'LN', balance: 0);
   }
 
-/*
-  @override
-  List<Map<String, dynamic>> getTransactions() {
-    return [
-      {
-        'id': 'l1',
-        'amount': 900.02,
-        'date': '2023-01-01',
-      },
-      {
-        'id': 'l2',
-        'amount': 352.1,
-        'date': '2023-01-02',
-      }
-    ];
-  }
-  */
-
   @override
   Future<Iterable<Tx>> getTxs(WalletType type) async {
     // final txs = await lwkWallet?.txs();

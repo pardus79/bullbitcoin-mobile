@@ -75,9 +75,7 @@ class WalletHeader extends StatelessWidget {
                   // TODO: Need to find a way to nest widgets via Routing.
                   // For now, moving AddrBloc to AppView to test out Address functionality
                   context.read<AddrBloc>().add(LoadAddresses(wallet: wallet));
-                  context
-                      .read<AddrBloc>()
-                      .add(SyncAddresss(txs: txs, oldAddresses: [], kind: AddressKind.deposit, wallet: wallet));
+                  context.read<AddrBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet));
                   GoRouter.of(context).push('/wallet/address-list');
                 },
                 child: const Text('Address'),

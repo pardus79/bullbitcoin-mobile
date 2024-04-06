@@ -8,6 +8,18 @@ import 'package:go_router/go_router.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
+// ignore: slash_for_doc_comments
+/**
+ * Ideal routes:
+ *  / - HomePage
+ *  /wallet/{walletId} - WalletPage
+ *  /wallet/{walletId}/tx/{txId} - TxPage
+ *  /wallet/{walletId}/address-list - AddressListPage
+ *  /wallet/{walletId}/address/{addrId} - AddressPage
+ *  /wallet/{walletId}/settings - WalletSettingsPage
+ *  /send - SendPage
+ *  /receive - ReceivePage
+ */
 final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/', routes: <RouteBase>[
   GoRoute(
     path: '/',

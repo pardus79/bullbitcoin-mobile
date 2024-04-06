@@ -10,12 +10,16 @@ class LoadAddresses extends AddressEvent {
 class SyncAddresss extends AddressEvent {
   final List<Tx> txs;
   final List<Address> oldAddresses;
-  final AddressKind kind;
   final Wallet wallet;
-  SyncAddresss({required this.txs, required this.oldAddresses, required this.kind, required this.wallet});
+  SyncAddresss({required this.txs, required this.oldAddresses, required this.wallet});
 }
 
 class SelectAddress extends AddressEvent {
   final Address address;
   SelectAddress({required this.address});
+}
+
+class ChangeSelectedAddressKind extends AddressEvent {
+  final AddressKind kind;
+  ChangeSelectedAddressKind({required this.kind});
 }
