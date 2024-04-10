@@ -21,7 +21,7 @@ class LiquidAddressList extends StatelessWidget {
       itemBuilder: (context, index) {
         LiquidAddress addr = addresses[index];
         return ListTile(
-          title: Text(addr.confidentialAddress),
+          title: Text(addr.address),
           subtitle: Text(addr.index.toString()),
           trailing: const Icon(Icons.chevron_right),
           onTap: () {

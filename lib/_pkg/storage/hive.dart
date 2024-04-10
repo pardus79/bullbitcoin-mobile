@@ -72,7 +72,7 @@ class HiveStorage implements IStorage {
   }
 
   @override
-  Future<(Map<String, String>?, Err?)> getAll(String s) async {
+  Future<(Map<String, String>?, Err?)> getAll() async {
     try {
       final Map<String, String> data = {};
       _box!.toMap().forEach((key, value) {

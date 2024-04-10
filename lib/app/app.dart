@@ -1,5 +1,6 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
+import 'package:bb_arch/_pkg/storage/secure_storage.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
@@ -13,11 +14,13 @@ class App extends StatelessWidget {
   const App(
       {super.key,
       required this.storage,
+      required this.secureStorage,
       required this.walletRepository,
       required this.txRepository,
       required this.addressRepository});
 
   final HiveStorage storage;
+  final SecureStorage secureStorage;
   final WalletRepository walletRepository;
   final TxRepository txRepository;
   final AddressRepository addressRepository;

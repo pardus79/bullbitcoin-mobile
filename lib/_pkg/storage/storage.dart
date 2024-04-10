@@ -21,7 +21,7 @@ abstract class IStorage {
     required String value,
   });
 
-  Future<(Map<String, String>?, Err?)> getAll(String key);
+  Future<(Map<String, String>?, Err?)> getAll();
 
   Future<(String?, Err?)> getValue(
     String key,
