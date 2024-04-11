@@ -2,6 +2,7 @@
 
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/settings/view/settings_page.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/widgets/wallets_list.dart';
@@ -41,6 +42,12 @@ class _HomeViewState extends State<HomeView> {
         title: Text(widget.title),
         actions: [
           loadStatus == LoadStatus.loading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+          IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Settings',
+              onPressed: () {
+                GoRouter.of(context).push(SettingsPage.route);
+              }),
         ],
       ),
       body: SingleChildScrollView(

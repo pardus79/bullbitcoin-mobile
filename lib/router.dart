@@ -1,10 +1,16 @@
 import 'package:bb_arch/address/view/addr_list_page.dart';
 import 'package:bb_arch/address/view/addr_page.dart';
 import 'package:bb_arch/home/home.dart';
+import 'package:bb_arch/settings/view/settings_page.dart';
 import 'package:bb_arch/tx/view/tx_page.dart';
+import 'package:bb_arch/wallet-setup/view/wallet_create_page.dart';
+import 'package:bb_arch/wallet-setup/view/wallet_import_page.dart';
+import 'package:bb_arch/wallet-setup/view/wallet_recover_page.dart';
 import 'package:bb_arch/wallet/view/wallet_page.dart';
+import 'package:bb_arch/wallet-setup/view/wallet_setup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lwk_dart/lwk_dart.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -55,5 +61,34 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
             builder: (context, state) {
               return const AddressPage();
             }),
+        GoRoute(
+          path: WalletSetupPage.route.split('/').last,
+          builder: (context, state) {
+            return const WalletSetupPage();
+          },
+          routes: <RouteBase>[
+            GoRoute(
+                path: WalletCreatePage.route.split('/').last,
+                builder: (context, state) {
+                  return const WalletCreatePage();
+                }),
+            GoRoute(
+                path: WalletImportPage.route.split('/').last,
+                builder: (context, state) {
+                  return const WalletImportPage();
+                }),
+            GoRoute(
+                path: WalletRecoverPage.route.split('/').last,
+                builder: (context, state) {
+                  return const WalletRecoverPage();
+                }),
+          ],
+        ),
       ]),
+  GoRoute(
+    path: SettingsPage.route,
+    builder: (context, state) {
+      return const SettingsPage();
+    },
+  ),
 ]);

@@ -1,0 +1,9 @@
+{
+    "editor.tokenColorCustomizations": {
+        "comments": "#229977"
+    },
+    "files.exclude": {
+        "**/**.g.dart": true,
+        "**/**.freezed.dart": true
+    }
+}
