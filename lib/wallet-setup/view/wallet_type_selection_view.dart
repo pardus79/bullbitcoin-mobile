@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print
 
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class WalletTypeSelectionView extends StatelessWidget {
   const WalletTypeSelectionView({super.key});
@@ -35,9 +37,17 @@ class WalletTypeSelectionView extends StatelessWidget {
                       : const Icon(Icons.check),
               trailing: TextButton(
                 child: const Text('Import'),
-                onPressed: () {
+                onPressed: () async {
                   print('Import $index wallet type');
-                  // TODO: Call WalletBloc.create
+                  Wallet w = wallets[index];
+                  context.read<WalletSensitiveBloc>().add(PersistSeed());
+                  context.read<WalletBloc>().add(PersistWallet(wallet: w));
+                  // await Future.delayed(const Duration(milliseconds: 1000));
+                  // context.read<WalletBloc>().add(LoadAllWallets());
+                  GoRouter.of(context).pop();
+                  GoRouter.of(context).pop();
+                  GoRouter.of(context).pop();
+                  GoRouter.of(context).pop();
                 },
               ),
               onTap: () {

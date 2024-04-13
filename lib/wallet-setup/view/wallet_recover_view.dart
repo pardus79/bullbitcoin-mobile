@@ -2,9 +2,9 @@
 
 import 'package:bb_arch/_pkg/crypto.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_type_selection_page.dart';
-import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,52 +23,64 @@ class WalletRecoverView extends StatelessWidget {
         body: Column(
           children: [
             TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Seed seed = const Seed(
                       name: 'Pikachu',
                       mnemonic: 'move decline opera album crisp nice ozone casual gate ozone cycle judge',
                       passphrase: 'Pass1234',
                       walletType: WalletType.Bitcoin,
                       network: NetworkType.Testnet,
+                      seedFingerprint: '',
                       mnemonicFingerprint: '',
                       derivationPath: '',
                       hash: '');
-                  seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
+                  final (seedFingerprint, _) =
+                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  seed = seed.copyWith(
+                      hash: calculateSha256(seed.mnemonic + seed.passphrase), seedFingerprint: seedFingerprint ?? '');
                   context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Pikachu wallet');
                 },
                 child: const Text('Pikachu wallet')),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Seed seed = const Seed(
                       name: 'Naruto',
                       mnemonic: 'lumber tackle notice city expand cherry tonight people blue cactus forward scissors',
                       passphrase: '',
                       walletType: WalletType.Bitcoin,
                       network: NetworkType.Testnet,
+                      seedFingerprint: '',
                       mnemonicFingerprint: '',
                       derivationPath: '',
                       hash: '');
+                  final (seedFingerprint, _) =
+                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  seed = seed.copyWith(
+                      hash: calculateSha256(seed.mnemonic + seed.passphrase), seedFingerprint: seedFingerprint ?? '');
                   context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
-                  seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Naruto wallet');
                 },
                 child: const Text('Naruto wallet')),
             TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Seed seed = const Seed(
                       name: 'Vegeta',
                       mnemonic: 'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial',
                       passphrase: '',
                       walletType: WalletType.Bitcoin,
                       network: NetworkType.Testnet,
+                      seedFingerprint: '',
                       mnemonicFingerprint: '',
                       derivationPath: '',
                       hash: '');
+                  final (seedFingerprint, _) =
+                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  seed = seed.copyWith(
+                      hash: calculateSha256(seed.mnemonic + seed.passphrase), seedFingerprint: seedFingerprint ?? '');
                   context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
-                  seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Vegeta wallet');
                 },

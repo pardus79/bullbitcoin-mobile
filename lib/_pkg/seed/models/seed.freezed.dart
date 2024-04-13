@@ -22,6 +22,7 @@ Seed _$SeedFromJson(Map<String, dynamic> json) {
 mixin _$Seed {
   String get mnemonic => throw _privateConstructorUsedError;
   String get mnemonicFingerprint => throw _privateConstructorUsedError;
+  String get seedFingerprint => throw _privateConstructorUsedError;
   WalletType get walletType => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   String get passphrase => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $SeedCopyWith<$Res> {
   $Res call(
       {String mnemonic,
       String mnemonicFingerprint,
+      String seedFingerprint,
       WalletType walletType,
       NetworkType network,
       String passphrase,
@@ -65,6 +67,7 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
   $Res call({
     Object? mnemonic = null,
     Object? mnemonicFingerprint = null,
+    Object? seedFingerprint = null,
     Object? walletType = null,
     Object? network = null,
     Object? passphrase = null,
@@ -80,6 +83,10 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
       mnemonicFingerprint: null == mnemonicFingerprint
           ? _value.mnemonicFingerprint
           : mnemonicFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
       walletType: null == walletType
           ? _value.walletType
@@ -119,6 +126,7 @@ abstract class _$$SeedImplCopyWith<$Res> implements $SeedCopyWith<$Res> {
   $Res call(
       {String mnemonic,
       String mnemonicFingerprint,
+      String seedFingerprint,
       WalletType walletType,
       NetworkType network,
       String passphrase,
@@ -139,6 +147,7 @@ class __$$SeedImplCopyWithImpl<$Res>
   $Res call({
     Object? mnemonic = null,
     Object? mnemonicFingerprint = null,
+    Object? seedFingerprint = null,
     Object? walletType = null,
     Object? network = null,
     Object? passphrase = null,
@@ -154,6 +163,10 @@ class __$$SeedImplCopyWithImpl<$Res>
       mnemonicFingerprint: null == mnemonicFingerprint
           ? _value.mnemonicFingerprint
           : mnemonicFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
       walletType: null == walletType
           ? _value.walletType
@@ -189,6 +202,7 @@ class _$SeedImpl extends _Seed {
   const _$SeedImpl(
       {required this.mnemonic,
       required this.mnemonicFingerprint,
+      required this.seedFingerprint,
       required this.walletType,
       required this.network,
       required this.passphrase,
@@ -205,6 +219,8 @@ class _$SeedImpl extends _Seed {
   @override
   final String mnemonicFingerprint;
   @override
+  final String seedFingerprint;
+  @override
   final WalletType walletType;
   @override
   final NetworkType network;
@@ -219,7 +235,7 @@ class _$SeedImpl extends _Seed {
 
   @override
   String toString() {
-    return 'Seed(mnemonic: $mnemonic, mnemonicFingerprint: $mnemonicFingerprint, walletType: $walletType, network: $network, passphrase: $passphrase, derivationPath: $derivationPath, hash: $hash, name: $name)';
+    return 'Seed(mnemonic: $mnemonic, mnemonicFingerprint: $mnemonicFingerprint, seedFingerprint: $seedFingerprint, walletType: $walletType, network: $network, passphrase: $passphrase, derivationPath: $derivationPath, hash: $hash, name: $name)';
   }
 
   @override
@@ -231,6 +247,8 @@ class _$SeedImpl extends _Seed {
                 other.mnemonic == mnemonic) &&
             (identical(other.mnemonicFingerprint, mnemonicFingerprint) ||
                 other.mnemonicFingerprint == mnemonicFingerprint) &&
+            (identical(other.seedFingerprint, seedFingerprint) ||
+                other.seedFingerprint == seedFingerprint) &&
             (identical(other.walletType, walletType) ||
                 other.walletType == walletType) &&
             (identical(other.network, network) || other.network == network) &&
@@ -244,8 +262,17 @@ class _$SeedImpl extends _Seed {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, mnemonic, mnemonicFingerprint,
-      walletType, network, passphrase, derivationPath, hash, name);
+  int get hashCode => Object.hash(
+      runtimeType,
+      mnemonic,
+      mnemonicFingerprint,
+      seedFingerprint,
+      walletType,
+      network,
+      passphrase,
+      derivationPath,
+      hash,
+      name);
 
   @JsonKey(ignore: true)
   @override
@@ -265,6 +292,7 @@ abstract class _Seed extends Seed {
   const factory _Seed(
       {required final String mnemonic,
       required final String mnemonicFingerprint,
+      required final String seedFingerprint,
       required final WalletType walletType,
       required final NetworkType network,
       required final String passphrase,
@@ -279,6 +307,8 @@ abstract class _Seed extends Seed {
   String get mnemonic;
   @override
   String get mnemonicFingerprint;
+  @override
+  String get seedFingerprint;
   @override
   WalletType get walletType;
   @override

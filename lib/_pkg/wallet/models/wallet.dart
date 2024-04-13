@@ -73,7 +73,7 @@ abstract class Wallet {
 
   static Future<Wallet> loadNativeSdk(Wallet w) async {
     if (w.type == WalletType.Bitcoin) {
-      return BitcoinWallet.loadNativeSdk(w as BitcoinWallet);
+      return BitcoinWallet.loadNativeSdkFromMnemonic(w as BitcoinWallet);
     } else if (w.type == WalletType.Liquid) {
       return LiquidWallet.loadNativeSdk(w as LiquidWallet);
     }

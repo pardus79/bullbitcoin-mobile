@@ -11,6 +11,7 @@ class Seed with _$Seed {
   const factory Seed({
     required String mnemonic,
     required String mnemonicFingerprint,
+    required String seedFingerprint,
     required WalletType walletType,
     required NetworkType network,
     required String passphrase,

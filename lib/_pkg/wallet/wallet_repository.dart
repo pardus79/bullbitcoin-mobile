@@ -10,7 +10,7 @@ import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 
 class WalletRepository {
   WalletRepository({required this.storage}) {
-    initOnAppStart();
+    // initOnAppStart();
   }
 
   HiveStorage storage;

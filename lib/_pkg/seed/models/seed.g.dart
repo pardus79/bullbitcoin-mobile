@@ -9,6 +9,7 @@ part of 'seed.dart';
 _$SeedImpl _$$SeedImplFromJson(Map<String, dynamic> json) => _$SeedImpl(
       mnemonic: json['mnemonic'] as String,
       mnemonicFingerprint: json['mnemonicFingerprint'] as String,
+      seedFingerprint: json['seedFingerprint'] as String,
       walletType: $enumDecode(_$WalletTypeEnumMap, json['walletType']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       passphrase: json['passphrase'] as String,
@@ -21,6 +22,7 @@ Map<String, dynamic> _$$SeedImplToJson(_$SeedImpl instance) =>
     <String, dynamic>{
       'mnemonic': instance.mnemonic,
       'mnemonicFingerprint': instance.mnemonicFingerprint,
+      'seedFingerprint': instance.seedFingerprint,
       'walletType': _$WalletTypeEnumMap[instance.walletType]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'passphrase': instance.passphrase,

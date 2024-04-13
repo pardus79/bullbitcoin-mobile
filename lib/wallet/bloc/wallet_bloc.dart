@@ -22,6 +22,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<SyncAllWallets>(_onSyncAllWallets);
     on<SyncWallet>(_onSyncWallet);
     on<SelectWallet>(_onSelectWallet);
+    on<PersistWallet>(_onPersistWallet);
 
     _loadWalletsTimer = Timer.periodic(const Duration(minutes: 10), (timer) {
       add(SyncAllWallets());
@@ -96,5 +97,11 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
   void _onSelectWallet(SelectWallet event, Emitter<WalletState> emit) async {
     emit(state.copyWith(selectedWallet: event.wallet));
+  }
+
+  void _onPersistWallet(PersistWallet event, Emitter<WalletState> emit) async {
+    emit(state.copyWith(wallets: [...state.wallets, event.wallet]));
+    await walletRepository.persistWallets(state.wallets);
+    add(LoadAllWallets());
   }
 }

@@ -19,10 +19,16 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
   WalletSensitiveBloc({required this.walletRepository, required this.seedRepository})
       : super(WalletSensitiveState.initial()) {
     on<DeriveWalletFromStoredSeed>(_onDeriveWalletFromStoredSeed);
+    on<PersistSeed>(_onPersistSeed);
+  }
+  void _onPersistSeed(PersistSeed event, Emitter<WalletSensitiveState> emit) async {
+    await seedRepository.persistSeed(seedRepository.seed!);
   }
 
   void _onDeriveWalletFromStoredSeed(DeriveWalletFromStoredSeed event, Emitter<WalletSensitiveState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
+
+    seedRepository.holdSeed(event.seed);
 
     final (wallets, err) = await walletRepository.deriveWalletsFromSeed(event.seed);
     if (err != null) {
@@ -32,7 +38,7 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
     // sync logic goes here
     emit(state.copyWith(
         derivedWallets: wallets!, syncDerivedWalletStatus: wallets.map((e) => LoadStatus.loading).toList()));
-    seedRepository.clearSeed();
+    // seedRepository.clearSeed();
 
     List<Future<Wallet>> syncedFutures = state.derivedWallets.map((w) => Wallet.syncWallet(w)).toList();
 

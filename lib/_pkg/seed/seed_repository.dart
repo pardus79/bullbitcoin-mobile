@@ -12,9 +12,9 @@ class SeedRepository {
 
   late Seed? seed;
 
-  Future<(Seed?, dynamic)> loadSeed(String hash) async {
+  Future<(Seed?, dynamic)> loadSeed(String fingerprint) async {
     try {
-      final (seedsStr, _) = await storage.getValue('seed.$hash');
+      final (seedsStr, _) = await storage.getValue('seed.$fingerprint');
       Seed seed = Seed.fromJson(jsonDecode(seedsStr!));
 
       return (seed, null);
@@ -49,11 +49,20 @@ class SeedRepository {
     }
   }
 
-  void holdSeed(Seed seed) {
-    seed = seed;
+  void holdSeed(Seed _seed) {
+    seed = _seed;
   }
 
   void clearSeed() {
     seed = null;
+  }
+
+  Future<dynamic> persistSeed(Seed seed) async {
+    try {
+      final err = await storage.saveValue(key: 'seed.${seed.seedFingerprint}', value: jsonEncode(seed.toJson()));
+      return err;
+    } catch (e) {
+      return e;
+    }
   }
 }

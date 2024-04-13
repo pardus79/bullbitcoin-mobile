@@ -20,12 +20,15 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       lastBackupTested: json['lastBackupTested'] == null
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
-      mnemonic: json['mnemonic'] as String? ?? '',
       fingerprint: json['fingerprint'] as String? ?? '',
-    );
+      importType:
+          $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
+              ImportTypes.words12,
+    )..mnemonic = json['mnemonic'] as String;
 
 Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
     <String, dynamic>{
+      'mnemonic': instance.mnemonic,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,
@@ -34,8 +37,8 @@ Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
       'backupTested': instance.backupTested,
       'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
-      'mnemonic': instance.mnemonic,
       'fingerprint': instance.fingerprint,
+      'importType': _$ImportTypesEnumMap[instance.importType]!,
     };
 
 const _$WalletTypeEnumMap = {
@@ -49,4 +52,12 @@ const _$NetworkTypeEnumMap = {
   NetworkType.Mainnet: 'Mainnet',
   NetworkType.Testnet: 'Testnet',
   NetworkType.Signet: 'Signet',
+};
+
+const _$ImportTypesEnumMap = {
+  ImportTypes.xpub: 'xpub',
+  ImportTypes.coldcard: 'coldcard',
+  ImportTypes.words12: 'words12',
+  ImportTypes.words24: 'words24',
+  ImportTypes.notSelected: 'notSelected',
 };

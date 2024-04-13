@@ -25,3 +25,8 @@ class SelectWallet extends WalletEvent {
   final Wallet wallet;
   SelectWallet({required this.wallet});
 }
+
+class PersistWallet extends WalletEvent {
+  final Wallet wallet;
+  PersistWallet({required this.wallet});
+}
