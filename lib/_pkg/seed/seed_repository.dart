@@ -10,6 +10,8 @@ class SeedRepository {
 
   HiveStorage storage;
 
+  late Seed? seed;
+
   Future<(Seed?, dynamic)> loadSeed(String hash) async {
     try {
       final (seedsStr, _) = await storage.getValue('seed.$hash');
@@ -45,5 +47,13 @@ class SeedRepository {
     } catch (e) {
       return e;
     }
+  }
+
+  void holdSeed(Seed seed) {
+    seed = seed;
+  }
+
+  void clearSeed() {
+    seed = null;
   }
 }

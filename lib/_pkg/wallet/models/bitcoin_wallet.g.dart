@@ -21,6 +21,7 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
       mnemonic: json['mnemonic'] as String? ?? '',
+      fingerprint: json['fingerprint'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
@@ -34,6 +35,7 @@ Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
       'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
       'mnemonic': instance.mnemonic,
+      'fingerprint': instance.fingerprint,
     };
 
 const _$WalletTypeEnumMap = {

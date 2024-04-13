@@ -1,4 +1,5 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
+import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/storage/secure_storage.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
@@ -15,12 +16,14 @@ class App extends StatelessWidget {
       {super.key,
       required this.storage,
       required this.secureStorage,
+      required this.seedRepository,
       required this.walletRepository,
       required this.txRepository,
       required this.addressRepository});
 
   final HiveStorage storage;
   final SecureStorage secureStorage;
+  final SeedRepository seedRepository;
   final WalletRepository walletRepository;
   final TxRepository txRepository;
   final AddressRepository addressRepository;
@@ -29,13 +32,14 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider.value(value: seedRepository),
         RepositoryProvider.value(value: walletRepository),
         RepositoryProvider.value(value: txRepository),
         RepositoryProvider.value(value: addressRepository)
       ],
       child: MultiBlocProvider(providers: [
         BlocProvider(
-            create: (_) => WalletBloc(walletRepository: walletRepository)
+            create: (_) => WalletBloc(walletRepository: walletRepository, seedRepository: seedRepository)
               ..add(LoadAllWallets())
               ..add(SyncAllWallets())),
         BlocProvider(create: (_) => TxBloc(txRepository: txRepository)),

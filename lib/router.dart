@@ -6,6 +6,7 @@ import 'package:bb_arch/tx/view/tx_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_create_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_import_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_recover_page.dart';
+import 'package:bb_arch/wallet-setup/view/wallet_type_selection_page.dart';
 import 'package:bb_arch/wallet/view/wallet_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_setup_page.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,11 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
                 path: WalletRecoverPage.route.split('/').last,
                 builder: (context, state) {
                   return const WalletRecoverPage();
+                }),
+            GoRoute(
+                path: WalletTypeSelectionPage.route.split('/').last,
+                builder: (context, state) {
+                  return const WalletTypeSelectionPage();
                 }),
           ],
         ),

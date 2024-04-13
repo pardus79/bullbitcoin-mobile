@@ -27,6 +27,7 @@ mixin _$Seed {
   String get passphrase => throw _privateConstructorUsedError;
   String get derivationPath => throw _privateConstructorUsedError;
   String get hash => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $SeedCopyWith<$Res> {
       NetworkType network,
       String passphrase,
       String derivationPath,
-      String hash});
+      String hash,
+      String name});
 }
 
 /// @nodoc
@@ -68,6 +70,7 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
     Object? passphrase = null,
     Object? derivationPath = null,
     Object? hash = null,
+    Object? name = null,
   }) {
     return _then(_value.copyWith(
       mnemonic: null == mnemonic
@@ -98,6 +101,10 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
               as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -116,7 +123,8 @@ abstract class _$$SeedImplCopyWith<$Res> implements $SeedCopyWith<$Res> {
       NetworkType network,
       String passphrase,
       String derivationPath,
-      String hash});
+      String hash,
+      String name});
 }
 
 /// @nodoc
@@ -136,6 +144,7 @@ class __$$SeedImplCopyWithImpl<$Res>
     Object? passphrase = null,
     Object? derivationPath = null,
     Object? hash = null,
+    Object? name = null,
   }) {
     return _then(_$SeedImpl(
       mnemonic: null == mnemonic
@@ -166,6 +175,10 @@ class __$$SeedImplCopyWithImpl<$Res>
           ? _value.hash
           : hash // ignore: cast_nullable_to_non_nullable
               as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -180,7 +193,8 @@ class _$SeedImpl extends _Seed {
       required this.network,
       required this.passphrase,
       required this.derivationPath,
-      required this.hash})
+      required this.hash,
+      required this.name})
       : super._();
 
   factory _$SeedImpl.fromJson(Map<String, dynamic> json) =>
@@ -200,10 +214,12 @@ class _$SeedImpl extends _Seed {
   final String derivationPath;
   @override
   final String hash;
+  @override
+  final String name;
 
   @override
   String toString() {
-    return 'Seed(mnemonic: $mnemonic, mnemonicFingerprint: $mnemonicFingerprint, walletType: $walletType, network: $network, passphrase: $passphrase, derivationPath: $derivationPath, hash: $hash)';
+    return 'Seed(mnemonic: $mnemonic, mnemonicFingerprint: $mnemonicFingerprint, walletType: $walletType, network: $network, passphrase: $passphrase, derivationPath: $derivationPath, hash: $hash, name: $name)';
   }
 
   @override
@@ -222,13 +238,14 @@ class _$SeedImpl extends _Seed {
                 other.passphrase == passphrase) &&
             (identical(other.derivationPath, derivationPath) ||
                 other.derivationPath == derivationPath) &&
-            (identical(other.hash, hash) || other.hash == hash));
+            (identical(other.hash, hash) || other.hash == hash) &&
+            (identical(other.name, name) || other.name == name));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, mnemonic, mnemonicFingerprint,
-      walletType, network, passphrase, derivationPath, hash);
+      walletType, network, passphrase, derivationPath, hash, name);
 
   @JsonKey(ignore: true)
   @override
@@ -252,7 +269,8 @@ abstract class _Seed extends Seed {
       required final NetworkType network,
       required final String passphrase,
       required final String derivationPath,
-      required final String hash}) = _$SeedImpl;
+      required final String hash,
+      required final String name}) = _$SeedImpl;
   const _Seed._() : super._();
 
   factory _Seed.fromJson(Map<String, dynamic> json) = _$SeedImpl.fromJson;
@@ -271,6 +289,8 @@ abstract class _Seed extends Seed {
   String get derivationPath;
   @override
   String get hash;
+  @override
+  String get name;
   @override
   @JsonKey(ignore: true)
   _$$SeedImplCopyWith<_$SeedImpl> get copyWith =>

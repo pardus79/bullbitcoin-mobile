@@ -14,6 +14,7 @@ _$SeedImpl _$$SeedImplFromJson(Map<String, dynamic> json) => _$SeedImpl(
       passphrase: json['passphrase'] as String,
       derivationPath: json['derivationPath'] as String,
       hash: json['hash'] as String,
+      name: json['name'] as String,
     );
 
 Map<String, dynamic> _$$SeedImplToJson(_$SeedImpl instance) =>
@@ -25,6 +26,7 @@ Map<String, dynamic> _$$SeedImplToJson(_$SeedImpl instance) =>
       'passphrase': instance.passphrase,
       'derivationPath': instance.derivationPath,
       'hash': instance.hash,
+      'name': instance.name,
     };
 
 const _$WalletTypeEnumMap = {

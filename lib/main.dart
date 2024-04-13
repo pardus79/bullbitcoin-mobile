@@ -1,4 +1,6 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
+import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/storage/secure_storage.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
@@ -15,6 +17,7 @@ void main() async {
   await storage.init();
   final SecureStorage secureStorage = SecureStorage();
 
+  final SeedRepository seedRepository = SeedRepository(storage: storage);
   final WalletRepository walletRepository = WalletRepository(storage: storage);
   final TxRepository txRepository = TxRepository(storage: storage);
   final AddressRepository addressRepository = AddressRepository(storage: storage);
@@ -22,6 +25,7 @@ void main() async {
   runApp(MyApp(
     storage: storage,
     secureStorage: secureStorage,
+    seedRepository: seedRepository,
     walletRepository: walletRepository,
     txRepository: txRepository,
     addressRepository: addressRepository,
@@ -33,12 +37,14 @@ class MyApp extends StatelessWidget {
       {super.key,
       required this.storage,
       required this.secureStorage,
+      required this.seedRepository,
       required this.walletRepository,
       required this.txRepository,
       required this.addressRepository});
 
   final HiveStorage storage;
   final SecureStorage secureStorage;
+  final SeedRepository seedRepository;
   final WalletRepository walletRepository;
   final TxRepository txRepository;
   final AddressRepository addressRepository;
@@ -48,6 +54,7 @@ class MyApp extends StatelessWidget {
     return App(
       storage: storage,
       secureStorage: secureStorage,
+      seedRepository: seedRepository,
       walletRepository: walletRepository,
       txRepository: txRepository,
       addressRepository: addressRepository,

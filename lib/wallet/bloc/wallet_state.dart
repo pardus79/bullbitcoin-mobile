@@ -10,6 +10,8 @@ class WalletState with _$WalletState {
     @Default(LoadStatus.initial) LoadStatus status,
     @Default([]) List<LoadStatus> syncWalletStatus,
     @Default([]) List<Wallet> wallets,
+    @Default([]) List<LoadStatus> syncDerivedWalletStatus,
+    @Default([]) List<Wallet> derivedWallets,
     @Default(null) Wallet? selectedWallet,
     @Default('') String error,
   }) = _WalletState;

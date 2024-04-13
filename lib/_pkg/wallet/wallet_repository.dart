@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
@@ -73,5 +74,10 @@ class WalletRepository {
     String encoded = jsonEncode(walletsJson);
     await storage.saveValue(key: 'wallets', value: encoded);
     print('Setting up wallets: DONE');
+  }
+
+  Future<(List<Wallet>?, dynamic)> deriveWalletsFromSeed(Seed seed) async {
+    final ws = await BitcoinWallet.deriveFromSeed(seed);
+    return (ws, null);
   }
 }

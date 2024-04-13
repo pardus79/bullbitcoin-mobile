@@ -16,6 +16,7 @@ class Seed with _$Seed {
     required String passphrase,
     required String derivationPath,
     required String hash,
+    required String name,
   }) = _Seed;
   const Seed._();
 

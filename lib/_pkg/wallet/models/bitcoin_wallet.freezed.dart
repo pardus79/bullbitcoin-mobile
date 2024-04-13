@@ -29,10 +29,13 @@ mixin _$BitcoinWallet {
   DateTime? get lastSync => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
   String get mnemonic => throw _privateConstructorUsedError;
+  String get fingerprint => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Blockchain? get bdkBlockchain => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Wallet? get bdkWallet => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bdk.Wallet? get bdkSigningWallet => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -56,10 +59,13 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       DateTime? lastSync,
       DateTime? lastBackupTested,
       String mnemonic,
+      String fingerprint,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      bdk.Wallet? bdkWallet});
+      bdk.Wallet? bdkWallet,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      bdk.Wallet? bdkSigningWallet});
 }
 
 /// @nodoc
@@ -84,8 +90,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
+    Object? fingerprint = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
+    Object? bdkSigningWallet = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -124,6 +132,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
+      fingerprint: null == fingerprint
+          ? _value.fingerprint
+          : fingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
       bdkBlockchain: freezed == bdkBlockchain
           ? _value.bdkBlockchain
           : bdkBlockchain // ignore: cast_nullable_to_non_nullable
@@ -131,6 +143,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
       bdkWallet: freezed == bdkWallet
           ? _value.bdkWallet
           : bdkWallet // ignore: cast_nullable_to_non_nullable
+              as bdk.Wallet?,
+      bdkSigningWallet: freezed == bdkSigningWallet
+          ? _value.bdkSigningWallet
+          : bdkSigningWallet // ignore: cast_nullable_to_non_nullable
               as bdk.Wallet?,
     ) as $Val);
   }
@@ -154,10 +170,13 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       DateTime? lastSync,
       DateTime? lastBackupTested,
       String mnemonic,
+      String fingerprint,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      bdk.Wallet? bdkWallet});
+      bdk.Wallet? bdkWallet,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      bdk.Wallet? bdkSigningWallet});
 }
 
 /// @nodoc
@@ -180,8 +199,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
+    Object? fingerprint = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
+    Object? bdkSigningWallet = freezed,
   }) {
     return _then(_$BitcoinWalletImpl(
       id: null == id
@@ -220,6 +241,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
+      fingerprint: null == fingerprint
+          ? _value.fingerprint
+          : fingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
       bdkBlockchain: freezed == bdkBlockchain
           ? _value.bdkBlockchain
           : bdkBlockchain // ignore: cast_nullable_to_non_nullable
@@ -227,6 +252,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
       bdkWallet: freezed == bdkWallet
           ? _value.bdkWallet
           : bdkWallet // ignore: cast_nullable_to_non_nullable
+              as bdk.Wallet?,
+      bdkSigningWallet: freezed == bdkSigningWallet
+          ? _value.bdkSigningWallet
+          : bdkSigningWallet // ignore: cast_nullable_to_non_nullable
               as bdk.Wallet?,
     ));
   }
@@ -245,8 +274,11 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       this.lastSync,
       this.lastBackupTested,
       this.mnemonic = '',
+      this.fingerprint = '',
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkBlockchain,
-      @JsonKey(includeFromJson: false, includeToJson: false) this.bdkWallet})
+      @JsonKey(includeFromJson: false, includeToJson: false) this.bdkWallet,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      this.bdkSigningWallet})
       : super._();
 
   factory _$BitcoinWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -273,15 +305,21 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   @JsonKey()
   final String mnemonic;
   @override
+  @JsonKey()
+  final String fingerprint;
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bdk.Blockchain? bdkBlockchain;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bdk.Wallet? bdkWallet;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bdk.Wallet? bdkSigningWallet;
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, fingerprint: $fingerprint, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
   }
 
   @override
@@ -302,10 +340,14 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
                 other.lastBackupTested == lastBackupTested) &&
             (identical(other.mnemonic, mnemonic) ||
                 other.mnemonic == mnemonic) &&
+            (identical(other.fingerprint, fingerprint) ||
+                other.fingerprint == fingerprint) &&
             (identical(other.bdkBlockchain, bdkBlockchain) ||
                 other.bdkBlockchain == bdkBlockchain) &&
             (identical(other.bdkWallet, bdkWallet) ||
-                other.bdkWallet == bdkWallet));
+                other.bdkWallet == bdkWallet) &&
+            (identical(other.bdkSigningWallet, bdkSigningWallet) ||
+                other.bdkSigningWallet == bdkSigningWallet));
   }
 
   @JsonKey(ignore: true)
@@ -321,8 +363,10 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       lastSync,
       lastBackupTested,
       mnemonic,
+      fingerprint,
       bdkBlockchain,
-      bdkWallet);
+      bdkWallet,
+      bdkSigningWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -349,10 +393,13 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       final DateTime? lastSync,
       final DateTime? lastBackupTested,
       final String mnemonic,
+      final String fingerprint,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final bdk.Blockchain? bdkBlockchain,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      final bdk.Wallet? bdkWallet}) = _$BitcoinWalletImpl;
+      final bdk.Wallet? bdkWallet,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      final bdk.Wallet? bdkSigningWallet}) = _$BitcoinWalletImpl;
   _BitcoinWallet._() : super._();
 
   factory _BitcoinWallet.fromJson(Map<String, dynamic> json) =
@@ -377,11 +424,16 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   @override
   String get mnemonic;
   @override
+  String get fingerprint;
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Blockchain? get bdkBlockchain;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Wallet? get bdkWallet;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bdk.Wallet? get bdkSigningWallet;
   @override
   @JsonKey(ignore: true)
   _$$BitcoinWalletImplCopyWith<_$BitcoinWalletImpl> get copyWith =>
