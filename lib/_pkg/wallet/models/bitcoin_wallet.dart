@@ -56,6 +56,38 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
         id: name, name: name, balance: 0, type: WalletType.Bitcoin, network: network, mnemonic: mnemonicStr);
   }
 
+  static Future<Wallet> setupNewWallet2(
+      String walletId, bdk.Wallet bdkWallet, bdk.Blockchain bdkBlockchain, String fingerprint, NetworkType network,
+      {String name = 'Wallet'}) async {
+    BitcoinWallet wallet = await BitcoinWallet.setupNewWallet('', NetworkType.Testnet) as BitcoinWallet;
+    return wallet;
+    // return wallet.copyWith(
+    //     id: walletHashId, bdkWallet: bdkPublicWallet, bdkBlockchain: blockchain, fingerprint: sourceFingerprint);
+  }
+
+  static Future<List<BitcoinWallet>> deriveFromSeed(Seed seed) async {
+    final bdkMnemonic = await bdk.Mnemonic.fromString(seed.mnemonic);
+    final bdkNetwork = seed.network == NetworkType.Testnet ? bdk.Network.Testnet : bdk.Network.Bitcoin;
+    final appDocDir = await getApplicationDocumentsDirectory();
+
+    final bdkBlockchain = await initializeBlockchain();
+
+    final rootXprv = await bdk.DescriptorSecretKey.create(
+      network: bdkNetwork,
+      mnemonic: bdkMnemonic,
+      password: seed.passphrase,
+    );
+    final (sourceFingerprint, _) = await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+
+    final wallets = await Future.wait([
+      initializeWallet(seed.network, bdkNetwork, '44h', rootXprv, sourceFingerprint!, appDocDir.path, bdkBlockchain),
+      initializeWallet(seed.network, bdkNetwork, '49h', rootXprv, sourceFingerprint, appDocDir.path, bdkBlockchain),
+      initializeWallet(seed.network, bdkNetwork, '84h', rootXprv, sourceFingerprint, appDocDir.path, bdkBlockchain),
+    ]);
+
+    return wallets;
+  }
+  /*
   static Future<List<BitcoinWallet>> deriveFromSeed(Seed seed) async {
     final bdkMnemonic = await bdk.Mnemonic.fromString(seed.mnemonic);
     final bdkNetwork = seed.network == NetworkType.Testnet ? bdk.Network.Testnet : bdk.Network.Bitcoin;
@@ -213,6 +245,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
 
     return [w44, w49, w84];
   }
+  */
 
   static Future<BitcoinWallet> loadNativeSdk(BitcoinWallet w) async {
     print('Loading native sdk for bitcoin wallet');
@@ -324,4 +357,48 @@ String createDescriptorHashId(String descriptor) {
       .toString()
       .substring(0, 12);
   return descHashId;
+}
+
+Future<bdk.Blockchain> initializeBlockchain() async {
+  return await bdk.Blockchain.create(
+      config: const bdk.BlockchainConfig.electrum(
+          config: bdk.ElectrumConfig(stopGap: 10, timeout: 5, retry: 5, url: btcElectrumUrl, validateDomain: true)));
+}
+
+bdk.DatabaseConfig walletDbConfig(String path) {
+  return bdk.DatabaseConfig.sqlite(
+    config: bdk.SqliteDbConfiguration(path: path),
+  );
+}
+
+Future<bdk.Descriptor> deriveDescriptor(String path, String bipPath, bdk.DescriptorSecretKey rootXprv,
+    bdk.Network network, bdk.KeychainKind keychainKind, String sourceFingerprint) async {
+  final xpriv = await rootXprv.derive(await bdk.DerivationPath.create(path: path));
+  final xpub = await xpriv.asPublic();
+  final descriptor = await (bipPath == '44h'
+          ? bdk.Descriptor.newBip44Public
+          : bipPath == '49h'
+              ? bdk.Descriptor.newBip49Public
+              : bdk.Descriptor.newBip84Public)(
+      publicKey: xpub, fingerPrint: sourceFingerprint, network: network, keychain: keychainKind);
+  return await bdk.Descriptor.create(descriptor: await descriptor.asString(), network: network);
+}
+
+Future<BitcoinWallet> initializeWallet(NetworkType bbnetwork, bdk.Network network, String bipPath,
+    bdk.DescriptorSecretKey rootXprv, String sourceFingerprint, String appDocDirPath, bdk.Blockchain blockchain) async {
+  final networkPath = network == bdk.Network.Bitcoin ? '0h' : '1h';
+  const accountPath = '0h';
+  final fullPath = 'm/$bipPath/$networkPath/$accountPath';
+  final externalDescriptor =
+      await deriveDescriptor(fullPath, bipPath, rootXprv, network, bdk.KeychainKind.External, sourceFingerprint);
+  final internalDescriptor =
+      await deriveDescriptor(fullPath, bipPath, rootXprv, network, bdk.KeychainKind.Internal, sourceFingerprint);
+  final walletHashId = createDescriptorHashId(await externalDescriptor.asString()).substring(0, 12);
+  final dbDir = '$appDocDirPath/$walletHashId';
+  final dbConfig = walletDbConfig(dbDir);
+  final bdkPublicWallet = await bdk.Wallet.create(
+      descriptor: externalDescriptor, changeDescriptor: internalDescriptor, network: network, databaseConfig: dbConfig);
+  BitcoinWallet wallet = await BitcoinWallet.setupNewWallet('', bbnetwork) as BitcoinWallet;
+  return wallet.copyWith(
+      id: walletHashId, bdkWallet: bdkPublicWallet, bdkBlockchain: blockchain, fingerprint: sourceFingerprint);
 }

@@ -5,6 +5,7 @@ import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_type_selection_page.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
+import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -33,8 +34,7 @@ class WalletRecoverView extends StatelessWidget {
                       derivationPath: '',
                       hash: '');
                   seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
-                  context.read<WalletBloc>().add(SetupRecoverySeed(seed: seed, walletType: 1));
-                  context.read<WalletBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Pikachu wallet');
                 },
@@ -50,8 +50,7 @@ class WalletRecoverView extends StatelessWidget {
                       mnemonicFingerprint: '',
                       derivationPath: '',
                       hash: '');
-                  context.read<WalletBloc>().add(SetupRecoverySeed(seed: seed, walletType: 1));
-                  context.read<WalletBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
                   seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Naruto wallet');
@@ -68,8 +67,7 @@ class WalletRecoverView extends StatelessWidget {
                       mnemonicFingerprint: '',
                       derivationPath: '',
                       hash: '');
-                  context.read<WalletBloc>().add(SetupRecoverySeed(seed: seed, walletType: 1));
-                  context.read<WalletBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
                   seed = seed.copyWith(hash: calculateSha256(seed.mnemonic + seed.passphrase));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Vegeta wallet');

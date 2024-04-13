@@ -23,9 +23,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<SyncWallet>(_onSyncWallet);
     on<SelectWallet>(_onSelectWallet);
 
-    on<SetupRecoverySeed>(_onSetupRecoverySeed);
-    on<DeriveWalletFromStoredSeed>(_onDeriveWalletFromStoredSeed);
-
     _loadWalletsTimer = Timer.periodic(const Duration(minutes: 10), (timer) {
       add(SyncAllWallets());
     });
@@ -35,57 +32,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   Future<void> close() {
     _loadWalletsTimer?.cancel();
     return super.close();
-  }
-
-  void _onSetupRecoverySeed(SetupRecoverySeed event, Emitter<WalletState> emit) {
-    seedRepository.holdSeed(event.seed);
-  }
-
-  void _onDeriveWalletFromStoredSeed(DeriveWalletFromStoredSeed event, Emitter<WalletState> emit) async {
-    emit(state.copyWith(status: LoadStatus.loading));
-
-    final (wallets, err) = await walletRepository.deriveWalletsFromSeed(event.seed);
-    if (err != null) {
-      emit(state.copyWith(status: LoadStatus.failure, error: err.toString()));
-      return;
-    }
-    // sync logic goes here
-    emit(state.copyWith(
-        derivedWallets: wallets!, syncDerivedWalletStatus: wallets.map((e) => LoadStatus.loading).toList()));
-    seedRepository.clearSeed();
-
-    List<Future<Wallet>> syncedFutures = state.derivedWallets.map((w) => Wallet.syncWallet(w)).toList();
-
-    var completer = Completer();
-
-    int syncedCount = 0;
-    for (int i = 0; i < syncedFutures.length; i++) {
-      syncedFutures[i].then((Wallet result) {
-        if (++syncedCount == syncedFutures.length) {
-          completer.complete();
-        }
-        emit(state.copyWith(derivedWallets: [
-          ...state.derivedWallets.sublist(0, i),
-          result,
-          ...state.derivedWallets.sublist(i + 1),
-        ], syncDerivedWalletStatus: [
-          ...state.syncDerivedWalletStatus.sublist(0, i),
-          LoadStatus.success,
-          ...state.syncDerivedWalletStatus.sublist(i + 1),
-        ]));
-        print('Future at index $i completed with result: $result');
-      }).catchError((error) {
-        if (++syncedCount == syncedFutures.length) {
-          completer.complete();
-        }
-        print('Future at index $i completed with error: $error');
-      });
-    }
-
-    await completer.future;
-    // await walletRepository.persistWallets(state.wallets);
-    // await Future.delayed(const Duration(seconds: 5));
-    emit(state.copyWith(status: LoadStatus.success));
   }
 
   void _onLoadAllWallets(LoadAllWallets event, Emitter<WalletState> emit) async {

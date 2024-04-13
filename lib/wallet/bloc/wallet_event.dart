@@ -2,17 +2,6 @@ part of 'wallet_bloc.dart';
 
 class WalletEvent {}
 
-class SetupRecoverySeed extends WalletEvent {
-  final Seed seed;
-  final int walletType;
-  SetupRecoverySeed({required this.seed, required this.walletType});
-}
-
-class DeriveWalletFromStoredSeed extends WalletEvent {
-  final Seed seed;
-  DeriveWalletFromStoredSeed({required this.seed});
-}
-
 class LoadAllWallets extends WalletEvent {
   LoadAllWallets();
 }

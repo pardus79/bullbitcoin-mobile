@@ -8,6 +8,7 @@ import 'package:bb_arch/address/bloc/addr_bloc.dart';
 import 'package:bb_arch/router.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
+import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,8 @@ class App extends StatelessWidget {
             create: (_) => WalletBloc(walletRepository: walletRepository, seedRepository: seedRepository)
               ..add(LoadAllWallets())
               ..add(SyncAllWallets())),
+        BlocProvider(
+            create: (_) => WalletSensitiveBloc(walletRepository: walletRepository, seedRepository: seedRepository)),
         BlocProvider(create: (_) => TxBloc(txRepository: txRepository)),
         BlocProvider(create: (_) => AddressBloc(addrRepository: addressRepository)),
       ], child: const AppView()),

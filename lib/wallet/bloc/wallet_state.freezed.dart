@@ -19,9 +19,6 @@ mixin _$WalletState {
   LoadStatus get status => throw _privateConstructorUsedError;
   List<LoadStatus> get syncWalletStatus => throw _privateConstructorUsedError;
   List<Wallet> get wallets => throw _privateConstructorUsedError;
-  List<LoadStatus> get syncDerivedWalletStatus =>
-      throw _privateConstructorUsedError;
-  List<Wallet> get derivedWallets => throw _privateConstructorUsedError;
   Wallet? get selectedWallet => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
@@ -40,8 +37,6 @@ abstract class $WalletStateCopyWith<$Res> {
       {LoadStatus status,
       List<LoadStatus> syncWalletStatus,
       List<Wallet> wallets,
-      List<LoadStatus> syncDerivedWalletStatus,
-      List<Wallet> derivedWallets,
       Wallet? selectedWallet,
       String error});
 }
@@ -62,8 +57,6 @@ class _$WalletStateCopyWithImpl<$Res, $Val extends WalletState>
     Object? status = null,
     Object? syncWalletStatus = null,
     Object? wallets = null,
-    Object? syncDerivedWalletStatus = null,
-    Object? derivedWallets = null,
     Object? selectedWallet = freezed,
     Object? error = null,
   }) {
@@ -79,14 +72,6 @@ class _$WalletStateCopyWithImpl<$Res, $Val extends WalletState>
       wallets: null == wallets
           ? _value.wallets
           : wallets // ignore: cast_nullable_to_non_nullable
-              as List<Wallet>,
-      syncDerivedWalletStatus: null == syncDerivedWalletStatus
-          ? _value.syncDerivedWalletStatus
-          : syncDerivedWalletStatus // ignore: cast_nullable_to_non_nullable
-              as List<LoadStatus>,
-      derivedWallets: null == derivedWallets
-          ? _value.derivedWallets
-          : derivedWallets // ignore: cast_nullable_to_non_nullable
               as List<Wallet>,
       selectedWallet: freezed == selectedWallet
           ? _value.selectedWallet
@@ -112,8 +97,6 @@ abstract class _$$WalletStateImplCopyWith<$Res>
       {LoadStatus status,
       List<LoadStatus> syncWalletStatus,
       List<Wallet> wallets,
-      List<LoadStatus> syncDerivedWalletStatus,
-      List<Wallet> derivedWallets,
       Wallet? selectedWallet,
       String error});
 }
@@ -132,8 +115,6 @@ class __$$WalletStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? syncWalletStatus = null,
     Object? wallets = null,
-    Object? syncDerivedWalletStatus = null,
-    Object? derivedWallets = null,
     Object? selectedWallet = freezed,
     Object? error = null,
   }) {
@@ -149,14 +130,6 @@ class __$$WalletStateImplCopyWithImpl<$Res>
       wallets: null == wallets
           ? _value._wallets
           : wallets // ignore: cast_nullable_to_non_nullable
-              as List<Wallet>,
-      syncDerivedWalletStatus: null == syncDerivedWalletStatus
-          ? _value._syncDerivedWalletStatus
-          : syncDerivedWalletStatus // ignore: cast_nullable_to_non_nullable
-              as List<LoadStatus>,
-      derivedWallets: null == derivedWallets
-          ? _value._derivedWallets
-          : derivedWallets // ignore: cast_nullable_to_non_nullable
               as List<Wallet>,
       selectedWallet: freezed == selectedWallet
           ? _value.selectedWallet
@@ -177,14 +150,10 @@ class _$WalletStateImpl implements _WalletState {
       {this.status = LoadStatus.initial,
       final List<LoadStatus> syncWalletStatus = const [],
       final List<Wallet> wallets = const [],
-      final List<LoadStatus> syncDerivedWalletStatus = const [],
-      final List<Wallet> derivedWallets = const [],
       this.selectedWallet = null,
       this.error = ''})
       : _syncWalletStatus = syncWalletStatus,
-        _wallets = wallets,
-        _syncDerivedWalletStatus = syncDerivedWalletStatus,
-        _derivedWallets = derivedWallets;
+        _wallets = wallets;
 
   @override
   @JsonKey()
@@ -208,25 +177,6 @@ class _$WalletStateImpl implements _WalletState {
     return EqualUnmodifiableListView(_wallets);
   }
 
-  final List<LoadStatus> _syncDerivedWalletStatus;
-  @override
-  @JsonKey()
-  List<LoadStatus> get syncDerivedWalletStatus {
-    if (_syncDerivedWalletStatus is EqualUnmodifiableListView)
-      return _syncDerivedWalletStatus;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_syncDerivedWalletStatus);
-  }
-
-  final List<Wallet> _derivedWallets;
-  @override
-  @JsonKey()
-  List<Wallet> get derivedWallets {
-    if (_derivedWallets is EqualUnmodifiableListView) return _derivedWallets;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_derivedWallets);
-  }
-
   @override
   @JsonKey()
   final Wallet? selectedWallet;
@@ -236,7 +186,7 @@ class _$WalletStateImpl implements _WalletState {
 
   @override
   String toString() {
-    return 'WalletState(status: $status, syncWalletStatus: $syncWalletStatus, wallets: $wallets, syncDerivedWalletStatus: $syncDerivedWalletStatus, derivedWallets: $derivedWallets, selectedWallet: $selectedWallet, error: $error)';
+    return 'WalletState(status: $status, syncWalletStatus: $syncWalletStatus, wallets: $wallets, selectedWallet: $selectedWallet, error: $error)';
   }
 
   @override
@@ -248,10 +198,6 @@ class _$WalletStateImpl implements _WalletState {
             const DeepCollectionEquality()
                 .equals(other._syncWalletStatus, _syncWalletStatus) &&
             const DeepCollectionEquality().equals(other._wallets, _wallets) &&
-            const DeepCollectionEquality().equals(
-                other._syncDerivedWalletStatus, _syncDerivedWalletStatus) &&
-            const DeepCollectionEquality()
-                .equals(other._derivedWallets, _derivedWallets) &&
             (identical(other.selectedWallet, selectedWallet) ||
                 other.selectedWallet == selectedWallet) &&
             (identical(other.error, error) || other.error == error));
@@ -263,8 +209,6 @@ class _$WalletStateImpl implements _WalletState {
       status,
       const DeepCollectionEquality().hash(_syncWalletStatus),
       const DeepCollectionEquality().hash(_wallets),
-      const DeepCollectionEquality().hash(_syncDerivedWalletStatus),
-      const DeepCollectionEquality().hash(_derivedWallets),
       selectedWallet,
       error);
 
@@ -280,8 +224,6 @@ abstract class _WalletState implements WalletState {
       {final LoadStatus status,
       final List<LoadStatus> syncWalletStatus,
       final List<Wallet> wallets,
-      final List<LoadStatus> syncDerivedWalletStatus,
-      final List<Wallet> derivedWallets,
       final Wallet? selectedWallet,
       final String error}) = _$WalletStateImpl;
 
@@ -291,10 +233,6 @@ abstract class _WalletState implements WalletState {
   List<LoadStatus> get syncWalletStatus;
   @override
   List<Wallet> get wallets;
-  @override
-  List<LoadStatus> get syncDerivedWalletStatus;
-  @override
-  List<Wallet> get derivedWallets;
   @override
   Wallet? get selectedWallet;
   @override
