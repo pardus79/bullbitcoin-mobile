@@ -13,6 +13,8 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       balance: json['balance'] as int,
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
+      seedFingerprint: json['seedFingerprint'] as String,
+      bipPath: json['bipPath'] as String? ?? '84h',
       backupTested: json['backupTested'] as bool? ?? false,
       lastSync: json['lastSync'] == null
           ? null
@@ -20,7 +22,6 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       lastBackupTested: json['lastBackupTested'] == null
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
-      fingerprint: json['fingerprint'] as String? ?? '',
       importType:
           $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
               ImportTypes.words12,
@@ -34,10 +35,11 @@ Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
       'balance': instance.balance,
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
+      'seedFingerprint': instance.seedFingerprint,
+      'bipPath': instance.bipPath,
       'backupTested': instance.backupTested,
       'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
-      'fingerprint': instance.fingerprint,
       'importType': _$ImportTypesEnumMap[instance.importType]!,
     };
 

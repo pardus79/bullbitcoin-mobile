@@ -10,14 +10,10 @@ part 'seed.g.dart';
 class Seed with _$Seed {
   const factory Seed({
     required String mnemonic,
-    required String mnemonicFingerprint,
-    required String seedFingerprint,
-    required WalletType walletType,
-    required NetworkType network,
     required String passphrase,
-    required String derivationPath,
-    required String hash,
-    required String name,
+    required String fingerprint,
+    required WalletType walletType, // TODO: Needed here?
+    required NetworkType network, // TODO: Needed here?
   }) = _Seed;
   const Seed._();
 

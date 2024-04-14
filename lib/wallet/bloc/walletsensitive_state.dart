@@ -10,6 +10,7 @@ class WalletSensitiveState with _$WalletSensitiveState {
     @Default(LoadStatus.initial) LoadStatus status,
     @Default([]) List<LoadStatus> syncDerivedWalletStatus,
     @Default([]) List<Wallet> derivedWallets,
+    @Default('') String walletName,
     @Default('') String error,
   }) = _WalletSensitiveState;
 

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
@@ -28,7 +29,7 @@ class WalletTypeSelectionView extends StatelessWidget {
             final w = wallets[index] as BitcoinWallet;
             final syncStatus = syncStatuses[index];
             return ListTile(
-              title: Text('${w.name} (${w.fingerprint}: ${w.id})'),
+              title: Text('${w.name} (${w.seedFingerprint}: ${w.id})'),
               subtitle: Text('Tx count: 0, Balance: ${w.balance}'),
               leading: syncStatus.name == 'loading'
                   ? const CircularProgressIndicator()
@@ -39,9 +40,15 @@ class WalletTypeSelectionView extends StatelessWidget {
                 child: const Text('Import'),
                 onPressed: () async {
                   print('Import $index wallet type');
-                  Wallet w = wallets[index];
+                  BitcoinWallet w = wallets[index] as BitcoinWallet;
+
+                  final scriptName = index == 0
+                      ? 'Legacy pubkey'
+                      : index == 1
+                          ? 'Legacy script'
+                          : 'Segwit';
                   context.read<WalletSensitiveBloc>().add(PersistSeed());
-                  context.read<WalletBloc>().add(PersistWallet(wallet: w));
+                  context.read<WalletBloc>().add(PersistWallet(wallet: w.copyWith(name: '${w.name}: $scriptName')));
                   // await Future.delayed(const Duration(milliseconds: 1000));
                   // context.read<WalletBloc>().add(LoadAllWallets());
                   GoRouter.of(context).pop();

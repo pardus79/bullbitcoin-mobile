@@ -20,6 +20,7 @@ mixin _$WalletSensitiveState {
   List<LoadStatus> get syncDerivedWalletStatus =>
       throw _privateConstructorUsedError;
   List<Wallet> get derivedWallets => throw _privateConstructorUsedError;
+  String get walletName => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -37,6 +38,7 @@ abstract class $WalletSensitiveStateCopyWith<$Res> {
       {LoadStatus status,
       List<LoadStatus> syncDerivedWalletStatus,
       List<Wallet> derivedWallets,
+      String walletName,
       String error});
 }
 
@@ -57,6 +59,7 @@ class _$WalletSensitiveStateCopyWithImpl<$Res,
     Object? status = null,
     Object? syncDerivedWalletStatus = null,
     Object? derivedWallets = null,
+    Object? walletName = null,
     Object? error = null,
   }) {
     return _then(_value.copyWith(
@@ -72,6 +75,10 @@ class _$WalletSensitiveStateCopyWithImpl<$Res,
           ? _value.derivedWallets
           : derivedWallets // ignore: cast_nullable_to_non_nullable
               as List<Wallet>,
+      walletName: null == walletName
+          ? _value.walletName
+          : walletName // ignore: cast_nullable_to_non_nullable
+              as String,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -92,6 +99,7 @@ abstract class _$$WalletSensitiveStateImplCopyWith<$Res>
       {LoadStatus status,
       List<LoadStatus> syncDerivedWalletStatus,
       List<Wallet> derivedWallets,
+      String walletName,
       String error});
 }
 
@@ -109,6 +117,7 @@ class __$$WalletSensitiveStateImplCopyWithImpl<$Res>
     Object? status = null,
     Object? syncDerivedWalletStatus = null,
     Object? derivedWallets = null,
+    Object? walletName = null,
     Object? error = null,
   }) {
     return _then(_$WalletSensitiveStateImpl(
@@ -124,6 +133,10 @@ class __$$WalletSensitiveStateImplCopyWithImpl<$Res>
           ? _value._derivedWallets
           : derivedWallets // ignore: cast_nullable_to_non_nullable
               as List<Wallet>,
+      walletName: null == walletName
+          ? _value.walletName
+          : walletName // ignore: cast_nullable_to_non_nullable
+              as String,
       error: null == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -139,6 +152,7 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
       {this.status = LoadStatus.initial,
       final List<LoadStatus> syncDerivedWalletStatus = const [],
       final List<Wallet> derivedWallets = const [],
+      this.walletName = '',
       this.error = ''})
       : _syncDerivedWalletStatus = syncDerivedWalletStatus,
         _derivedWallets = derivedWallets;
@@ -167,11 +181,14 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
 
   @override
   @JsonKey()
+  final String walletName;
+  @override
+  @JsonKey()
   final String error;
 
   @override
   String toString() {
-    return 'WalletSensitiveState(status: $status, syncDerivedWalletStatus: $syncDerivedWalletStatus, derivedWallets: $derivedWallets, error: $error)';
+    return 'WalletSensitiveState(status: $status, syncDerivedWalletStatus: $syncDerivedWalletStatus, derivedWallets: $derivedWallets, walletName: $walletName, error: $error)';
   }
 
   @override
@@ -184,6 +201,8 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
                 other._syncDerivedWalletStatus, _syncDerivedWalletStatus) &&
             const DeepCollectionEquality()
                 .equals(other._derivedWallets, _derivedWallets) &&
+            (identical(other.walletName, walletName) ||
+                other.walletName == walletName) &&
             (identical(other.error, error) || other.error == error));
   }
 
@@ -193,6 +212,7 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
       status,
       const DeepCollectionEquality().hash(_syncDerivedWalletStatus),
       const DeepCollectionEquality().hash(_derivedWallets),
+      walletName,
       error);
 
   @JsonKey(ignore: true)
@@ -209,6 +229,7 @@ abstract class _WalletSensitiveState implements WalletSensitiveState {
       {final LoadStatus status,
       final List<LoadStatus> syncDerivedWalletStatus,
       final List<Wallet> derivedWallets,
+      final String walletName,
       final String error}) = _$WalletSensitiveStateImpl;
 
   @override
@@ -217,6 +238,8 @@ abstract class _WalletSensitiveState implements WalletSensitiveState {
   List<LoadStatus> get syncDerivedWalletStatus;
   @override
   List<Wallet> get derivedWallets;
+  @override
+  String get walletName;
   @override
   String get error;
   @override

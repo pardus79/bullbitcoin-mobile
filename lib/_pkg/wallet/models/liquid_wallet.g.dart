@@ -21,10 +21,14 @@ _$LiquidWalletImpl _$$LiquidWalletImplFromJson(Map<String, dynamic> json) =>
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
       mnemonic: json['mnemonic'] as String? ?? '',
-    );
+    )
+      ..seedFingerprint = json['seedFingerprint'] as String
+      ..bipPath = json['bipPath'] as String;
 
 Map<String, dynamic> _$$LiquidWalletImplToJson(_$LiquidWalletImpl instance) =>
     <String, dynamic>{
+      'seedFingerprint': instance.seedFingerprint,
+      'bipPath': instance.bipPath,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,

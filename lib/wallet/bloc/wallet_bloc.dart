@@ -58,7 +58,19 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     emit(state.copyWith(status: LoadStatus.loading));
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 
-    List<Future<Wallet>> syncedFutures = state.wallets.map((w) => Wallet.syncWallet(w)).toList();
+    List<Wallet> loadedWallets = [];
+    for (int i = 0; i < state.wallets.length; i++) {
+      final w = state.wallets[i];
+      final (seed, seedErr) = await seedRepository.loadSeed(w.seedFingerprint);
+      final newWallet = await Wallet.loadNativeSdk(w, seed!);
+      loadedWallets.add(newWallet);
+    }
+
+    emit(state.copyWith(wallets: loadedWallets));
+
+    List<Future<Wallet>> syncedFutures = state.wallets.map((w) {
+      return Wallet.syncWallet(w);
+    }).toList();
 
     var completer = Completer();
 

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_state.dart';
@@ -30,14 +31,22 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
 
     seedRepository.holdSeed(event.seed);
 
+    List<Wallet> nameUpdatedWallets = [];
     final (wallets, err) = await walletRepository.deriveWalletsFromSeed(event.seed);
+    if (wallets != null) {
+      for (int i = 0; i < wallets.length; i++) {
+        final oldWallet = wallets[i] as BitcoinWallet;
+        nameUpdatedWallets.add(oldWallet.copyWith(name: event.seed.name));
+      }
+    }
     if (err != null) {
       emit(state.copyWith(status: LoadStatus.failure, error: err.toString()));
       return;
     }
     // sync logic goes here
     emit(state.copyWith(
-        derivedWallets: wallets!, syncDerivedWalletStatus: wallets.map((e) => LoadStatus.loading).toList()));
+        derivedWallets: nameUpdatedWallets,
+        syncDerivedWalletStatus: nameUpdatedWallets.map((e) => LoadStatus.loading).toList()));
     // seedRepository.clearSeed();
 
     List<Future<Wallet>> syncedFutures = state.derivedWallets.map((w) => Wallet.syncWallet(w)).toList();

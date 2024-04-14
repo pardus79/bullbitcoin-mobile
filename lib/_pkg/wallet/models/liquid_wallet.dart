@@ -79,10 +79,10 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     print('Syncing via lwk');
 
     try {
-      if (w.lwkWallet == null) {
-        print('Wallet is not loaded with lwk. Loading it now');
-        w = await loadNativeSdk(w);
-      }
+      // if (w.lwkWallet == null) {
+      //   print('Wallet is not loaded with lwk. Loading it now');
+      //   w = await loadNativeSdk(w);
+      // }
 
       print('sync 1');
       await w.lwkWallet?.sync(liquidElectrumUrl);

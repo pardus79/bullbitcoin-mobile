@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
@@ -44,6 +45,8 @@ abstract class Wallet {
   int balance = 0;
   WalletType type = WalletType.Bitcoin;
   NetworkType network = NetworkType.Mainnet;
+  String seedFingerprint = '';
+  String bipPath = '84h';
   bool backupTested = false;
   DateTime? lastBackupTested;
   DateTime? lastSync;
@@ -71,9 +74,9 @@ abstract class Wallet {
     throw UnimplementedError('Unsupported Wallet subclass');
   }
 
-  static Future<Wallet> loadNativeSdk(Wallet w) async {
+  static Future<Wallet> loadNativeSdk(Wallet w, Seed seed) async {
     if (w.type == WalletType.Bitcoin) {
-      return BitcoinWallet.loadNativeSdkFromMnemonic(w as BitcoinWallet);
+      return BitcoinWallet.loadNativeSdk(w as BitcoinWallet, seed);
     } else if (w.type == WalletType.Liquid) {
       return LiquidWallet.loadNativeSdk(w as LiquidWallet);
     }

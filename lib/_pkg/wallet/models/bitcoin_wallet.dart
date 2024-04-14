@@ -40,10 +40,11 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     required int balance,
     required WalletType type,
     required NetworkType network,
+    required String seedFingerprint,
+    @Default('84h') String bipPath,
     @Default(false) bool backupTested,
     DateTime? lastSync,
     DateTime? lastBackupTested,
-    @Default('') String fingerprint,
     @Default(ImportTypes.words12) ImportTypes importType,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Blockchain? bdkBlockchain,
     @JsonKey(includeFromJson: false, includeToJson: false) bdk.Wallet? bdkWallet,
@@ -54,15 +55,23 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet.fromJson(Map<String, dynamic> json) => _$BitcoinWalletFromJson(json);
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'}) async {
-    return BitcoinWallet(id: name, name: name, balance: 0, type: WalletType.Bitcoin, network: network);
+    return BitcoinWallet(
+        id: name, name: name, balance: 0, type: WalletType.Bitcoin, network: network, seedFingerprint: '');
   }
 
   static Future<BitcoinWallet> setupNewWallet2(String walletId, bdk.Wallet bdkWallet, bdk.Blockchain bdkBlockchain,
-      String fingerprint, NetworkType network, ImportTypes importType,
+      String fingerprint, NetworkType network, ImportTypes importType, String bipPath,
       {String name = 'Wallet'}) async {
     BitcoinWallet wallet = BitcoinWallet(
-        id: walletId, name: name, balance: 0, type: WalletType.Bitcoin, network: network, importType: importType);
-    return wallet.copyWith(bdkWallet: bdkWallet, bdkBlockchain: bdkBlockchain, fingerprint: fingerprint);
+        id: walletId,
+        name: name,
+        balance: 0,
+        type: WalletType.Bitcoin,
+        network: network,
+        importType: importType,
+        seedFingerprint: fingerprint,
+        bipPath: bipPath);
+    return wallet.copyWith(bdkWallet: bdkWallet, bdkBlockchain: bdkBlockchain);
   }
 
   static Future<List<BitcoinWallet>> deriveFromSeed(Seed seed,
@@ -88,39 +97,53 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     return wallets;
   }
 
-  static Future<BitcoinWallet> loadNativeSdkFromMnemonic(BitcoinWallet w) async {
+  static Future<BitcoinWallet> loadNativeSdk(BitcoinWallet w, Seed seed) async {
     print('Loading native sdk for bitcoin wallet');
 
-    final mnem = await bdk.Mnemonic.fromString(w.mnemonic);
+    if (w.importType == ImportTypes.words12) {
+      print('derive');
+      BitcoinWallet loadedWallet = (await BitcoinWallet.deriveFromSeed(seed, bipPath: [w.bipPath])).first;
+      return w.copyWith(bdkBlockchain: loadedWallet.bdkBlockchain, bdkWallet: loadedWallet.bdkWallet);
+    }
 
-    final descriptorSecretKey = await bdk.DescriptorSecretKey.create(network: bdk.Network.Testnet, mnemonic: mnem);
+    return BitcoinWallet(
+        id: 'id',
+        name: 'name',
+        balance: 0,
+        type: WalletType.Bitcoin,
+        network: NetworkType.Testnet,
+        seedFingerprint: '');
 
-    final externalDescriptor = await bdk.Descriptor.newBip84(
-        secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.External);
-    final internalDescriptor = await bdk.Descriptor.newBip84(
-        secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.Internal);
+    // final mnem = await bdk.Mnemonic.fromString(w.mnemonic);
 
-    // TODO: Make this common across all wallets
-    final bdkBlockchain = await bdk.Blockchain.create(
-        config: const bdk.BlockchainConfig.electrum(
-            config: bdk.ElectrumConfig(stopGap: 10, timeout: 5, retry: 5, url: btcElectrumUrl, validateDomain: true)));
+    // final descriptorSecretKey = await bdk.DescriptorSecretKey.create(network: bdk.Network.Testnet, mnemonic: mnem);
 
-    final wallet = await bdk.Wallet.create(
-        descriptor: externalDescriptor,
-        changeDescriptor: internalDescriptor,
-        network: bdk.Network.Testnet,
-        databaseConfig: const bdk.DatabaseConfig.memory());
+    // final externalDescriptor = await bdk.Descriptor.newBip84(
+    //     secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.External);
+    // final internalDescriptor = await bdk.Descriptor.newBip84(
+    //     secretKey: descriptorSecretKey, network: bdk.Network.Testnet, keychain: bdk.KeychainKind.Internal);
 
-    return w.copyWith(bdkWallet: wallet, bdkBlockchain: bdkBlockchain);
+    // // TODO: Make this common across all wallets
+    // final bdkBlockchain = await bdk.Blockchain.create(
+    //     config: const bdk.BlockchainConfig.electrum(
+    //         config: bdk.ElectrumConfig(stopGap: 10, timeout: 5, retry: 5, url: btcElectrumUrl, validateDomain: true)));
+
+    // final wallet = await bdk.Wallet.create(
+    //     descriptor: externalDescriptor,
+    //     changeDescriptor: internalDescriptor,
+    //     network: bdk.Network.Testnet,
+    //     databaseConfig: const bdk.DatabaseConfig.memory());
+
+    // return w.copyWith(bdkWallet: wallet, bdkBlockchain: bdkBlockchain);
   }
 
   static Future<Wallet> syncWallet(BitcoinWallet w) async {
     print('Syncing via bdk');
 
-    if (w.bdkWallet == null) {
-      print('Wallet is not loaded with bdk. Loading it now');
-      w = await loadNativeSdkFromMnemonic(w);
-    }
+    // if (w.bdkWallet == null) {
+    //   print('Wallet is not loaded with bdk. Loading it now');
+    //   w = await loadNativeSdkFromMnemonic(w);
+    // }
 
     await w.bdkWallet?.sync(w.bdkBlockchain!);
 
@@ -241,5 +264,5 @@ Future<BitcoinWallet> initializeWallet(NetworkType bbnetwork, bdk.Network networ
       descriptor: externalDescriptor, changeDescriptor: internalDescriptor, network: network, databaseConfig: dbConfig);
 
   return BitcoinWallet.setupNewWallet2(
-      walletHashId, bdkPublicWallet, blockchain, sourceFingerprint, bbnetwork, ImportTypes.words12);
+      walletHashId, bdkPublicWallet, blockchain, sourceFingerprint, bbnetwork, ImportTypes.words12, bipPath);
 }

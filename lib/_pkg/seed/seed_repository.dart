@@ -25,7 +25,7 @@ class SeedRepository {
 
   Future<dynamic> addSeed(Seed seed) async {
     try {
-      final err = await storage.saveValue(key: 'seed.${seed.hash}', value: jsonEncode(seed));
+      final err = await storage.saveValue(key: 'seed.${seed.fingerprint}', value: jsonEncode(seed));
       if (err != null) {
         return err;
       } else {
@@ -38,7 +38,7 @@ class SeedRepository {
 
   Future<dynamic> deleteSeed(Seed seed) async {
     try {
-      final err = await storage.deleteValue('seed.${seed.hash}');
+      final err = await storage.deleteValue('seed.${seed.fingerprint}');
       if (err != null) {
         return err;
       } else {
@@ -59,7 +59,7 @@ class SeedRepository {
 
   Future<dynamic> persistSeed(Seed seed) async {
     try {
-      final err = await storage.saveValue(key: 'seed.${seed.seedFingerprint}', value: jsonEncode(seed.toJson()));
+      final err = await storage.saveValue(key: 'seed.${seed.fingerprint}', value: jsonEncode(seed.toJson()));
       return err;
     } catch (e) {
       return e;

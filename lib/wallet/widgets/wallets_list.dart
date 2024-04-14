@@ -42,8 +42,8 @@ class WalletListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('${wallet.type.name}: ${wallet.network.name}'),
-      subtitle: Text(wallet.balance.toString()),
+      title: Text('${wallet.name} (${wallet.type.name}: ${wallet.network.name})'),
+      subtitle: Text('Balance: ${wallet.balance.toString()}'),
       leading: syncStatus.name == 'loading'
           ? const CircularProgressIndicator()
           : syncStatus.name == 'initial'

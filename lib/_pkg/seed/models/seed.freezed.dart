@@ -21,14 +21,11 @@ Seed _$SeedFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Seed {
   String get mnemonic => throw _privateConstructorUsedError;
-  String get mnemonicFingerprint => throw _privateConstructorUsedError;
-  String get seedFingerprint => throw _privateConstructorUsedError;
-  WalletType get walletType => throw _privateConstructorUsedError;
-  NetworkType get network => throw _privateConstructorUsedError;
   String get passphrase => throw _privateConstructorUsedError;
-  String get derivationPath => throw _privateConstructorUsedError;
-  String get hash => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  String get fingerprint => throw _privateConstructorUsedError;
+  WalletType get walletType =>
+      throw _privateConstructorUsedError; // TODO: Needed here?
+  NetworkType get network => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,14 +39,10 @@ abstract class $SeedCopyWith<$Res> {
   @useResult
   $Res call(
       {String mnemonic,
-      String mnemonicFingerprint,
-      String seedFingerprint,
-      WalletType walletType,
-      NetworkType network,
       String passphrase,
-      String derivationPath,
-      String hash,
-      String name});
+      String fingerprint,
+      WalletType walletType,
+      NetworkType network});
 }
 
 /// @nodoc
@@ -66,27 +59,23 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
   @override
   $Res call({
     Object? mnemonic = null,
-    Object? mnemonicFingerprint = null,
-    Object? seedFingerprint = null,
+    Object? passphrase = null,
+    Object? fingerprint = null,
     Object? walletType = null,
     Object? network = null,
-    Object? passphrase = null,
-    Object? derivationPath = null,
-    Object? hash = null,
-    Object? name = null,
   }) {
     return _then(_value.copyWith(
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
-      mnemonicFingerprint: null == mnemonicFingerprint
-          ? _value.mnemonicFingerprint
-          : mnemonicFingerprint // ignore: cast_nullable_to_non_nullable
+      passphrase: null == passphrase
+          ? _value.passphrase
+          : passphrase // ignore: cast_nullable_to_non_nullable
               as String,
-      seedFingerprint: null == seedFingerprint
-          ? _value.seedFingerprint
-          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+      fingerprint: null == fingerprint
+          ? _value.fingerprint
+          : fingerprint // ignore: cast_nullable_to_non_nullable
               as String,
       walletType: null == walletType
           ? _value.walletType
@@ -96,22 +85,6 @@ class _$SeedCopyWithImpl<$Res, $Val extends Seed>
           ? _value.network
           : network // ignore: cast_nullable_to_non_nullable
               as NetworkType,
-      passphrase: null == passphrase
-          ? _value.passphrase
-          : passphrase // ignore: cast_nullable_to_non_nullable
-              as String,
-      derivationPath: null == derivationPath
-          ? _value.derivationPath
-          : derivationPath // ignore: cast_nullable_to_non_nullable
-              as String,
-      hash: null == hash
-          ? _value.hash
-          : hash // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
     ) as $Val);
   }
 }
@@ -125,14 +98,10 @@ abstract class _$$SeedImplCopyWith<$Res> implements $SeedCopyWith<$Res> {
   @useResult
   $Res call(
       {String mnemonic,
-      String mnemonicFingerprint,
-      String seedFingerprint,
-      WalletType walletType,
-      NetworkType network,
       String passphrase,
-      String derivationPath,
-      String hash,
-      String name});
+      String fingerprint,
+      WalletType walletType,
+      NetworkType network});
 }
 
 /// @nodoc
@@ -146,27 +115,23 @@ class __$$SeedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? mnemonic = null,
-    Object? mnemonicFingerprint = null,
-    Object? seedFingerprint = null,
+    Object? passphrase = null,
+    Object? fingerprint = null,
     Object? walletType = null,
     Object? network = null,
-    Object? passphrase = null,
-    Object? derivationPath = null,
-    Object? hash = null,
-    Object? name = null,
   }) {
     return _then(_$SeedImpl(
       mnemonic: null == mnemonic
           ? _value.mnemonic
           : mnemonic // ignore: cast_nullable_to_non_nullable
               as String,
-      mnemonicFingerprint: null == mnemonicFingerprint
-          ? _value.mnemonicFingerprint
-          : mnemonicFingerprint // ignore: cast_nullable_to_non_nullable
+      passphrase: null == passphrase
+          ? _value.passphrase
+          : passphrase // ignore: cast_nullable_to_non_nullable
               as String,
-      seedFingerprint: null == seedFingerprint
-          ? _value.seedFingerprint
-          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+      fingerprint: null == fingerprint
+          ? _value.fingerprint
+          : fingerprint // ignore: cast_nullable_to_non_nullable
               as String,
       walletType: null == walletType
           ? _value.walletType
@@ -176,22 +141,6 @@ class __$$SeedImplCopyWithImpl<$Res>
           ? _value.network
           : network // ignore: cast_nullable_to_non_nullable
               as NetworkType,
-      passphrase: null == passphrase
-          ? _value.passphrase
-          : passphrase // ignore: cast_nullable_to_non_nullable
-              as String,
-      derivationPath: null == derivationPath
-          ? _value.derivationPath
-          : derivationPath // ignore: cast_nullable_to_non_nullable
-              as String,
-      hash: null == hash
-          ? _value.hash
-          : hash // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -201,14 +150,10 @@ class __$$SeedImplCopyWithImpl<$Res>
 class _$SeedImpl extends _Seed {
   const _$SeedImpl(
       {required this.mnemonic,
-      required this.mnemonicFingerprint,
-      required this.seedFingerprint,
-      required this.walletType,
-      required this.network,
       required this.passphrase,
-      required this.derivationPath,
-      required this.hash,
-      required this.name})
+      required this.fingerprint,
+      required this.walletType,
+      required this.network})
       : super._();
 
   factory _$SeedImpl.fromJson(Map<String, dynamic> json) =>
@@ -217,25 +162,18 @@ class _$SeedImpl extends _Seed {
   @override
   final String mnemonic;
   @override
-  final String mnemonicFingerprint;
-  @override
-  final String seedFingerprint;
-  @override
-  final WalletType walletType;
-  @override
-  final NetworkType network;
-  @override
   final String passphrase;
   @override
-  final String derivationPath;
+  final String fingerprint;
   @override
-  final String hash;
+  final WalletType walletType;
+// TODO: Needed here?
   @override
-  final String name;
+  final NetworkType network;
 
   @override
   String toString() {
-    return 'Seed(mnemonic: $mnemonic, mnemonicFingerprint: $mnemonicFingerprint, seedFingerprint: $seedFingerprint, walletType: $walletType, network: $network, passphrase: $passphrase, derivationPath: $derivationPath, hash: $hash, name: $name)';
+    return 'Seed(mnemonic: $mnemonic, passphrase: $passphrase, fingerprint: $fingerprint, walletType: $walletType, network: $network)';
   }
 
   @override
@@ -245,34 +183,19 @@ class _$SeedImpl extends _Seed {
             other is _$SeedImpl &&
             (identical(other.mnemonic, mnemonic) ||
                 other.mnemonic == mnemonic) &&
-            (identical(other.mnemonicFingerprint, mnemonicFingerprint) ||
-                other.mnemonicFingerprint == mnemonicFingerprint) &&
-            (identical(other.seedFingerprint, seedFingerprint) ||
-                other.seedFingerprint == seedFingerprint) &&
-            (identical(other.walletType, walletType) ||
-                other.walletType == walletType) &&
-            (identical(other.network, network) || other.network == network) &&
             (identical(other.passphrase, passphrase) ||
                 other.passphrase == passphrase) &&
-            (identical(other.derivationPath, derivationPath) ||
-                other.derivationPath == derivationPath) &&
-            (identical(other.hash, hash) || other.hash == hash) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.fingerprint, fingerprint) ||
+                other.fingerprint == fingerprint) &&
+            (identical(other.walletType, walletType) ||
+                other.walletType == walletType) &&
+            (identical(other.network, network) || other.network == network));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      mnemonic,
-      mnemonicFingerprint,
-      seedFingerprint,
-      walletType,
-      network,
-      passphrase,
-      derivationPath,
-      hash,
-      name);
+      runtimeType, mnemonic, passphrase, fingerprint, walletType, network);
 
   @JsonKey(ignore: true)
   @override
@@ -291,14 +214,10 @@ class _$SeedImpl extends _Seed {
 abstract class _Seed extends Seed {
   const factory _Seed(
       {required final String mnemonic,
-      required final String mnemonicFingerprint,
-      required final String seedFingerprint,
-      required final WalletType walletType,
-      required final NetworkType network,
       required final String passphrase,
-      required final String derivationPath,
-      required final String hash,
-      required final String name}) = _$SeedImpl;
+      required final String fingerprint,
+      required final WalletType walletType,
+      required final NetworkType network}) = _$SeedImpl;
   const _Seed._() : super._();
 
   factory _Seed.fromJson(Map<String, dynamic> json) = _$SeedImpl.fromJson;
@@ -306,21 +225,13 @@ abstract class _Seed extends Seed {
   @override
   String get mnemonic;
   @override
-  String get mnemonicFingerprint;
-  @override
-  String get seedFingerprint;
-  @override
-  WalletType get walletType;
-  @override
-  NetworkType get network;
-  @override
   String get passphrase;
   @override
-  String get derivationPath;
+  String get fingerprint;
   @override
-  String get hash;
-  @override
-  String get name;
+  WalletType get walletType;
+  @override // TODO: Needed here?
+  NetworkType get network;
   @override
   @JsonKey(ignore: true)
   _$$SeedImplCopyWith<_$SeedImpl> get copyWith =>

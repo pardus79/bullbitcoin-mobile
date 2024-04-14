@@ -19,6 +19,8 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
       ..name = json['name'] as String
       ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
       ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
+      ..seedFingerprint = json['seedFingerprint'] as String
+      ..bipPath = json['bipPath'] as String
       ..lastSync = json['lastSync'] == null
           ? null
           : DateTime.parse(json['lastSync'] as String)
@@ -30,6 +32,8 @@ Map<String, dynamic> _$$LightningWalletImplToJson(
       'name': instance.name,
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
+      'seedFingerprint': instance.seedFingerprint,
+      'bipPath': instance.bipPath,
       'lastSync': instance.lastSync?.toIso8601String(),
       'mnemonic': instance.mnemonic,
       'id': instance.id,
