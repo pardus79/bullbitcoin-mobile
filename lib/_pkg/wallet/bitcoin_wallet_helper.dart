@@ -1,0 +1,147 @@
+import 'dart:convert';
+
+import 'package:bb_arch/_pkg/constants.dart';
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
+import 'package:crypto/crypto.dart';
+import 'package:path_provider/path_provider.dart';
+
+class BitcoinWalletHelper {
+  static bdk.Blockchain? blockchain;
+
+  static Future<bdk.Blockchain> getBdkBlockchain(
+      {int stopGap = btcElectrumStopGap,
+      int timeout = btcElectrumTimeout,
+      int retry = btcElectrumRetry,
+      String electrumUrl = btcElectrumUrl,
+      bool validateDomain = btcElectrumValidateDomain}) async {
+    blockchain ??= await bdk.Blockchain.create(
+        config: bdk.BlockchainConfig.electrum(
+            config: bdk.ElectrumConfig(
+                stopGap: stopGap, timeout: timeout, retry: retry, url: electrumUrl, validateDomain: validateDomain)));
+    return blockchain!;
+  }
+
+  static bdk.DatabaseConfig walletDbConfig(String path) {
+    return bdk.DatabaseConfig.sqlite(
+      config: bdk.SqliteDbConfiguration(path: path),
+    );
+  }
+
+  static String createDescriptorHashId(String descriptor) {
+    final descHashId = sha1
+        .convert(
+          utf8.encode(
+            descriptor.replaceFirst('/0/*', '/<0;1>/*').replaceFirst('/1/*', '/<0;1>/*'),
+          ),
+        )
+        .toString()
+        .substring(0, 12);
+    return descHashId;
+  }
+
+  static Future<bdk.Descriptor> deriveDescriptor(String path, String bipPath, bdk.DescriptorSecretKey rootXprv,
+      bdk.Network network, bdk.KeychainKind keychainKind, String sourceFingerprint) async {
+    final xpriv = await rootXprv.derive(await bdk.DerivationPath.create(path: path));
+    final xpub = await xpriv.asPublic();
+    final descriptor = await (bipPath == '44h'
+            ? bdk.Descriptor.newBip44Public
+            : bipPath == '49h'
+                ? bdk.Descriptor.newBip49Public
+                : bdk.Descriptor.newBip84Public)(
+        publicKey: xpub, fingerPrint: sourceFingerprint, network: network, keychain: keychainKind);
+    return await bdk.Descriptor.create(descriptor: await descriptor.asString(), network: network);
+  }
+
+  static Future<List<BitcoinWallet>> initializeAllWallets(Seed seed,
+      {List<String> bipPath = const ['44h', '49h', '84h']}) async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final bdkBlockchain = await BitcoinWalletHelper.getBdkBlockchain();
+
+    final walletFutures = bipPath.map((path) =>
+        initializeWallet(seed: seed, blockchain: bdkBlockchain, bipPath: path, appDocDirPath: appDocDir.path));
+
+    final wallets = await Future.wait(walletFutures);
+
+    return wallets;
+  }
+
+  static Future<BitcoinWallet> initializeWallet(
+      {Seed? seed, bdk.Blockchain? blockchain, String bipPath = '84h', String appDocDirPath = ''}) async {
+    if (seed == null || blockchain == null) {
+      throw ("Seed is null");
+    }
+
+    final network = seed.network;
+    final (sourceFingerprint, _) = await seed.getBdkFingerprint();
+    final bdkMnemonic = await bdk.Mnemonic.fromString(seed.mnemonic);
+    final rootXprv = await bdk.DescriptorSecretKey.create(
+      network: seed.network.getBdkType,
+      mnemonic: bdkMnemonic,
+      password: seed.passphrase,
+    );
+
+    final networkPath = network.getBdkType == bdk.Network.Bitcoin ? '0h' : '1h';
+    const accountPath = '0h';
+    final fullPath = 'm/$bipPath/$networkPath/$accountPath';
+    final externalDescriptor = await BitcoinWalletHelper.deriveDescriptor(
+        fullPath, bipPath, rootXprv, network.getBdkType, bdk.KeychainKind.External, sourceFingerprint!);
+    final internalDescriptor = await BitcoinWalletHelper.deriveDescriptor(
+        fullPath, bipPath, rootXprv, network.getBdkType, bdk.KeychainKind.Internal, sourceFingerprint);
+    final walletHashId =
+        BitcoinWalletHelper.createDescriptorHashId(await externalDescriptor.asString()).substring(0, 12);
+    final dbDir = '$appDocDirPath/$walletHashId';
+    final dbConfig = BitcoinWalletHelper.walletDbConfig(dbDir);
+    final bdkPublicWallet = await bdk.Wallet.create(
+        descriptor: externalDescriptor,
+        changeDescriptor: internalDescriptor,
+        network: network.getBdkType,
+        databaseConfig: dbConfig);
+
+    BitcoinWallet wallet = BitcoinWallet(
+        id: walletHashId,
+        name: '',
+        balance: 0,
+        type: WalletType.Bitcoin,
+        network: network,
+        importType: ImportTypes.words12,
+        seedFingerprint: sourceFingerprint,
+        bipPath: bipPath);
+    return wallet.copyWith(bdkWallet: bdkPublicWallet, bdkBlockchain: blockchain);
+  }
+
+  static Future<BitcoinWallet> loadNativeSdk(BitcoinWallet w, Seed seed) async {
+    print('Loading native sdk for bitcoin wallet');
+
+    if (w.importType == ImportTypes.words12) {
+      BitcoinWallet loadedWallet = (await BitcoinWalletHelper.initializeAllWallets(seed, bipPath: [w.bipPath])).first;
+      return w.copyWith(bdkBlockchain: loadedWallet.bdkBlockchain, bdkWallet: loadedWallet.bdkWallet);
+    }
+
+    return BitcoinWallet(
+        id: 'id',
+        name: 'name',
+        balance: 0,
+        type: WalletType.Bitcoin,
+        network: NetworkType.Testnet,
+        seedFingerprint: '');
+  }
+
+  static Future<Wallet> syncWallet(BitcoinWallet w) async {
+    print('Syncing via bdk');
+
+    if (w.bdkWallet == null) {
+      throw ('bdk not initialized');
+    }
+
+    await w.bdkWallet?.sync(w.bdkBlockchain!);
+
+    final bal = await w.bdkWallet?.getBalance();
+    final balance = bal?.confirmed ?? 0;
+    print('balance is $balance');
+
+    return w.copyWith(balance: balance, lastSync: DateTime.now());
+  }
+}

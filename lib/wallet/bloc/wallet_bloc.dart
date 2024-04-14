@@ -5,6 +5,9 @@ import 'dart:async';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
+import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/wallet/bloc/wallet_state.dart';
@@ -61,8 +64,18 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     List<Wallet> loadedWallets = [];
     for (int i = 0; i < state.wallets.length; i++) {
       final w = state.wallets[i];
-      final (seed, seedErr) = await seedRepository.loadSeed(w.seedFingerprint);
-      final newWallet = await Wallet.loadNativeSdk(w, seed!);
+      Wallet newWallet = w;
+      if (w is BitcoinWallet) {
+        if (w.bdkWallet == null) {
+          final (seed, seedErr) = await seedRepository.loadSeed(w.seedFingerprint);
+          newWallet = await BitcoinWalletHelper.loadNativeSdk(w, seed!);
+        }
+      } else if (w is LiquidWallet) {
+        LiquidWallet lw = w as LiquidWallet;
+        if (lw.lwkWallet == null) {
+          newWallet = await LiquidWallet.loadNativeSdk(lw);
+        }
+      }
       loadedWallets.add(newWallet);
     }
 
@@ -114,6 +127,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   void _onPersistWallet(PersistWallet event, Emitter<WalletState> emit) async {
     emit(state.copyWith(wallets: [...state.wallets, event.wallet]));
     await walletRepository.persistWallets(state.wallets);
+    // await Future.delayed(const Duration(milliseconds: 10000));
     add(LoadAllWallets());
   }
 }

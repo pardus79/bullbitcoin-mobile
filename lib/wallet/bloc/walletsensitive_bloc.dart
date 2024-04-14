@@ -36,7 +36,7 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
     if (wallets != null) {
       for (int i = 0; i < wallets.length; i++) {
         final oldWallet = wallets[i] as BitcoinWallet;
-        nameUpdatedWallets.add(oldWallet.copyWith(name: event.seed.name));
+        nameUpdatedWallets.add(oldWallet.copyWith(name: event.walletName));
       }
     }
     if (err != null) {

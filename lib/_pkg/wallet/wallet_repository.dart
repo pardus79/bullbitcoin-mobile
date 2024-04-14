@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
+import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -77,7 +78,7 @@ class WalletRepository {
   }
 
   Future<(List<Wallet>?, dynamic)> deriveWalletsFromSeed(Seed seed) async {
-    final ws = await BitcoinWallet.deriveFromSeed(seed);
+    final ws = await BitcoinWalletHelper.initializeAllWallets(seed);
     return (ws, null);
   }
 }

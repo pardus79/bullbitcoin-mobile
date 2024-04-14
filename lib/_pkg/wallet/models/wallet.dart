@@ -3,6 +3,7 @@
 import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
+import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
@@ -76,7 +77,7 @@ abstract class Wallet {
 
   static Future<Wallet> loadNativeSdk(Wallet w, Seed seed) async {
     if (w.type == WalletType.Bitcoin) {
-      return BitcoinWallet.loadNativeSdk(w as BitcoinWallet, seed);
+      return BitcoinWalletHelper.loadNativeSdk(w as BitcoinWallet, seed);
     } else if (w.type == WalletType.Liquid) {
       return LiquidWallet.loadNativeSdk(w as LiquidWallet);
     }
@@ -85,7 +86,7 @@ abstract class Wallet {
 
   static Future<Wallet> syncWallet(Wallet wallet) {
     if (wallet.type == WalletType.Bitcoin) {
-      return BitcoinWallet.syncWallet(wallet as BitcoinWallet);
+      return BitcoinWalletHelper.syncWallet(wallet as BitcoinWallet);
     } else if (wallet.type == WalletType.Liquid) {
       return LiquidWallet.syncWallet(wallet as LiquidWallet);
     }

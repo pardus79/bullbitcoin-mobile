@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'package:bb_arch/_pkg/crypto.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -31,10 +30,11 @@ class WalletRecoverView extends StatelessWidget {
                     network: NetworkType.Testnet,
                     fingerprint: '',
                   );
-                  final (seedFingerprint, _) =
-                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  final (seedFingerprint, _) = await seed.getBdkFingerprint();
                   seed = seed.copyWith(fingerprint: seedFingerprint ?? '');
-                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context
+                      .read<WalletSensitiveBloc>()
+                      .add(DeriveWalletFromStoredSeed(seed: seed, walletName: 'Pikachu'));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Pikachu wallet');
                 },
@@ -48,10 +48,9 @@ class WalletRecoverView extends StatelessWidget {
                     network: NetworkType.Testnet,
                     fingerprint: '',
                   );
-                  final (seedFingerprint, _) =
-                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  final (seedFingerprint, _) = await seed.getBdkFingerprint();
                   seed = seed.copyWith(fingerprint: seedFingerprint ?? '');
-                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed, walletName: 'Naruto'));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Naruto wallet');
                 },
@@ -64,10 +63,9 @@ class WalletRecoverView extends StatelessWidget {
                       walletType: WalletType.Bitcoin,
                       network: NetworkType.Testnet,
                       fingerprint: '');
-                  final (seedFingerprint, _) =
-                      await getFingerprint(mnemonic: seed.mnemonic, passphrase: seed.passphrase);
+                  final (seedFingerprint, _) = await seed.getBdkFingerprint();
                   seed = seed.copyWith(fingerprint: seedFingerprint ?? '');
-                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed));
+                  context.read<WalletSensitiveBloc>().add(DeriveWalletFromStoredSeed(seed: seed, walletName: 'Vegeta'));
                   GoRouter.of(context).push(WalletTypeSelectionPage.route);
                   print('Vegeta wallet');
                 },
