@@ -4,8 +4,10 @@ import 'package:bb_arch/wallet-setup/view/wallet_create_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_import_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_recover_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_setup_page.dart';
+import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class WalletSetupView extends StatelessWidget {
@@ -26,6 +28,7 @@ class WalletSetupView extends StatelessWidget {
                     title: const Text('Create new'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
+                      context.read<WalletSensitiveBloc>().add(CreateNewSeed());
                       GoRouter.of(context).push(WalletCreatePage.route);
                     },
                   );

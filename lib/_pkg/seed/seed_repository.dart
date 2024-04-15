@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 
 class SeedRepository {
   SeedRepository({required this.storage});
@@ -18,6 +20,18 @@ class SeedRepository {
       Seed seed = Seed.fromJson(jsonDecode(seedsStr!));
 
       return (seed, null);
+    } catch (e) {
+      return (null, e);
+    }
+  }
+
+  Future<(Seed?, dynamic)> newSeed(WalletType walletType, NetworkType network) async {
+    try {
+      final mn = await bdk.Mnemonic.create(bdk.WordCount.Words12);
+      return (
+        Seed(mnemonic: mn.asString(), passphrase: '', fingerprint: '', walletType: walletType, network: network),
+        null
+      );
     } catch (e) {
       return (null, e);
     }

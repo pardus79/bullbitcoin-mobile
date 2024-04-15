@@ -19,9 +19,20 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
 
   WalletSensitiveBloc({required this.walletRepository, required this.seedRepository})
       : super(WalletSensitiveState.initial()) {
+    on<CreateNewSeed>(_onCreateNewSeed);
     on<DeriveWalletFromStoredSeed>(_onDeriveWalletFromStoredSeed);
     on<PersistAndClearSeed>(_onPersistAndClearSeed);
   }
+
+  void _onCreateNewSeed(CreateNewSeed event, Emitter<WalletSensitiveState> emit) async {
+    final (seed, seedErr) = await seedRepository.newSeed(WalletType.Bitcoin, NetworkType.Testnet);
+    if (seedErr != null) {
+      emit(state.copyWith(error: seedErr.toString()));
+      return;
+    }
+    emit(state.copyWith(seed: seed));
+  }
+
   void _onPersistAndClearSeed(PersistAndClearSeed event, Emitter<WalletSensitiveState> emit) async {
     await seedRepository.persistSeed(seedRepository.seed!);
     seedRepository.clearSeed();

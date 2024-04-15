@@ -8,4 +8,6 @@ class DeriveWalletFromStoredSeed extends WalletSensitiveEvent {
   DeriveWalletFromStoredSeed({required this.seed, required this.walletName});
 }
 
+class CreateNewSeed extends WalletSensitiveEvent {}
+
 class PersistAndClearSeed extends WalletSensitiveEvent {}

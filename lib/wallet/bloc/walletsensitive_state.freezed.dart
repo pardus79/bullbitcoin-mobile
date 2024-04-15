@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$WalletSensitiveState {
+  Seed? get seed => throw _privateConstructorUsedError;
   LoadStatus get status => throw _privateConstructorUsedError;
   List<LoadStatus> get syncDerivedWalletStatus =>
       throw _privateConstructorUsedError;
@@ -35,11 +36,14 @@ abstract class $WalletSensitiveStateCopyWith<$Res> {
       _$WalletSensitiveStateCopyWithImpl<$Res, WalletSensitiveState>;
   @useResult
   $Res call(
-      {LoadStatus status,
+      {Seed? seed,
+      LoadStatus status,
       List<LoadStatus> syncDerivedWalletStatus,
       List<Wallet> derivedWallets,
       String walletName,
       String error});
+
+  $SeedCopyWith<$Res>? get seed;
 }
 
 /// @nodoc
@@ -56,6 +60,7 @@ class _$WalletSensitiveStateCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? seed = freezed,
     Object? status = null,
     Object? syncDerivedWalletStatus = null,
     Object? derivedWallets = null,
@@ -63,6 +68,10 @@ class _$WalletSensitiveStateCopyWithImpl<$Res,
     Object? error = null,
   }) {
     return _then(_value.copyWith(
+      seed: freezed == seed
+          ? _value.seed
+          : seed // ignore: cast_nullable_to_non_nullable
+              as Seed?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -85,6 +94,18 @@ class _$WalletSensitiveStateCopyWithImpl<$Res,
               as String,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SeedCopyWith<$Res>? get seed {
+    if (_value.seed == null) {
+      return null;
+    }
+
+    return $SeedCopyWith<$Res>(_value.seed!, (value) {
+      return _then(_value.copyWith(seed: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -96,11 +117,15 @@ abstract class _$$WalletSensitiveStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {LoadStatus status,
+      {Seed? seed,
+      LoadStatus status,
       List<LoadStatus> syncDerivedWalletStatus,
       List<Wallet> derivedWallets,
       String walletName,
       String error});
+
+  @override
+  $SeedCopyWith<$Res>? get seed;
 }
 
 /// @nodoc
@@ -114,6 +139,7 @@ class __$$WalletSensitiveStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? seed = freezed,
     Object? status = null,
     Object? syncDerivedWalletStatus = null,
     Object? derivedWallets = null,
@@ -121,6 +147,10 @@ class __$$WalletSensitiveStateImplCopyWithImpl<$Res>
     Object? error = null,
   }) {
     return _then(_$WalletSensitiveStateImpl(
+      seed: freezed == seed
+          ? _value.seed
+          : seed // ignore: cast_nullable_to_non_nullable
+              as Seed?,
       status: null == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -149,7 +179,8 @@ class __$$WalletSensitiveStateImplCopyWithImpl<$Res>
 
 class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
   const _$WalletSensitiveStateImpl(
-      {this.status = LoadStatus.initial,
+      {this.seed,
+      this.status = LoadStatus.initial,
       final List<LoadStatus> syncDerivedWalletStatus = const [],
       final List<Wallet> derivedWallets = const [],
       this.walletName = '',
@@ -157,6 +188,8 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
       : _syncDerivedWalletStatus = syncDerivedWalletStatus,
         _derivedWallets = derivedWallets;
 
+  @override
+  final Seed? seed;
   @override
   @JsonKey()
   final LoadStatus status;
@@ -188,7 +221,7 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
 
   @override
   String toString() {
-    return 'WalletSensitiveState(status: $status, syncDerivedWalletStatus: $syncDerivedWalletStatus, derivedWallets: $derivedWallets, walletName: $walletName, error: $error)';
+    return 'WalletSensitiveState(seed: $seed, status: $status, syncDerivedWalletStatus: $syncDerivedWalletStatus, derivedWallets: $derivedWallets, walletName: $walletName, error: $error)';
   }
 
   @override
@@ -196,6 +229,7 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$WalletSensitiveStateImpl &&
+            (identical(other.seed, seed) || other.seed == seed) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(
                 other._syncDerivedWalletStatus, _syncDerivedWalletStatus) &&
@@ -209,6 +243,7 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      seed,
       status,
       const DeepCollectionEquality().hash(_syncDerivedWalletStatus),
       const DeepCollectionEquality().hash(_derivedWallets),
@@ -226,12 +261,15 @@ class _$WalletSensitiveStateImpl implements _WalletSensitiveState {
 
 abstract class _WalletSensitiveState implements WalletSensitiveState {
   const factory _WalletSensitiveState(
-      {final LoadStatus status,
+      {final Seed? seed,
+      final LoadStatus status,
       final List<LoadStatus> syncDerivedWalletStatus,
       final List<Wallet> derivedWallets,
       final String walletName,
       final String error}) = _$WalletSensitiveStateImpl;
 
+  @override
+  Seed? get seed;
   @override
   LoadStatus get status;
   @override
