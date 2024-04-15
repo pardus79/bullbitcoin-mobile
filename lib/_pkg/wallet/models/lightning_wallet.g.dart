@@ -15,31 +15,37 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
       lastBackupTested: json['lastBackupTested'] == null
           ? null
           : DateTime.parse(json['lastBackupTested'] as String),
-    )
-      ..name = json['name'] as String
-      ..type = $enumDecode(_$WalletTypeEnumMap, json['type'])
-      ..network = $enumDecode(_$NetworkTypeEnumMap, json['network'])
-      ..seedFingerprint = json['seedFingerprint'] as String
-      ..bipPath = $enumDecode(_$BitcoinScriptTypeEnumMap, json['bipPath'])
-      ..lastSync = json['lastSync'] == null
+      type: $enumDecode(_$WalletTypeEnumMap, json['type']),
+      network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
+      seedFingerprint: json['seedFingerprint'] as String,
+      bipPath:
+          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
+              BitcoinScriptType.bip84,
+      lastSync: json['lastSync'] == null
           ? null
-          : DateTime.parse(json['lastSync'] as String)
-      ..mnemonic = json['mnemonic'] as String;
+          : DateTime.parse(json['lastSync'] as String),
+      importType:
+          $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
+              ImportTypes.words12,
+    )
+      ..isarid = json['isarid'] as int
+      ..name = json['name'] as String;
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
     <String, dynamic>{
+      'isarid': instance.isarid,
       'name': instance.name,
+      'id': instance.id,
+      'balance': instance.balance,
+      'backupTested': instance.backupTested,
+      'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'seedFingerprint': instance.seedFingerprint,
       'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
       'lastSync': instance.lastSync?.toIso8601String(),
-      'mnemonic': instance.mnemonic,
-      'id': instance.id,
-      'balance': instance.balance,
-      'backupTested': instance.backupTested,
-      'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
+      'importType': _$ImportTypesEnumMap[instance.importType]!,
     };
 
 const _$WalletTypeEnumMap = {
@@ -60,4 +66,13 @@ const _$BitcoinScriptTypeEnumMap = {
   BitcoinScriptType.bip84: 'bip84',
   BitcoinScriptType.bip49: 'bip49',
   BitcoinScriptType.bip44: 'bip44',
+};
+
+const _$ImportTypesEnumMap = {
+  ImportTypes.xpub: 'xpub',
+  ImportTypes.coldcard: 'coldcard',
+  ImportTypes.descriptors: 'descriptors',
+  ImportTypes.words12: 'words12',
+  ImportTypes.words24: 'words24',
+  ImportTypes.notSelected: 'notSelected',
 };

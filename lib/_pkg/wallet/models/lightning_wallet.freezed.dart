@@ -24,6 +24,12 @@ mixin _$LightningWallet {
   int get balance => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
+  WalletType get type => throw _privateConstructorUsedError;
+  NetworkType get network => throw _privateConstructorUsedError;
+  String get seedFingerprint => throw _privateConstructorUsedError;
+  BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
+  DateTime? get lastSync => throw _privateConstructorUsedError;
+  ImportTypes get importType => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +44,16 @@ abstract class $LightningWalletCopyWith<$Res> {
       _$LightningWalletCopyWithImpl<$Res, LightningWallet>;
   @useResult
   $Res call(
-      {String id, int balance, bool backupTested, DateTime? lastBackupTested});
+      {String id,
+      int balance,
+      bool backupTested,
+      DateTime? lastBackupTested,
+      WalletType type,
+      NetworkType network,
+      String seedFingerprint,
+      BitcoinScriptType bipPath,
+      DateTime? lastSync,
+      ImportTypes importType});
 }
 
 /// @nodoc
@@ -58,6 +73,12 @@ class _$LightningWalletCopyWithImpl<$Res, $Val extends LightningWallet>
     Object? balance = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? type = null,
+    Object? network = null,
+    Object? seedFingerprint = null,
+    Object? bipPath = null,
+    Object? lastSync = freezed,
+    Object? importType = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -76,6 +97,30 @@ class _$LightningWalletCopyWithImpl<$Res, $Val extends LightningWallet>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as WalletType,
+      network: null == network
+          ? _value.network
+          : network // ignore: cast_nullable_to_non_nullable
+              as NetworkType,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      bipPath: null == bipPath
+          ? _value.bipPath
+          : bipPath // ignore: cast_nullable_to_non_nullable
+              as BitcoinScriptType,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      importType: null == importType
+          ? _value.importType
+          : importType // ignore: cast_nullable_to_non_nullable
+              as ImportTypes,
     ) as $Val);
   }
 }
@@ -89,7 +134,16 @@ abstract class _$$LightningWalletImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id, int balance, bool backupTested, DateTime? lastBackupTested});
+      {String id,
+      int balance,
+      bool backupTested,
+      DateTime? lastBackupTested,
+      WalletType type,
+      NetworkType network,
+      String seedFingerprint,
+      BitcoinScriptType bipPath,
+      DateTime? lastSync,
+      ImportTypes importType});
 }
 
 /// @nodoc
@@ -107,6 +161,12 @@ class __$$LightningWalletImplCopyWithImpl<$Res>
     Object? balance = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
+    Object? type = null,
+    Object? network = null,
+    Object? seedFingerprint = null,
+    Object? bipPath = null,
+    Object? lastSync = freezed,
+    Object? importType = null,
   }) {
     return _then(_$LightningWalletImpl(
       id: null == id
@@ -125,6 +185,30 @@ class __$$LightningWalletImplCopyWithImpl<$Res>
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as WalletType,
+      network: null == network
+          ? _value.network
+          : network // ignore: cast_nullable_to_non_nullable
+              as NetworkType,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      bipPath: null == bipPath
+          ? _value.bipPath
+          : bipPath // ignore: cast_nullable_to_non_nullable
+              as BitcoinScriptType,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      importType: null == importType
+          ? _value.importType
+          : importType // ignore: cast_nullable_to_non_nullable
+              as ImportTypes,
     ));
   }
 }
@@ -136,7 +220,13 @@ class _$LightningWalletImpl extends _LightningWallet {
       {required this.id,
       required this.balance,
       this.backupTested = false,
-      this.lastBackupTested})
+      this.lastBackupTested,
+      required this.type,
+      required this.network,
+      required this.seedFingerprint,
+      this.bipPath = BitcoinScriptType.bip84,
+      this.lastSync,
+      this.importType = ImportTypes.words12})
       : super._();
 
   factory _$LightningWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -151,10 +241,24 @@ class _$LightningWalletImpl extends _LightningWallet {
   final bool backupTested;
   @override
   final DateTime? lastBackupTested;
+  @override
+  final WalletType type;
+  @override
+  final NetworkType network;
+  @override
+  final String seedFingerprint;
+  @override
+  @JsonKey()
+  final BitcoinScriptType bipPath;
+  @override
+  final DateTime? lastSync;
+  @override
+  @JsonKey()
+  final ImportTypes importType;
 
   @override
   String toString() {
-    return 'LightningWallet(id: $id, balance: $balance, backupTested: $backupTested, lastBackupTested: $lastBackupTested)';
+    return 'LightningWallet(id: $id, balance: $balance, backupTested: $backupTested, lastBackupTested: $lastBackupTested, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, lastSync: $lastSync, importType: $importType)';
   }
 
   @override
@@ -167,13 +271,32 @@ class _$LightningWalletImpl extends _LightningWallet {
             (identical(other.backupTested, backupTested) ||
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
-                other.lastBackupTested == lastBackupTested));
+                other.lastBackupTested == lastBackupTested) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.network, network) || other.network == network) &&
+            (identical(other.seedFingerprint, seedFingerprint) ||
+                other.seedFingerprint == seedFingerprint) &&
+            (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
+            (identical(other.lastSync, lastSync) ||
+                other.lastSync == lastSync) &&
+            (identical(other.importType, importType) ||
+                other.importType == importType));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, balance, backupTested, lastBackupTested);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      balance,
+      backupTested,
+      lastBackupTested,
+      type,
+      network,
+      seedFingerprint,
+      bipPath,
+      lastSync,
+      importType);
 
   @JsonKey(ignore: true)
   @override
@@ -195,7 +318,13 @@ abstract class _LightningWallet extends LightningWallet {
       {required final String id,
       required final int balance,
       final bool backupTested,
-      final DateTime? lastBackupTested}) = _$LightningWalletImpl;
+      final DateTime? lastBackupTested,
+      required final WalletType type,
+      required final NetworkType network,
+      required final String seedFingerprint,
+      final BitcoinScriptType bipPath,
+      final DateTime? lastSync,
+      final ImportTypes importType}) = _$LightningWalletImpl;
   _LightningWallet._() : super._();
 
   factory _LightningWallet.fromJson(Map<String, dynamic> json) =
@@ -209,6 +338,18 @@ abstract class _LightningWallet extends LightningWallet {
   bool get backupTested;
   @override
   DateTime? get lastBackupTested;
+  @override
+  WalletType get type;
+  @override
+  NetworkType get network;
+  @override
+  String get seedFingerprint;
+  @override
+  BitcoinScriptType get bipPath;
+  @override
+  DateTime? get lastSync;
+  @override
+  ImportTypes get importType;
   @override
   @JsonKey(ignore: true)
   _$$LightningWalletImplCopyWith<_$LightningWalletImpl> get copyWith =>

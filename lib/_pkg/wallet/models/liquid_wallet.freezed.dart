@@ -31,6 +31,9 @@ mixin _$LiquidWallet {
   String get mnemonic => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   lwk.Wallet? get lwkWallet => throw _privateConstructorUsedError;
+  String get seedFingerprint => throw _privateConstructorUsedError;
+  BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
+  ImportTypes get importType => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,7 +58,10 @@ abstract class $LiquidWalletCopyWith<$Res> {
       DateTime? lastBackupTested,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      lwk.Wallet? lwkWallet});
+      lwk.Wallet? lwkWallet,
+      String seedFingerprint,
+      BitcoinScriptType bipPath,
+      ImportTypes importType});
 }
 
 /// @nodoc
@@ -81,6 +87,9 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
     Object? lwkWallet = freezed,
+    Object? seedFingerprint = null,
+    Object? bipPath = null,
+    Object? importType = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -123,6 +132,18 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.lwkWallet
           : lwkWallet // ignore: cast_nullable_to_non_nullable
               as lwk.Wallet?,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      bipPath: null == bipPath
+          ? _value.bipPath
+          : bipPath // ignore: cast_nullable_to_non_nullable
+              as BitcoinScriptType,
+      importType: null == importType
+          ? _value.importType
+          : importType // ignore: cast_nullable_to_non_nullable
+              as ImportTypes,
     ) as $Val);
   }
 }
@@ -146,7 +167,10 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
       DateTime? lastBackupTested,
       String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      lwk.Wallet? lwkWallet});
+      lwk.Wallet? lwkWallet,
+      String seedFingerprint,
+      BitcoinScriptType bipPath,
+      ImportTypes importType});
 }
 
 /// @nodoc
@@ -170,6 +194,9 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
     Object? lastBackupTested = freezed,
     Object? mnemonic = null,
     Object? lwkWallet = freezed,
+    Object? seedFingerprint = null,
+    Object? bipPath = null,
+    Object? importType = null,
   }) {
     return _then(_$LiquidWalletImpl(
       id: null == id
@@ -212,6 +239,18 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.lwkWallet
           : lwkWallet // ignore: cast_nullable_to_non_nullable
               as lwk.Wallet?,
+      seedFingerprint: null == seedFingerprint
+          ? _value.seedFingerprint
+          : seedFingerprint // ignore: cast_nullable_to_non_nullable
+              as String,
+      bipPath: null == bipPath
+          ? _value.bipPath
+          : bipPath // ignore: cast_nullable_to_non_nullable
+              as BitcoinScriptType,
+      importType: null == importType
+          ? _value.importType
+          : importType // ignore: cast_nullable_to_non_nullable
+              as ImportTypes,
     ));
   }
 }
@@ -229,7 +268,10 @@ class _$LiquidWalletImpl extends _LiquidWallet {
       this.lastSync,
       this.lastBackupTested,
       this.mnemonic = '',
-      @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet})
+      @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet,
+      required this.seedFingerprint,
+      this.bipPath = BitcoinScriptType.bip84,
+      this.importType = ImportTypes.words12})
       : super._();
 
   factory _$LiquidWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -258,10 +300,18 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final lwk.Wallet? lwkWallet;
+  @override
+  final String seedFingerprint;
+  @override
+  @JsonKey()
+  final BitcoinScriptType bipPath;
+  @override
+  @JsonKey()
+  final ImportTypes importType;
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, lwkWallet: $lwkWallet)';
+    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, lwkWallet: $lwkWallet, seedFingerprint: $seedFingerprint, bipPath: $bipPath, importType: $importType)';
   }
 
   @override
@@ -283,13 +333,31 @@ class _$LiquidWalletImpl extends _LiquidWallet {
             (identical(other.mnemonic, mnemonic) ||
                 other.mnemonic == mnemonic) &&
             (identical(other.lwkWallet, lwkWallet) ||
-                other.lwkWallet == lwkWallet));
+                other.lwkWallet == lwkWallet) &&
+            (identical(other.seedFingerprint, seedFingerprint) ||
+                other.seedFingerprint == seedFingerprint) &&
+            (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
+            (identical(other.importType, importType) ||
+                other.importType == importType));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, balance, type, network,
-      backupTested, lastSync, lastBackupTested, mnemonic, lwkWallet);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      balance,
+      type,
+      network,
+      backupTested,
+      lastSync,
+      lastBackupTested,
+      mnemonic,
+      lwkWallet,
+      seedFingerprint,
+      bipPath,
+      importType);
 
   @JsonKey(ignore: true)
   @override
@@ -317,7 +385,10 @@ abstract class _LiquidWallet extends LiquidWallet {
       final DateTime? lastBackupTested,
       final String mnemonic,
       @JsonKey(includeFromJson: false, includeToJson: false)
-      final lwk.Wallet? lwkWallet}) = _$LiquidWalletImpl;
+      final lwk.Wallet? lwkWallet,
+      required final String seedFingerprint,
+      final BitcoinScriptType bipPath,
+      final ImportTypes importType}) = _$LiquidWalletImpl;
   _LiquidWallet._() : super._();
 
   factory _LiquidWallet.fromJson(Map<String, dynamic> json) =
@@ -344,6 +415,12 @@ abstract class _LiquidWallet extends LiquidWallet {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   lwk.Wallet? get lwkWallet;
+  @override
+  String get seedFingerprint;
+  @override
+  BitcoinScriptType get bipPath;
+  @override
+  ImportTypes get importType;
   @override
   @JsonKey(ignore: true)
   _$$LiquidWalletImplCopyWith<_$LiquidWalletImpl> get copyWith =>

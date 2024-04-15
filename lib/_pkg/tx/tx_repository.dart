@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:isar/isar.dart';
 
 class TxRepository {
-  TxRepository({required this.storage});
+  TxRepository({required this.storage, required this.isar});
 
+  Isar isar;
   HiveStorage storage;
 
   Future<(List<Tx>?, dynamic)> listTxs(Wallet wallet) async {

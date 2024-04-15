@@ -6,6 +6,86 @@ import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
+import 'package:isar/isar.dart';
+
+part 'wallet.g.dart';
+
+@Collection(ignore: {'copyWith'})
+class Wallet {
+  @Index()
+  String id = '';
+
+  Id isarid = Isar.autoIncrement;
+
+  String name = '';
+  int balance = 0;
+
+  @Enumerated(EnumType.ordinal)
+  WalletType type = WalletType.Bitcoin;
+  String seedFingerprint = '';
+
+  @Enumerated(EnumType.ordinal32)
+  BitcoinScriptType? bipPath = BitcoinScriptType.bip84;
+  bool backupTested = false;
+  DateTime? lastBackupTested;
+  DateTime? lastSync;
+
+  @Enumerated(EnumType.ordinal32)
+  ImportTypes? importType;
+
+  @Index()
+  @Enumerated(EnumType.ordinal)
+  NetworkType network = NetworkType.Mainnet;
+
+  static Wallet fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('type') && json['type'] == WalletType.Bitcoin.name) {
+      return BitcoinWallet.fromJson(json);
+    } else if (json.containsKey('type') && json['type'] == WalletType.Liquid.name) {
+      return LiquidWallet.fromJson(json);
+    }
+    throw UnimplementedError('Unsupported Wallet subclass');
+  }
+
+  Map<String, dynamic> toJson() {
+    return {};
+  }
+
+  static Future<Wallet> setupNewWallet(WalletType type, String mnemonicStr, NetworkType network,
+      {String name = 'Wallet'}) async {
+    if (type == WalletType.Bitcoin) {
+      return BitcoinWallet.setupNewWallet(mnemonicStr, network, name: name);
+    } else if (type == WalletType.Liquid) {
+      return LiquidWallet.setupNewWallet(mnemonicStr, network, name: name);
+    }
+    throw UnimplementedError('Unsupported Wallet subclass');
+  }
+
+  static Future<Wallet> loadNativeSdk(Wallet w, Seed seed) async {
+    if (w.type == WalletType.Bitcoin) {
+      return BitcoinWalletHelper.loadNativeSdk(w as BitcoinWallet, seed);
+    } else if (w.type == WalletType.Liquid) {
+      return LiquidWallet.loadNativeSdk(w as LiquidWallet);
+    }
+    throw UnimplementedError('Unsupported Wallet subclass');
+  }
+
+  static Future<Wallet> syncWallet(Wallet wallet) {
+    if (wallet.type == WalletType.Bitcoin) {
+      return BitcoinWalletHelper.syncWallet(wallet as BitcoinWallet);
+    } else if (wallet.type == WalletType.Liquid) {
+      return LiquidWallet.syncWallet(wallet as LiquidWallet);
+    }
+    throw UnimplementedError('Unsupported Wallet subclass');
+  }
+
+  Future<Iterable<Tx>> getTxs(WalletType type) async {
+    return [];
+  }
+
+  Future<Address> getAddress(int index, AddressKind kind) async {
+    return Address();
+  }
+}
 
 enum WalletType { Bitcoin, Liquid, Lightning, Usdt }
 
@@ -69,60 +149,18 @@ extension BitcoinScriptTypeExtension on BitcoinScriptType {
   }
 }
 
-abstract class Wallet {
-  String id = '';
-  String name = '';
-  int balance = 0;
-  WalletType type = WalletType.Bitcoin;
-  NetworkType network = NetworkType.Mainnet;
-  String seedFingerprint = '';
-  BitcoinScriptType bipPath = BitcoinScriptType.bip84;
-  bool backupTested = false;
-  DateTime? lastBackupTested;
-  DateTime? lastSync;
+/// FNV-1a 64bit hash algorithm optimized for Dart Strings
+int fastHash(String string) {
+  var hash = 0xcbf29ce484222325;
 
-  String mnemonic = ''; // TODO: Move to secure place
-
-  static Wallet fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('type') && json['type'] == WalletType.Bitcoin.name) {
-      return BitcoinWallet.fromJson(json);
-    } else if (json.containsKey('type') && json['type'] == WalletType.Liquid.name) {
-      return LiquidWallet.fromJson(json);
-    }
-    throw UnimplementedError('Unsupported Wallet subclass');
+  var i = 0;
+  while (i < string.length) {
+    final codeUnit = string.codeUnitAt(i++);
+    hash ^= codeUnit >> 8;
+    hash *= 0x100000001b3;
+    hash ^= codeUnit & 0xFF;
+    hash *= 0x100000001b3;
   }
 
-  Map<String, dynamic> toJson();
-
-  static Future<Wallet> setupNewWallet(WalletType type, String mnemonicStr, NetworkType network,
-      {String name = 'Wallet'}) async {
-    if (type == WalletType.Bitcoin) {
-      return BitcoinWallet.setupNewWallet(mnemonicStr, network, name: name);
-    } else if (type == WalletType.Liquid) {
-      return LiquidWallet.setupNewWallet(mnemonicStr, network, name: name);
-    }
-    throw UnimplementedError('Unsupported Wallet subclass');
-  }
-
-  static Future<Wallet> loadNativeSdk(Wallet w, Seed seed) async {
-    if (w.type == WalletType.Bitcoin) {
-      return BitcoinWalletHelper.loadNativeSdk(w as BitcoinWallet, seed);
-    } else if (w.type == WalletType.Liquid) {
-      return LiquidWallet.loadNativeSdk(w as LiquidWallet);
-    }
-    throw UnimplementedError('Unsupported Wallet subclass');
-  }
-
-  static Future<Wallet> syncWallet(Wallet wallet) {
-    if (wallet.type == WalletType.Bitcoin) {
-      return BitcoinWalletHelper.syncWallet(wallet as BitcoinWallet);
-    } else if (wallet.type == WalletType.Liquid) {
-      return LiquidWallet.syncWallet(wallet as LiquidWallet);
-    }
-    throw UnimplementedError('Unsupported Wallet subclass');
-  }
-
-  Future<Iterable<Tx>> getTxs(WalletType type);
-
-  Future<Address> getAddress(int index, AddressKind kind);
+  return hash;
 }

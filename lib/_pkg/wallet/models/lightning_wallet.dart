@@ -3,6 +3,7 @@
 import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'wallet.dart';
@@ -17,6 +18,12 @@ class LightningWallet extends Wallet with _$LightningWallet {
     required int balance,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
+    required WalletType type,
+    required NetworkType network,
+    required String seedFingerprint,
+    @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
+    DateTime? lastSync,
+    @Default(ImportTypes.words12) ImportTypes importType,
   }) = _LightningWallet;
   LightningWallet._();
 
@@ -24,7 +31,8 @@ class LightningWallet extends Wallet with _$LightningWallet {
 
   static Future<LightningWallet> loadNativeSdk(LightningWallet w) async {
     print('Loading native sdk for lightning wallet');
-    return LightningWallet(id: 'LN', balance: 0);
+    return LightningWallet(
+        id: 'LN', balance: 0, type: WalletType.Lightning, network: NetworkType.Testnet, seedFingerprint: '');
   }
 
   @override

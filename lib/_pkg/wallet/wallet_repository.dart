@@ -9,13 +9,15 @@ import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet/bloc/wallet_state.dart';
+import 'package:isar/isar.dart';
 
 class WalletRepository {
-  WalletRepository({required this.storage}) {
+  WalletRepository({required this.storage, required this.isar}) {
     // initOnAppStart();
   }
 
   HiveStorage storage;
+  Isar isar;
 
   Future<void> initOnAppStart() async {
     print('Init on app start');
@@ -32,6 +34,9 @@ class WalletRepository {
 
   Future<(List<Wallet>?, dynamic)> loadWallets() async {
     try {
+      final wallets = await isar.wallets.where().findAll();
+      return (wallets, null);
+      /*
       final (walletsStr, _) = await storage.getValue('wallets');
       if (walletsStr == null) {
         // TODO: Dumb. Without this, bloc's LoadStatus.Success emit it not happening!
@@ -43,6 +48,7 @@ class WalletRepository {
       final wallets = walletsJson.map((walletJson) => Wallet.fromJson(walletJson)).toList();
 
       return (wallets, null);
+      */
     } catch (e) {
       return (null, e);
     }
@@ -52,10 +58,13 @@ class WalletRepository {
     throw UnimplementedError();
   }
 
-  Future<void> persistWallets(List<Wallet> wallets) async {
-    List<Map<String, dynamic>> walletsJson = wallets.map((wallet) => wallet.toJson()).toList();
-    String encoded = jsonEncode(walletsJson);
-    await storage.saveValue(key: 'wallets', value: encoded);
+  Future<void> persistWallet(Wallet wallet) async {
+    await isar.writeTxn(() async {
+      await isar.wallets.putByIndex("id", wallet);
+    });
+    // List<Map<String, dynamic>> walletsJson = wallets.map((wallet) => wallet.toJson()).toList();
+    // String encoded = jsonEncode(walletsJson);
+    // await storage.saveValue(key: 'wallets', value: encoded);
   }
 
   Future<void> setupWallets() async {

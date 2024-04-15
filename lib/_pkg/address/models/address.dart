@@ -38,7 +38,7 @@ extension AddressTypeExtension on AddressType {
   }
 }
 
-abstract class Address {
+class Address {
   String address = '';
   int index = 0;
   AddressKind kind = AddressKind.deposit;
@@ -53,7 +53,9 @@ abstract class Address {
   List<String> sendTxIds = [];
   String? walletId;
 
-  Map<String, dynamic> toJson();
+  Map<String, dynamic> toJson() {
+    return {};
+  }
 
   static Address fromJson(Map<String, dynamic> json) {
     if (json.containsKey('type') && json['type'] == AddressType.Bitcoin.name) {

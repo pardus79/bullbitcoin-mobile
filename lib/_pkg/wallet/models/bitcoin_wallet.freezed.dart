@@ -28,8 +28,8 @@ mixin _$BitcoinWallet {
   String get seedFingerprint => throw _privateConstructorUsedError;
   BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
-  DateTime? get lastSync => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
+  DateTime? get lastSync => throw _privateConstructorUsedError;
   ImportTypes get importType => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bdk.Blockchain? get bdkBlockchain => throw _privateConstructorUsedError;
@@ -59,8 +59,8 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       String seedFingerprint,
       BitcoinScriptType bipPath,
       bool backupTested,
-      DateTime? lastSync,
       DateTime? lastBackupTested,
+      DateTime? lastSync,
       ImportTypes importType,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
@@ -91,8 +91,8 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? seedFingerprint = null,
     Object? bipPath = null,
     Object? backupTested = null,
-    Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
+    Object? lastSync = freezed,
     Object? importType = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
@@ -131,13 +131,13 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
               as bool,
-      lastSync: freezed == lastSync
-          ? _value.lastSync
-          : lastSync // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       lastBackupTested: freezed == lastBackupTested
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       importType: null == importType
           ? _value.importType
@@ -176,8 +176,8 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       String seedFingerprint,
       BitcoinScriptType bipPath,
       bool backupTested,
-      DateTime? lastSync,
       DateTime? lastBackupTested,
+      DateTime? lastSync,
       ImportTypes importType,
       @JsonKey(includeFromJson: false, includeToJson: false)
       bdk.Blockchain? bdkBlockchain,
@@ -206,8 +206,8 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? seedFingerprint = null,
     Object? bipPath = null,
     Object? backupTested = null,
-    Object? lastSync = freezed,
     Object? lastBackupTested = freezed,
+    Object? lastSync = freezed,
     Object? importType = null,
     Object? bdkBlockchain = freezed,
     Object? bdkWallet = freezed,
@@ -246,13 +246,13 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
               as bool,
-      lastSync: freezed == lastSync
-          ? _value.lastSync
-          : lastSync // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       lastBackupTested: freezed == lastBackupTested
           ? _value.lastBackupTested
           : lastBackupTested // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       importType: null == importType
           ? _value.importType
@@ -286,8 +286,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       required this.seedFingerprint,
       this.bipPath = BitcoinScriptType.bip84,
       this.backupTested = false,
-      this.lastSync,
       this.lastBackupTested,
+      this.lastSync,
       this.importType = ImportTypes.words12,
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkBlockchain,
       @JsonKey(includeFromJson: false, includeToJson: false) this.bdkWallet,
@@ -317,9 +317,9 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   @JsonKey()
   final bool backupTested;
   @override
-  final DateTime? lastSync;
-  @override
   final DateTime? lastBackupTested;
+  @override
+  final DateTime? lastSync;
   @override
   @JsonKey()
   final ImportTypes importType;
@@ -335,7 +335,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
   }
 
   @override
@@ -353,10 +353,10 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
             (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
             (identical(other.backupTested, backupTested) ||
                 other.backupTested == backupTested) &&
-            (identical(other.lastSync, lastSync) ||
-                other.lastSync == lastSync) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
                 other.lastBackupTested == lastBackupTested) &&
+            (identical(other.lastSync, lastSync) ||
+                other.lastSync == lastSync) &&
             (identical(other.importType, importType) ||
                 other.importType == importType) &&
             (identical(other.bdkBlockchain, bdkBlockchain) ||
@@ -379,8 +379,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       seedFingerprint,
       bipPath,
       backupTested,
-      lastSync,
       lastBackupTested,
+      lastSync,
       importType,
       bdkBlockchain,
       bdkWallet,
@@ -410,8 +410,8 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       required final String seedFingerprint,
       final BitcoinScriptType bipPath,
       final bool backupTested,
-      final DateTime? lastSync,
       final DateTime? lastBackupTested,
+      final DateTime? lastSync,
       final ImportTypes importType,
       @JsonKey(includeFromJson: false, includeToJson: false)
       final bdk.Blockchain? bdkBlockchain,
@@ -441,9 +441,9 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   @override
   bool get backupTested;
   @override
-  DateTime? get lastSync;
-  @override
   DateTime? get lastBackupTested;
+  @override
+  DateTime? get lastSync;
   @override
   ImportTypes get importType;
   @override

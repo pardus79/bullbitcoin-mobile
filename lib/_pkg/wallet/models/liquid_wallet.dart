@@ -4,6 +4,7 @@ import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/constants.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
 import 'package:path_provider/path_provider.dart';
@@ -39,6 +40,9 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     DateTime? lastBackupTested,
     @Default('') String mnemonic,
     @JsonKey(includeFromJson: false, includeToJson: false) lwk.Wallet? lwkWallet,
+    required String seedFingerprint,
+    @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
+    @Default(ImportTypes.words12) ImportTypes importType,
   }) = _LiquidWallet;
   LiquidWallet._();
 
@@ -46,13 +50,13 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
-      id: name,
-      name: name,
-      balance: 0,
-      type: WalletType.Liquid,
-      network: network,
-      mnemonic: mnemonicStr,
-    );
+        id: name,
+        name: name,
+        balance: 0,
+        type: WalletType.Liquid,
+        network: network,
+        mnemonic: mnemonicStr,
+        seedFingerprint: '');
   }
 
   static Future<LiquidWallet> loadNativeSdk(LiquidWallet w) async {

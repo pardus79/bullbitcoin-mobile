@@ -3,24 +3,37 @@ import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/storage/secure_storage.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/app/app.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // TODO: Move this to a Splash loader
+
+  final dir = await getApplicationDocumentsDirectory();
+
+  final isar = await Isar.open(
+    [WalletSchema],
+    directory: dir.path,
+  );
+
   final HiveStorage storage = HiveStorage();
   await storage.init();
+
   final SecureStorage secureStorage = SecureStorage();
 
   final SeedRepository seedRepository = SeedRepository(storage: storage);
-  final WalletRepository walletRepository = WalletRepository(storage: storage);
-  final TxRepository txRepository = TxRepository(storage: storage);
+  final WalletRepository walletRepository = WalletRepository(storage: storage, isar: isar);
+  final TxRepository txRepository = TxRepository(storage: storage, isar: isar);
   final AddressRepository addressRepository = AddressRepository(storage: storage);
 
   runApp(MyApp(
+    isar: isar,
     storage: storage,
     secureStorage: secureStorage,
     seedRepository: seedRepository,
@@ -33,6 +46,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp(
       {super.key,
+      required this.isar,
       required this.storage,
       required this.secureStorage,
       required this.seedRepository,
@@ -40,6 +54,7 @@ class MyApp extends StatelessWidget {
       required this.txRepository,
       required this.addressRepository});
 
+  final Isar isar;
   final HiveStorage storage;
   final SecureStorage secureStorage;
   final SeedRepository seedRepository;

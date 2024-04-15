@@ -112,7 +112,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     }
 
     await completer.future;
-    await walletRepository.persistWallets(state.wallets);
+    // await walletRepository.persistWallet(state.wallets);
     // await Future.delayed(const Duration(seconds: 5));
     emit(state.copyWith(status: LoadStatus.success));
     print('OnSyncAllWallets: DONE');
@@ -126,7 +126,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
   void _onPersistWallet(PersistWallet event, Emitter<WalletState> emit) async {
     emit(state.copyWith(wallets: [...state.wallets, event.wallet]));
-    await walletRepository.persistWallets(state.wallets);
+    await walletRepository.persistWallet(event.wallet);
     // await Future.delayed(const Duration(milliseconds: 10000));
     add(LoadAllWallets());
   }

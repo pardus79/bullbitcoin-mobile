@@ -6,32 +6,22 @@ part of 'bitcoin_wallet.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
-    _$BitcoinWalletImpl(
+_$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) => _$BitcoinWalletImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       balance: json['balance'] as int,
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       seedFingerprint: json['seedFingerprint'] as String,
-      bipPath:
-          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
-              BitcoinScriptType.bip84,
+      bipPath: $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ?? BitcoinScriptType.bip84,
       backupTested: json['backupTested'] as bool? ?? false,
-      lastSync: json['lastSync'] == null
-          ? null
-          : DateTime.parse(json['lastSync'] as String),
-      lastBackupTested: json['lastBackupTested'] == null
-          ? null
-          : DateTime.parse(json['lastBackupTested'] as String),
-      importType:
-          $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
-              ImportTypes.words12,
-    )..mnemonic = json['mnemonic'] as String;
+      lastBackupTested: json['lastBackupTested'] == null ? null : DateTime.parse(json['lastBackupTested'] as String),
+      lastSync: json['lastSync'] == null ? null : DateTime.parse(json['lastSync'] as String),
+      importType: $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ?? ImportTypes.words12,
+    )..isarid = json['isarid'] as int;
 
-Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
-    <String, dynamic>{
-      'mnemonic': instance.mnemonic,
+Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) => <String, dynamic>{
+      'isarid': instance.isarid,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,
@@ -40,8 +30,8 @@ Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
       'seedFingerprint': instance.seedFingerprint,
       'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
       'backupTested': instance.backupTested,
-      'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
+      'lastSync': instance.lastSync?.toIso8601String(),
       'importType': _$ImportTypesEnumMap[instance.importType]!,
     };
 
