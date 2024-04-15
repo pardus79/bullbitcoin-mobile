@@ -23,12 +23,12 @@ _$LiquidWalletImpl _$$LiquidWalletImplFromJson(Map<String, dynamic> json) =>
       mnemonic: json['mnemonic'] as String? ?? '',
     )
       ..seedFingerprint = json['seedFingerprint'] as String
-      ..bipPath = json['bipPath'] as String;
+      ..bipPath = $enumDecode(_$BitcoinScriptTypeEnumMap, json['bipPath']);
 
 Map<String, dynamic> _$$LiquidWalletImplToJson(_$LiquidWalletImpl instance) =>
     <String, dynamic>{
       'seedFingerprint': instance.seedFingerprint,
-      'bipPath': instance.bipPath,
+      'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,
@@ -51,4 +51,11 @@ const _$NetworkTypeEnumMap = {
   NetworkType.Mainnet: 'Mainnet',
   NetworkType.Testnet: 'Testnet',
   NetworkType.Signet: 'Signet',
+};
+
+const _$BitcoinScriptTypeEnumMap = {
+  BitcoinScriptType.bip86: 'bip86',
+  BitcoinScriptType.bip84: 'bip84',
+  BitcoinScriptType.bip49: 'bip49',
+  BitcoinScriptType.bip44: 'bip44',
 };

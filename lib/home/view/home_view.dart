@@ -34,7 +34,7 @@ class _HomeViewState extends State<HomeView> {
     final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
     final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
 
-    print('HomeView.build');
+    print('HomeView.build: $loadStatus');
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +77,7 @@ class _HomeViewState extends State<HomeView> {
             child: const Icon(Icons.cloud_sync),
           ),
         ],
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

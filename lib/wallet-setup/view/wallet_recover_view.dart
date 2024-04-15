@@ -70,6 +70,24 @@ class WalletRecoverView extends StatelessWidget {
                   print('Vegeta wallet');
                 },
                 child: const Text('Vegeta wallet')),
+            TextButton(
+                onPressed: () async {
+                  Seed seed = const Seed(
+                      mnemonic:
+                          'cave arrest spot bleak song diesel wire bleak wolf stand enhance guess coach below next smoke power school edit crowd photo ordinary pottery train',
+                      passphrase: '',
+                      walletType: WalletType.Bitcoin,
+                      network: NetworkType.Testnet,
+                      fingerprint: '');
+                  final (seedFingerprint, _) = await seed.getBdkFingerprint();
+                  seed = seed.copyWith(fingerprint: seedFingerprint ?? '');
+                  context
+                      .read<WalletSensitiveBloc>()
+                      .add(DeriveWalletFromStoredSeed(seed: seed, walletName: 'First24'));
+                  GoRouter.of(context).push(WalletTypeSelectionPage.route);
+                  print('First24 wallet');
+                },
+                child: const Text('First24 wallet')),
           ],
         ));
   }

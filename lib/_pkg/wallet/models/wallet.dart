@@ -6,7 +6,6 @@ import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
-import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 
 enum WalletType { Bitcoin, Liquid, Lightning, Usdt }
 
@@ -40,6 +39,36 @@ extension NetworkTypeExtension on NetworkType {
   }
 }
 
+enum BitcoinScriptType { bip86, bip84, bip49, bip44 }
+
+extension BitcoinScriptTypeExtension on BitcoinScriptType {
+  String get name {
+    switch (this) {
+      case BitcoinScriptType.bip44:
+        return 'Legacy pubkey';
+      case BitcoinScriptType.bip49:
+        return 'Legacy script';
+      case BitcoinScriptType.bip84:
+        return 'Segwit';
+      case BitcoinScriptType.bip86:
+        return 'Taproot';
+    }
+  }
+
+  String get path {
+    switch (this) {
+      case BitcoinScriptType.bip44:
+        return '44h';
+      case BitcoinScriptType.bip49:
+        return '49h';
+      case BitcoinScriptType.bip84:
+        return '84h';
+      case BitcoinScriptType.bip86:
+        return '84h';
+    }
+  }
+}
+
 abstract class Wallet {
   String id = '';
   String name = '';
@@ -47,7 +76,7 @@ abstract class Wallet {
   WalletType type = WalletType.Bitcoin;
   NetworkType network = NetworkType.Mainnet;
   String seedFingerprint = '';
-  String bipPath = '84h';
+  BitcoinScriptType bipPath = BitcoinScriptType.bip84;
   bool backupTested = false;
   DateTime? lastBackupTested;
   DateTime? lastSync;

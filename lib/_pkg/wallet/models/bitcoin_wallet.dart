@@ -1,9 +1,7 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
-import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
-import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'wallet.dart';
@@ -11,7 +9,7 @@ import 'wallet.dart';
 part 'bitcoin_wallet.freezed.dart';
 part 'bitcoin_wallet.g.dart';
 
-enum ImportTypes { xpub, coldcard, words12, words24, notSelected }
+enum ImportTypes { xpub, coldcard, descriptors, words12, words24, notSelected }
 
 extension NetworkTypeExtension on NetworkType {
   bdk.Network get getBdkType {
@@ -35,7 +33,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     required WalletType type,
     required NetworkType network,
     required String seedFingerprint,
-    @Default('84h') String bipPath,
+    @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
     @Default(false) bool backupTested,
     DateTime? lastSync,
     DateTime? lastBackupTested,

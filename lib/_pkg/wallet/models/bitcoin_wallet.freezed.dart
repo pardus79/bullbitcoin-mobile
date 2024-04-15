@@ -26,7 +26,7 @@ mixin _$BitcoinWallet {
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   String get seedFingerprint => throw _privateConstructorUsedError;
-  String get bipPath => throw _privateConstructorUsedError;
+  BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastSync => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
@@ -57,7 +57,7 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      String bipPath,
+      BitcoinScriptType bipPath,
       bool backupTested,
       DateTime? lastSync,
       DateTime? lastBackupTested,
@@ -126,7 +126,7 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
       bipPath: null == bipPath
           ? _value.bipPath
           : bipPath // ignore: cast_nullable_to_non_nullable
-              as String,
+              as BitcoinScriptType,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -174,7 +174,7 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      String bipPath,
+      BitcoinScriptType bipPath,
       bool backupTested,
       DateTime? lastSync,
       DateTime? lastBackupTested,
@@ -241,7 +241,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
       bipPath: null == bipPath
           ? _value.bipPath
           : bipPath // ignore: cast_nullable_to_non_nullable
-              as String,
+              as BitcoinScriptType,
       backupTested: null == backupTested
           ? _value.backupTested
           : backupTested // ignore: cast_nullable_to_non_nullable
@@ -284,7 +284,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       required this.type,
       required this.network,
       required this.seedFingerprint,
-      this.bipPath = '84h',
+      this.bipPath = BitcoinScriptType.bip84,
       this.backupTested = false,
       this.lastSync,
       this.lastBackupTested,
@@ -312,7 +312,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   final String seedFingerprint;
   @override
   @JsonKey()
-  final String bipPath;
+  final BitcoinScriptType bipPath;
   @override
   @JsonKey()
   final bool backupTested;
@@ -408,7 +408,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       required final WalletType type,
       required final NetworkType network,
       required final String seedFingerprint,
-      final String bipPath,
+      final BitcoinScriptType bipPath,
       final bool backupTested,
       final DateTime? lastSync,
       final DateTime? lastBackupTested,
@@ -437,7 +437,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   @override
   String get seedFingerprint;
   @override
-  String get bipPath;
+  BitcoinScriptType get bipPath;
   @override
   bool get backupTested;
   @override

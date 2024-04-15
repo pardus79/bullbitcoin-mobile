@@ -14,7 +14,9 @@ _$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       seedFingerprint: json['seedFingerprint'] as String,
-      bipPath: json['bipPath'] as String? ?? '84h',
+      bipPath:
+          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
+              BitcoinScriptType.bip84,
       backupTested: json['backupTested'] as bool? ?? false,
       lastSync: json['lastSync'] == null
           ? null
@@ -36,7 +38,7 @@ Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'seedFingerprint': instance.seedFingerprint,
-      'bipPath': instance.bipPath,
+      'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
       'backupTested': instance.backupTested,
       'lastSync': instance.lastSync?.toIso8601String(),
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
@@ -56,9 +58,17 @@ const _$NetworkTypeEnumMap = {
   NetworkType.Signet: 'Signet',
 };
 
+const _$BitcoinScriptTypeEnumMap = {
+  BitcoinScriptType.bip86: 'bip86',
+  BitcoinScriptType.bip84: 'bip84',
+  BitcoinScriptType.bip49: 'bip49',
+  BitcoinScriptType.bip44: 'bip44',
+};
+
 const _$ImportTypesEnumMap = {
   ImportTypes.xpub: 'xpub',
   ImportTypes.coldcard: 'coldcard',
+  ImportTypes.descriptors: 'descriptors',
   ImportTypes.words12: 'words12',
   ImportTypes.words24: 'words24',
   ImportTypes.notSelected: 'notSelected',

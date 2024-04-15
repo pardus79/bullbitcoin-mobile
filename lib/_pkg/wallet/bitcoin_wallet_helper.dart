@@ -42,21 +42,46 @@ class BitcoinWalletHelper {
     return descHashId;
   }
 
-  static Future<bdk.Descriptor> deriveDescriptor(String path, String bipPath, bdk.DescriptorSecretKey rootXprv,
-      bdk.Network network, bdk.KeychainKind keychainKind, String sourceFingerprint) async {
+  static Future<bdk.Descriptor> deriveDescriptor(
+      String path,
+      BitcoinScriptType bipPath,
+      bdk.DescriptorSecretKey rootXprv,
+      bdk.Network network,
+      bdk.KeychainKind keychainKind,
+      String sourceFingerprint) async {
+    print('deriving descriptor: $path');
     final xpriv = await rootXprv.derive(await bdk.DerivationPath.create(path: path));
     final xpub = await xpriv.asPublic();
-    final descriptor = await (bipPath == '44h'
-            ? bdk.Descriptor.newBip44Public
-            : bipPath == '49h'
-                ? bdk.Descriptor.newBip49Public
-                : bdk.Descriptor.newBip84Public)(
-        publicKey: xpub, fingerPrint: sourceFingerprint, network: network, keychain: keychainKind);
+
+    bdk.Descriptor descriptor;
+
+    if (bipPath == BitcoinScriptType.bip44) {
+      descriptor = await bdk.Descriptor.newBip44Public(
+          fingerPrint: sourceFingerprint, publicKey: xpub, network: network, keychain: keychainKind);
+    } else if (bipPath == BitcoinScriptType.bip49) {
+      descriptor = await bdk.Descriptor.newBip49Public(
+          fingerPrint: sourceFingerprint, publicKey: xpub, network: network, keychain: keychainKind);
+    } else if (bipPath == BitcoinScriptType.bip84) {
+      descriptor = await bdk.Descriptor.newBip84Public(
+          fingerPrint: sourceFingerprint, publicKey: xpub, network: network, keychain: keychainKind);
+    } else if (bipPath == BitcoinScriptType.bip86) {
+      descriptor = await bdk.Descriptor.newBip86Public(
+          fingerPrint: sourceFingerprint, publicKey: xpub, network: network, keychain: keychainKind);
+    } else {
+      // Do segwit
+      descriptor = await bdk.Descriptor.newBip84Public(
+          fingerPrint: sourceFingerprint, publicKey: xpub, network: network, keychain: keychainKind);
+    }
     return await bdk.Descriptor.create(descriptor: await descriptor.asString(), network: network);
   }
 
   static Future<List<BitcoinWallet>> initializeAllWallets(Seed seed,
-      {List<String> bipPath = const ['44h', '49h', '84h']}) async {
+      {List<BitcoinScriptType> bipPath = const [
+        BitcoinScriptType.bip44,
+        BitcoinScriptType.bip49,
+        BitcoinScriptType.bip84,
+        BitcoinScriptType.bip86,
+      ]}) async {
     final appDocDir = await getApplicationDocumentsDirectory();
     final bdkBlockchain = await BitcoinWalletHelper.getBdkBlockchain();
 
@@ -69,10 +94,15 @@ class BitcoinWalletHelper {
   }
 
   static Future<BitcoinWallet> initializeWallet(
-      {Seed? seed, bdk.Blockchain? blockchain, String bipPath = '84h', String appDocDirPath = ''}) async {
+      {Seed? seed,
+      bdk.Blockchain? blockchain,
+      BitcoinScriptType bipPath = BitcoinScriptType.bip84,
+      String appDocDirPath = ''}) async {
     if (seed == null || blockchain == null) {
       throw ("Seed is null");
     }
+
+    print('initializing wallet with bip path: $bipPath / ${bipPath.path} / ${bipPath.name}');
 
     final network = seed.network;
     final (sourceFingerprint, _) = await seed.getBdkFingerprint();
@@ -85,7 +115,7 @@ class BitcoinWalletHelper {
 
     final networkPath = network.getBdkType == bdk.Network.Bitcoin ? '0h' : '1h';
     const accountPath = '0h';
-    final fullPath = 'm/$bipPath/$networkPath/$accountPath';
+    final fullPath = 'm/${bipPath.path}/$networkPath/$accountPath';
     final externalDescriptor = await BitcoinWalletHelper.deriveDescriptor(
         fullPath, bipPath, rootXprv, network.getBdkType, bdk.KeychainKind.External, sourceFingerprint!);
     final internalDescriptor = await BitcoinWalletHelper.deriveDescriptor(

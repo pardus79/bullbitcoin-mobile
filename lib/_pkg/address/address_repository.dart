@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
-import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
-import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 

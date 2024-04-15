@@ -8,6 +8,7 @@ import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/wallet/bloc/wallet_state.dart';
 
 class WalletRepository {
   WalletRepository({required this.storage}) {
@@ -32,7 +33,13 @@ class WalletRepository {
   Future<(List<Wallet>?, dynamic)> loadWallets() async {
     try {
       final (walletsStr, _) = await storage.getValue('wallets');
-      List<dynamic> walletsJson = jsonDecode(walletsStr!);
+      if (walletsStr == null) {
+        // TODO: Dumb. Without this, bloc's LoadStatus.Success emit it not happening!
+        await Future.delayed(const Duration(milliseconds: 100));
+        List<Wallet> wallets = [];
+        return (wallets, null);
+      }
+      List<dynamic> walletsJson = jsonDecode(walletsStr);
       final wallets = walletsJson.map((walletJson) => Wallet.fromJson(walletJson)).toList();
 
       return (wallets, null);

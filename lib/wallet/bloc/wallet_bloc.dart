@@ -67,11 +67,11 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       Wallet newWallet = w;
       if (w is BitcoinWallet) {
         if (w.bdkWallet == null) {
-          final (seed, seedErr) = await seedRepository.loadSeed(w.seedFingerprint);
+          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
           newWallet = await BitcoinWalletHelper.loadNativeSdk(w, seed!);
         }
       } else if (w is LiquidWallet) {
-        LiquidWallet lw = w as LiquidWallet;
+        LiquidWallet lw = w;
         if (lw.lwkWallet == null) {
           newWallet = await LiquidWallet.loadNativeSdk(lw);
         }

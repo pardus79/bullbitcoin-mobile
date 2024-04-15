@@ -20,15 +20,17 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
   WalletSensitiveBloc({required this.walletRepository, required this.seedRepository})
       : super(WalletSensitiveState.initial()) {
     on<DeriveWalletFromStoredSeed>(_onDeriveWalletFromStoredSeed);
-    on<PersistSeed>(_onPersistSeed);
+    on<PersistAndClearSeed>(_onPersistAndClearSeed);
   }
-  void _onPersistSeed(PersistSeed event, Emitter<WalletSensitiveState> emit) async {
+  void _onPersistAndClearSeed(PersistAndClearSeed event, Emitter<WalletSensitiveState> emit) async {
     await seedRepository.persistSeed(seedRepository.seed!);
+    seedRepository.clearSeed();
   }
 
   void _onDeriveWalletFromStoredSeed(DeriveWalletFromStoredSeed event, Emitter<WalletSensitiveState> emit) async {
-    emit(state.copyWith(status: LoadStatus.loading));
+    emit(state.copyWith(status: LoadStatus.loading, derivedWallets: []));
 
+    // TODO: Pls find a better way. You can do better than this
     seedRepository.holdSeed(event.seed);
 
     List<Wallet> nameUpdatedWallets = [];
