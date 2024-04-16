@@ -25,15 +25,14 @@ mixin _$LiquidWallet {
   int get balance => throw _privateConstructorUsedError;
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
-  bool get backupTested => throw _privateConstructorUsedError;
-  DateTime? get lastSync => throw _privateConstructorUsedError;
-  DateTime? get lastBackupTested => throw _privateConstructorUsedError;
-  String get mnemonic => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  lwk.Wallet? get lwkWallet => throw _privateConstructorUsedError;
   String get seedFingerprint => throw _privateConstructorUsedError;
   BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
+  bool get backupTested => throw _privateConstructorUsedError;
+  DateTime? get lastBackupTested => throw _privateConstructorUsedError;
+  DateTime? get lastSync => throw _privateConstructorUsedError;
   ImportTypes get importType => throw _privateConstructorUsedError;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  lwk.Wallet? get lwkWallet => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -53,15 +52,14 @@ abstract class $LiquidWalletCopyWith<$Res> {
       int balance,
       WalletType type,
       NetworkType network,
-      bool backupTested,
-      DateTime? lastSync,
-      DateTime? lastBackupTested,
-      String mnemonic,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      lwk.Wallet? lwkWallet,
       String seedFingerprint,
       BitcoinScriptType bipPath,
-      ImportTypes importType});
+      bool backupTested,
+      DateTime? lastBackupTested,
+      DateTime? lastSync,
+      ImportTypes importType,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      lwk.Wallet? lwkWallet});
 }
 
 /// @nodoc
@@ -82,14 +80,13 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
     Object? balance = null,
     Object? type = null,
     Object? network = null,
-    Object? backupTested = null,
-    Object? lastSync = freezed,
-    Object? lastBackupTested = freezed,
-    Object? mnemonic = null,
-    Object? lwkWallet = freezed,
     Object? seedFingerprint = null,
     Object? bipPath = null,
+    Object? backupTested = null,
+    Object? lastBackupTested = freezed,
+    Object? lastSync = freezed,
     Object? importType = null,
+    Object? lwkWallet = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -112,26 +109,6 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.network
           : network // ignore: cast_nullable_to_non_nullable
               as NetworkType,
-      backupTested: null == backupTested
-          ? _value.backupTested
-          : backupTested // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lastSync: freezed == lastSync
-          ? _value.lastSync
-          : lastSync // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      lastBackupTested: freezed == lastBackupTested
-          ? _value.lastBackupTested
-          : lastBackupTested // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      mnemonic: null == mnemonic
-          ? _value.mnemonic
-          : mnemonic // ignore: cast_nullable_to_non_nullable
-              as String,
-      lwkWallet: freezed == lwkWallet
-          ? _value.lwkWallet
-          : lwkWallet // ignore: cast_nullable_to_non_nullable
-              as lwk.Wallet?,
       seedFingerprint: null == seedFingerprint
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
@@ -140,10 +117,26 @@ class _$LiquidWalletCopyWithImpl<$Res, $Val extends LiquidWallet>
           ? _value.bipPath
           : bipPath // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
+      backupTested: null == backupTested
+          ? _value.backupTested
+          : backupTested // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastBackupTested: freezed == lastBackupTested
+          ? _value.lastBackupTested
+          : lastBackupTested // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       importType: null == importType
           ? _value.importType
           : importType // ignore: cast_nullable_to_non_nullable
               as ImportTypes,
+      lwkWallet: freezed == lwkWallet
+          ? _value.lwkWallet
+          : lwkWallet // ignore: cast_nullable_to_non_nullable
+              as lwk.Wallet?,
     ) as $Val);
   }
 }
@@ -162,15 +155,14 @@ abstract class _$$LiquidWalletImplCopyWith<$Res>
       int balance,
       WalletType type,
       NetworkType network,
-      bool backupTested,
-      DateTime? lastSync,
-      DateTime? lastBackupTested,
-      String mnemonic,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      lwk.Wallet? lwkWallet,
       String seedFingerprint,
       BitcoinScriptType bipPath,
-      ImportTypes importType});
+      bool backupTested,
+      DateTime? lastBackupTested,
+      DateTime? lastSync,
+      ImportTypes importType,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      lwk.Wallet? lwkWallet});
 }
 
 /// @nodoc
@@ -189,14 +181,13 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
     Object? balance = null,
     Object? type = null,
     Object? network = null,
-    Object? backupTested = null,
-    Object? lastSync = freezed,
-    Object? lastBackupTested = freezed,
-    Object? mnemonic = null,
-    Object? lwkWallet = freezed,
     Object? seedFingerprint = null,
     Object? bipPath = null,
+    Object? backupTested = null,
+    Object? lastBackupTested = freezed,
+    Object? lastSync = freezed,
     Object? importType = null,
+    Object? lwkWallet = freezed,
   }) {
     return _then(_$LiquidWalletImpl(
       id: null == id
@@ -219,26 +210,6 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.network
           : network // ignore: cast_nullable_to_non_nullable
               as NetworkType,
-      backupTested: null == backupTested
-          ? _value.backupTested
-          : backupTested // ignore: cast_nullable_to_non_nullable
-              as bool,
-      lastSync: freezed == lastSync
-          ? _value.lastSync
-          : lastSync // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      lastBackupTested: freezed == lastBackupTested
-          ? _value.lastBackupTested
-          : lastBackupTested // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      mnemonic: null == mnemonic
-          ? _value.mnemonic
-          : mnemonic // ignore: cast_nullable_to_non_nullable
-              as String,
-      lwkWallet: freezed == lwkWallet
-          ? _value.lwkWallet
-          : lwkWallet // ignore: cast_nullable_to_non_nullable
-              as lwk.Wallet?,
       seedFingerprint: null == seedFingerprint
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
@@ -247,10 +218,26 @@ class __$$LiquidWalletImplCopyWithImpl<$Res>
           ? _value.bipPath
           : bipPath // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
+      backupTested: null == backupTested
+          ? _value.backupTested
+          : backupTested // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lastBackupTested: freezed == lastBackupTested
+          ? _value.lastBackupTested
+          : lastBackupTested // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      lastSync: freezed == lastSync
+          ? _value.lastSync
+          : lastSync // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       importType: null == importType
           ? _value.importType
           : importType // ignore: cast_nullable_to_non_nullable
               as ImportTypes,
+      lwkWallet: freezed == lwkWallet
+          ? _value.lwkWallet
+          : lwkWallet // ignore: cast_nullable_to_non_nullable
+              as lwk.Wallet?,
     ));
   }
 }
@@ -264,14 +251,13 @@ class _$LiquidWalletImpl extends _LiquidWallet {
       required this.balance,
       required this.type,
       required this.network,
-      this.backupTested = false,
-      this.lastSync,
-      this.lastBackupTested,
-      this.mnemonic = '',
-      @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet,
       required this.seedFingerprint,
       this.bipPath = BitcoinScriptType.bip84,
-      this.importType = ImportTypes.words12})
+      this.backupTested = false,
+      this.lastBackupTested,
+      this.lastSync,
+      this.importType = ImportTypes.words12,
+      @JsonKey(includeFromJson: false, includeToJson: false) this.lwkWallet})
       : super._();
 
   factory _$LiquidWalletImpl.fromJson(Map<String, dynamic> json) =>
@@ -288,30 +274,27 @@ class _$LiquidWalletImpl extends _LiquidWallet {
   @override
   final NetworkType network;
   @override
-  @JsonKey()
-  final bool backupTested;
-  @override
-  final DateTime? lastSync;
-  @override
-  final DateTime? lastBackupTested;
-  @override
-  @JsonKey()
-  final String mnemonic;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final lwk.Wallet? lwkWallet;
-  @override
   final String seedFingerprint;
   @override
   @JsonKey()
   final BitcoinScriptType bipPath;
   @override
   @JsonKey()
+  final bool backupTested;
+  @override
+  final DateTime? lastBackupTested;
+  @override
+  final DateTime? lastSync;
+  @override
+  @JsonKey()
   final ImportTypes importType;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final lwk.Wallet? lwkWallet;
 
   @override
   String toString() {
-    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, backupTested: $backupTested, lastSync: $lastSync, lastBackupTested: $lastBackupTested, mnemonic: $mnemonic, lwkWallet: $lwkWallet, seedFingerprint: $seedFingerprint, bipPath: $bipPath, importType: $importType)';
+    return 'LiquidWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, lwkWallet: $lwkWallet)';
   }
 
   @override
@@ -324,21 +307,19 @@ class _$LiquidWalletImpl extends _LiquidWallet {
             (identical(other.balance, balance) || other.balance == balance) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.network, network) || other.network == network) &&
-            (identical(other.backupTested, backupTested) ||
-                other.backupTested == backupTested) &&
-            (identical(other.lastSync, lastSync) ||
-                other.lastSync == lastSync) &&
-            (identical(other.lastBackupTested, lastBackupTested) ||
-                other.lastBackupTested == lastBackupTested) &&
-            (identical(other.mnemonic, mnemonic) ||
-                other.mnemonic == mnemonic) &&
-            (identical(other.lwkWallet, lwkWallet) ||
-                other.lwkWallet == lwkWallet) &&
             (identical(other.seedFingerprint, seedFingerprint) ||
                 other.seedFingerprint == seedFingerprint) &&
             (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
+            (identical(other.backupTested, backupTested) ||
+                other.backupTested == backupTested) &&
+            (identical(other.lastBackupTested, lastBackupTested) ||
+                other.lastBackupTested == lastBackupTested) &&
+            (identical(other.lastSync, lastSync) ||
+                other.lastSync == lastSync) &&
             (identical(other.importType, importType) ||
-                other.importType == importType));
+                other.importType == importType) &&
+            (identical(other.lwkWallet, lwkWallet) ||
+                other.lwkWallet == lwkWallet));
   }
 
   @JsonKey(ignore: true)
@@ -350,14 +331,13 @@ class _$LiquidWalletImpl extends _LiquidWallet {
       balance,
       type,
       network,
-      backupTested,
-      lastSync,
-      lastBackupTested,
-      mnemonic,
-      lwkWallet,
       seedFingerprint,
       bipPath,
-      importType);
+      backupTested,
+      lastBackupTested,
+      lastSync,
+      importType,
+      lwkWallet);
 
   @JsonKey(ignore: true)
   @override
@@ -380,15 +360,14 @@ abstract class _LiquidWallet extends LiquidWallet {
       required final int balance,
       required final WalletType type,
       required final NetworkType network,
-      final bool backupTested,
-      final DateTime? lastSync,
-      final DateTime? lastBackupTested,
-      final String mnemonic,
-      @JsonKey(includeFromJson: false, includeToJson: false)
-      final lwk.Wallet? lwkWallet,
       required final String seedFingerprint,
       final BitcoinScriptType bipPath,
-      final ImportTypes importType}) = _$LiquidWalletImpl;
+      final bool backupTested,
+      final DateTime? lastBackupTested,
+      final DateTime? lastSync,
+      final ImportTypes importType,
+      @JsonKey(includeFromJson: false, includeToJson: false)
+      final lwk.Wallet? lwkWallet}) = _$LiquidWalletImpl;
   _LiquidWallet._() : super._();
 
   factory _LiquidWallet.fromJson(Map<String, dynamic> json) =
@@ -405,22 +384,20 @@ abstract class _LiquidWallet extends LiquidWallet {
   @override
   NetworkType get network;
   @override
-  bool get backupTested;
-  @override
-  DateTime? get lastSync;
-  @override
-  DateTime? get lastBackupTested;
-  @override
-  String get mnemonic;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  lwk.Wallet? get lwkWallet;
-  @override
   String get seedFingerprint;
   @override
   BitcoinScriptType get bipPath;
   @override
+  bool get backupTested;
+  @override
+  DateTime? get lastBackupTested;
+  @override
+  DateTime? get lastSync;
+  @override
   ImportTypes get importType;
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  lwk.Wallet? get lwkWallet;
   @override
   @JsonKey(ignore: true)
   _$$LiquidWalletImplCopyWith<_$LiquidWalletImpl> get copyWith =>

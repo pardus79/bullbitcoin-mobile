@@ -1,37 +1,29 @@
-import 'dart:typed_data';
-
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
-import 'package:hex/hex.dart';
+import 'package:isar/isar.dart';
 
-enum TxType { Bitcoin, Liquid, Lightning, Usdt }
+part 'tx.g.dart';
 
-extension TxTypeExtension on TxType {
-  String get name {
-    switch (this) {
-      case TxType.Bitcoin:
-        return 'Bitcoin';
-      case TxType.Liquid:
-        return 'Liquid';
-      case TxType.Lightning:
-        return 'Lightning';
-      case TxType.Usdt:
-        return 'Usdt';
-    }
-  }
-}
+@Collection(ignore: {'copyWith'})
+class Tx {
+  Id isarId = Isar.autoIncrement;
 
-abstract class Tx {
+  @Index()
   String id = '';
+
+  @Enumerated(EnumType.ordinal)
   TxType type = TxType.Bitcoin;
+
+  @Index()
   int timestamp = 0;
+
   int amount = 0;
   int fee = 0;
+
   int? height;
-  String? label;
 
   String? psbt;
   int? broadcastTime;
@@ -42,12 +34,23 @@ abstract class Tx {
   int? weight;
   int? locktime;
 
+  List<BitcoinTxIn>? inputs;
+  List<BitcoinTxOut>? outputs;
+
+  List<LiquidTxIn>? linputs;
+  List<LiquidTxOut>? loutputs;
+
   String? toAddress;
 
+  @Index(type: IndexType.value, caseSensitive: false)
   List<String>? labels;
+
+  @Index()
   String? walletId;
 
-  Map<String, dynamic> toJson();
+  Map<String, dynamic> toJson() {
+    return {};
+  }
 
   static Tx fromJson(Map<String, dynamic> json) {
     if (json.containsKey('type') && json['type'] == TxType.Bitcoin.name) {
@@ -65,5 +68,22 @@ abstract class Tx {
       return LiquidTx.loadFromNative(tx, w as LiquidWallet);
     }
     throw UnimplementedError('Unsupported Tx subclass');
+  }
+}
+
+enum TxType { Bitcoin, Liquid, Lightning, Usdt }
+
+extension TxTypeExtension on TxType {
+  String get name {
+    switch (this) {
+      case TxType.Bitcoin:
+        return 'Bitcoin';
+      case TxType.Liquid:
+        return 'Liquid';
+      case TxType.Lightning:
+        return 'Lightning';
+      case TxType.Usdt:
+        return 'Usdt';
+    }
   }
 }

@@ -28,13 +28,13 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
           $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
               ImportTypes.words12,
     )
-      ..isarid = json['isarid'] as int
+      ..isarId = json['isarId'] as int
       ..name = json['name'] as String;
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
     <String, dynamic>{
-      'isarid': instance.isarid,
+      'isarId': instance.isarId,
       'name': instance.name,
       'id': instance.id,
       'balance': instance.balance,

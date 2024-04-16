@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hex/hex.dart';
+import 'package:isar/isar.dart';
 // import 'package:json_annotation/json_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
 import 'tx.dart';
@@ -29,10 +31,12 @@ class LiquidTx extends Tx with _$LiquidTx {
     required int size,
     required int weight,
     required int locktime,
-    required List<LiquidTxIn> inputs,
-    required List<LiquidTxOut> outputs,
+    required List<LiquidTxIn> linputs,
+    required List<LiquidTxOut> loutputs,
     required String toAddress,
     required String? walletId,
+    @Default([]) List<BitcoinTxIn> inputs,
+    @Default([]) List<BitcoinTxOut> outputs,
   }) = _LiquidTx;
   LiquidTx._();
 
@@ -74,8 +78,8 @@ class LiquidTx extends Tx with _$LiquidTx {
       size: 0,
       weight: 0,
       locktime: 0,
-      inputs: inputs,
-      outputs: outputs,
+      linputs: inputs,
+      loutputs: outputs,
       toAddress: '',
       walletId: wallet.id, //
     );
@@ -83,14 +87,16 @@ class LiquidTx extends Tx with _$LiquidTx {
 }
 
 @freezed
+@Embedded(ignore: {'copyWith'})
 class LiquidOutPoint with _$LiquidOutPoint {
-  factory LiquidOutPoint({required String txid, required int vout}) = _LiquidOutPoint;
-  LiquidOutPoint._();
+  const factory LiquidOutPoint({@Default('') String txid, @Default(0) int vout}) = _LiquidOutPoint;
+  // LiquidOutPoint._();
   factory LiquidOutPoint.fromJson(Map<String, dynamic> json) => _$LiquidOutPointFromJson(json);
 }
 
 // TODO: Incomplete: Need update in lwk-dart
 @freezed
+@Embedded(ignore: {'copyWith'})
 class LiquidTxIn with _$LiquidTxIn {
   static Future<LiquidTxIn> fromNative(lwk.TxOut txIn) async {
     try {
@@ -105,8 +111,8 @@ class LiquidTxIn with _$LiquidTxIn {
   }
 
   factory LiquidTxIn({
-    required LiquidOutPoint previousOutput,
-    required String scriptSig,
+    @Default(LiquidOutPoint()) LiquidOutPoint previousOutput,
+    @Default('') String scriptSig,
   }) = _LiquidTxIn;
   LiquidTxIn._();
 
@@ -115,6 +121,7 @@ class LiquidTxIn with _$LiquidTxIn {
 
 // TODO: Incomplete: Need update in lwk-dart
 @freezed
+@Embedded(ignore: {'copyWith'})
 class LiquidTxOut with _$LiquidTxOut {
   static Future<LiquidTxOut> fromNative(lwk.TxOut txOut, NetworkType network) async {
     try {
@@ -125,7 +132,8 @@ class LiquidTxOut with _$LiquidTxOut {
     }
   }
 
-  factory LiquidTxOut({required int value, required String scriptPubKey, required String address}) = _LiquidTxOut;
+  factory LiquidTxOut({@Default(0) int value, @Default('') String scriptPubKey, @Default('') String address}) =
+      _LiquidTxOut;
   LiquidTxOut._();
 
   factory LiquidTxOut.fromJson(Map<String, dynamic> json) => _$LiquidTxOutFromJson(json);

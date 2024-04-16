@@ -3,12 +3,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:json_annotation/json_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
 import 'package:hex/hex.dart';
+import 'package:isar/isar.dart';
 import 'tx.dart';
 
 part 'bitcoin_tx.freezed.dart';
@@ -25,6 +27,8 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required int amount,
     required int fee,
     required int height,
+    String? psbt,
+    int? broadcastTime,
     required bool rbfEnabled,
     required int version,
     required int vsize,
@@ -35,6 +39,8 @@ class BitcoinTx extends Tx with _$BitcoinTx {
     required String toAddress,
     @Default([]) List<String> labels,
     required String? walletId,
+    @Default([]) List<LiquidTxIn> linputs,
+    @Default([]) List<LiquidTxOut> loutputs,
   }) = _BitcoinTx;
   BitcoinTx._();
 
@@ -83,20 +89,24 @@ class BitcoinTx extends Tx with _$BitcoinTx {
       locktime: locktime,
       inputs: inputs,
       outputs: outputs,
-      toAddress: outputs[0].address,
+      toAddress: outputs[0].address ?? '',
       walletId: wallet.id,
     );
   }
 }
 
+// Making all constructors params 'not-required' to comply with Isar
+// TODO: Find any other better possibility to handle this
 @freezed
+@Embedded(ignore: {'copyWith'})
 class BitcoinOutPoint with _$BitcoinOutPoint {
-  factory BitcoinOutPoint({required String txid, required int vout}) = _BitcoinOutPoint;
-  BitcoinOutPoint._();
+  const factory BitcoinOutPoint({@Default('') String txid, @Default(0) int vout}) = _BitcoinOutPoint;
+  // BitcoinOutPoint._();
   factory BitcoinOutPoint.fromJson(Map<String, dynamic> json) => _$BitcoinOutPointFromJson(json);
 }
 
 @freezed
+@Embedded(ignore: {'copyWith'})
 class BitcoinTxIn with _$BitcoinTxIn {
   static Future<BitcoinTxIn> fromNative(dynamic txIn) async {
     try {
@@ -119,16 +129,17 @@ class BitcoinTxIn with _$BitcoinTxIn {
   }
 
   factory BitcoinTxIn(
-      {required BitcoinOutPoint previousOutput,
-      required String scriptSig,
-      required int sequence,
-      required List<String> witness}) = _BitcoinTxIn;
+      {@Default(BitcoinOutPoint()) BitcoinOutPoint previousOutput,
+      @Default('') String scriptSig,
+      @Default(0) int sequence,
+      @Default([]) List<String> witness}) = _BitcoinTxIn;
   BitcoinTxIn._();
 
   factory BitcoinTxIn.fromJson(Map<String, dynamic> json) => _$BitcoinTxInFromJson(json);
 }
 
 @freezed
+@Embedded(ignore: {'copyWith'})
 class BitcoinTxOut with _$BitcoinTxOut {
   static Future<BitcoinTxOut> fromNative(dynamic txOut, NetworkType network) async {
     try {
@@ -149,7 +160,8 @@ class BitcoinTxOut with _$BitcoinTxOut {
     }
   }
 
-  factory BitcoinTxOut({required int value, required String scriptPubKey, required String address}) = _BitcoinTxOut;
+  factory BitcoinTxOut({@Default(0) int value, @Default('') String scriptPubKey, @Default('') String address}) =
+      _BitcoinTxOut;
   BitcoinTxOut._();
 
   factory BitcoinTxOut.fromJson(Map<String, dynamic> json) => _$BitcoinTxOutFromJson(json);

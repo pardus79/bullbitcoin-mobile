@@ -13,37 +13,35 @@ _$LiquidWalletImpl _$$LiquidWalletImplFromJson(Map<String, dynamic> json) =>
       balance: json['balance'] as int,
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
-      backupTested: json['backupTested'] as bool? ?? false,
-      lastSync: json['lastSync'] == null
-          ? null
-          : DateTime.parse(json['lastSync'] as String),
-      lastBackupTested: json['lastBackupTested'] == null
-          ? null
-          : DateTime.parse(json['lastBackupTested'] as String),
-      mnemonic: json['mnemonic'] as String? ?? '',
       seedFingerprint: json['seedFingerprint'] as String,
       bipPath:
           $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
               BitcoinScriptType.bip84,
+      backupTested: json['backupTested'] as bool? ?? false,
+      lastBackupTested: json['lastBackupTested'] == null
+          ? null
+          : DateTime.parse(json['lastBackupTested'] as String),
+      lastSync: json['lastSync'] == null
+          ? null
+          : DateTime.parse(json['lastSync'] as String),
       importType:
           $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
               ImportTypes.words12,
-    )..isarid = json['isarid'] as int;
+    )..isarId = json['isarId'] as int;
 
 Map<String, dynamic> _$$LiquidWalletImplToJson(_$LiquidWalletImpl instance) =>
     <String, dynamic>{
-      'isarid': instance.isarid,
+      'isarId': instance.isarId,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
-      'backupTested': instance.backupTested,
-      'lastSync': instance.lastSync?.toIso8601String(),
-      'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
-      'mnemonic': instance.mnemonic,
       'seedFingerprint': instance.seedFingerprint,
       'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
+      'backupTested': instance.backupTested,
+      'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
+      'lastSync': instance.lastSync?.toIso8601String(),
       'importType': _$ImportTypesEnumMap[instance.importType]!,
     };
 

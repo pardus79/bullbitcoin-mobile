@@ -12,30 +12,32 @@ part 'wallet.g.dart';
 
 @Collection(ignore: {'copyWith'})
 class Wallet {
+  Id isarId = Isar.autoIncrement;
+
   @Index()
   String id = '';
-
-  Id isarid = Isar.autoIncrement;
 
   String name = '';
   int balance = 0;
 
   @Enumerated(EnumType.ordinal)
   WalletType type = WalletType.Bitcoin;
+
+  @Index()
+  @Enumerated(EnumType.ordinal)
+  NetworkType network = NetworkType.Mainnet;
+
   String seedFingerprint = '';
 
   @Enumerated(EnumType.ordinal32)
   BitcoinScriptType? bipPath = BitcoinScriptType.bip84;
+
   bool backupTested = false;
   DateTime? lastBackupTested;
   DateTime? lastSync;
 
   @Enumerated(EnumType.ordinal32)
   ImportTypes? importType;
-
-  @Index()
-  @Enumerated(EnumType.ordinal)
-  NetworkType network = NetworkType.Mainnet;
 
   static Wallet fromJson(Map<String, dynamic> json) {
     if (json.containsKey('type') && json['type'] == WalletType.Bitcoin.name) {
@@ -64,7 +66,7 @@ class Wallet {
     if (w.type == WalletType.Bitcoin) {
       return BitcoinWalletHelper.loadNativeSdk(w as BitcoinWallet, seed);
     } else if (w.type == WalletType.Liquid) {
-      return LiquidWallet.loadNativeSdk(w as LiquidWallet);
+      return LiquidWallet.loadNativeSdk(w as LiquidWallet, seed);
     }
     throw UnimplementedError('Unsupported Wallet subclass');
   }

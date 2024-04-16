@@ -2,6 +2,7 @@
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/constants.dart';
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
@@ -13,19 +14,6 @@ import 'wallet.dart';
 part 'liquid_wallet.freezed.dart';
 part 'liquid_wallet.g.dart';
 
-extension NetworkTypeExtension on NetworkType {
-  lwk.Network get getLwkType {
-    switch (this) {
-      case NetworkType.Mainnet:
-        return lwk.Network.Mainnet;
-      case NetworkType.Testnet:
-        return lwk.Network.Testnet;
-      case NetworkType.Signet:
-        return lwk.Network.Testnet;
-    }
-  }
-}
-
 // TODO: Update LiquitWallet to manage USDT, based on requirement
 @freezed
 class LiquidWallet extends Wallet with _$LiquidWallet {
@@ -35,14 +23,13 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     required int balance,
     required WalletType type,
     required NetworkType network,
-    @Default(false) bool backupTested,
-    DateTime? lastSync,
-    DateTime? lastBackupTested,
-    @Default('') String mnemonic,
-    @JsonKey(includeFromJson: false, includeToJson: false) lwk.Wallet? lwkWallet,
     required String seedFingerprint,
     @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
+    @Default(false) bool backupTested,
+    DateTime? lastBackupTested,
+    DateTime? lastSync,
     @Default(ImportTypes.words12) ImportTypes importType,
+    @JsonKey(includeFromJson: false, includeToJson: false) lwk.Wallet? lwkWallet,
   }) = _LiquidWallet;
   LiquidWallet._();
 
@@ -50,25 +37,17 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
-        id: name,
-        name: name,
-        balance: 0,
-        type: WalletType.Liquid,
-        network: network,
-        mnemonic: mnemonicStr,
-        seedFingerprint: '');
+        id: name, name: name, balance: 0, type: WalletType.Liquid, network: network, seedFingerprint: '');
   }
 
-  static Future<LiquidWallet> loadNativeSdk(LiquidWallet w) async {
+  static Future<LiquidWallet> loadNativeSdk(LiquidWallet w, Seed seed) async {
     print('Loading native sdk for liquid wallet');
 
     final appDocDir = await getApplicationDocumentsDirectory();
     final String dbDir = '${appDocDir.path}/db';
 
-    final lwk.Descriptor descriptor = await lwk.Descriptor.create(
-      network: lwk.Network.Testnet,
-      mnemonic: w.mnemonic,
-    );
+    final lwk.Descriptor descriptor =
+        await lwk.Descriptor.create(network: lwk.Network.Testnet, mnemonic: seed.mnemonic);
 
     final wallet = await lwk.Wallet.create(
       network: lwk.Network.Testnet,
@@ -118,5 +97,18 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   Future<Address> getAddress(int index, AddressKind kind) async {
     final lwkAddress = await lwkWallet?.addressAtIndex(index);
     return Address.loadFromNative(lwkAddress, this, kind);
+  }
+}
+
+extension NetworkTypeExtension on NetworkType {
+  lwk.Network get getLwkType {
+    switch (this) {
+      case NetworkType.Mainnet:
+        return lwk.Network.Mainnet;
+      case NetworkType.Testnet:
+        return lwk.Network.Testnet;
+      case NetworkType.Signet:
+        return lwk.Network.Testnet;
+    }
   }
 }

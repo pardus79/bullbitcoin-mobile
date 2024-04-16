@@ -73,7 +73,8 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       } else if (w is LiquidWallet) {
         LiquidWallet lw = w;
         if (lw.lwkWallet == null) {
-          newWallet = await LiquidWallet.loadNativeSdk(lw);
+          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
+          newWallet = await LiquidWallet.loadNativeSdk(lw, seed!);
         }
       }
       loadedWallets.add(newWallet);

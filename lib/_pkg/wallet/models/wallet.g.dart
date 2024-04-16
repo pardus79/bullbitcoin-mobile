@@ -81,7 +81,7 @@ const WalletSchema = CollectionSchema(
   serialize: _walletSerialize,
   deserialize: _walletDeserialize,
   deserializeProp: _walletDeserializeProp,
-  idName: r'isarid',
+  idName: r'isarId',
   indexes: {
     r'id': IndexSchema(
       id: -3268401673993471357,
@@ -162,7 +162,7 @@ Wallet _walletDeserialize(
   object.id = reader.readString(offsets[3]);
   object.importType =
       _WalletimportTypeValueEnumMap[reader.readIntOrNull(offsets[4])];
-  object.isarid = id;
+  object.isarId = id;
   object.lastBackupTested = reader.readDateTimeOrNull(offsets[5]);
   object.lastSync = reader.readDateTimeOrNull(offsets[6]);
   object.name = reader.readString(offsets[7]);
@@ -263,7 +263,7 @@ const _WallettypeValueEnumMap = {
 };
 
 Id _walletGetId(Wallet object) {
-  return object.isarid;
+  return object.isarId;
 }
 
 List<IsarLinkBase<dynamic>> _walletGetLinks(Wallet object) {
@@ -271,11 +271,11 @@ List<IsarLinkBase<dynamic>> _walletGetLinks(Wallet object) {
 }
 
 void _walletAttach(IsarCollection<dynamic> col, Id id, Wallet object) {
-  object.isarid = id;
+  object.isarId = id;
 }
 
 extension WalletQueryWhereSort on QueryBuilder<Wallet, Wallet, QWhere> {
-  QueryBuilder<Wallet, Wallet, QAfterWhere> anyIsarid() {
+  QueryBuilder<Wallet, Wallet, QAfterWhere> anyIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
@@ -291,66 +291,66 @@ extension WalletQueryWhereSort on QueryBuilder<Wallet, Wallet, QWhere> {
 }
 
 extension WalletQueryWhere on QueryBuilder<Wallet, Wallet, QWhereClause> {
-  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isaridEqualTo(Id isarid) {
+  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isarIdEqualTo(Id isarId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
-        lower: isarid,
-        upper: isarid,
+        lower: isarId,
+        upper: isarId,
       ));
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isaridNotEqualTo(Id isarid) {
+  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isarIdNotEqualTo(Id isarId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(
-              IdWhereClause.lessThan(upper: isarid, includeUpper: false),
+              IdWhereClause.lessThan(upper: isarId, includeUpper: false),
             )
             .addWhereClause(
-              IdWhereClause.greaterThan(lower: isarid, includeLower: false),
+              IdWhereClause.greaterThan(lower: isarId, includeLower: false),
             );
       } else {
         return query
             .addWhereClause(
-              IdWhereClause.greaterThan(lower: isarid, includeLower: false),
+              IdWhereClause.greaterThan(lower: isarId, includeLower: false),
             )
             .addWhereClause(
-              IdWhereClause.lessThan(upper: isarid, includeUpper: false),
+              IdWhereClause.lessThan(upper: isarId, includeUpper: false),
             );
       }
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isaridGreaterThan(Id isarid,
+  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isarIdGreaterThan(Id isarId,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: isarid, includeLower: include),
+        IdWhereClause.greaterThan(lower: isarId, includeLower: include),
       );
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isaridLessThan(Id isarid,
+  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isarIdLessThan(Id isarId,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        IdWhereClause.lessThan(upper: isarid, includeUpper: include),
+        IdWhereClause.lessThan(upper: isarId, includeUpper: include),
       );
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isaridBetween(
-    Id lowerIsarid,
-    Id upperIsarid, {
+  QueryBuilder<Wallet, Wallet, QAfterWhereClause> isarIdBetween(
+    Id lowerIsarId,
+    Id upperIsarId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
-        lower: lowerIsarid,
+        lower: lowerIsarId,
         includeLower: includeLower,
-        upper: upperIsarid,
+        upper: upperIsarId,
         includeUpper: includeUpper,
       ));
     });
@@ -820,42 +820,42 @@ extension WalletQueryFilter on QueryBuilder<Wallet, Wallet, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isaridEqualTo(Id value) {
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isarIdEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isarid',
+        property: r'isarId',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isaridGreaterThan(
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isarIdGreaterThan(
     Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'isarid',
+        property: r'isarId',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isaridLessThan(
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isarIdLessThan(
     Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'isarid',
+        property: r'isarId',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isaridBetween(
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> isarIdBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -863,7 +863,7 @@ extension WalletQueryFilter on QueryBuilder<Wallet, Wallet, QFilterCondition> {
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'isarid',
+        property: r'isarId',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1579,15 +1579,15 @@ extension WalletQuerySortThenBy on QueryBuilder<Wallet, Wallet, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByIsarid() {
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByIsarId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isarid', Sort.asc);
+      return query.addSortBy(r'isarId', Sort.asc);
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByIsaridDesc() {
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByIsarIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isarid', Sort.desc);
+      return query.addSortBy(r'isarId', Sort.desc);
     });
   }
 
@@ -1737,9 +1737,9 @@ extension WalletQueryWhereDistinct on QueryBuilder<Wallet, Wallet, QDistinct> {
 }
 
 extension WalletQueryProperty on QueryBuilder<Wallet, Wallet, QQueryProperty> {
-  QueryBuilder<Wallet, int, QQueryOperations> isaridProperty() {
+  QueryBuilder<Wallet, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isarid');
+      return query.addPropertyName(r'isarId');
     });
   }
 

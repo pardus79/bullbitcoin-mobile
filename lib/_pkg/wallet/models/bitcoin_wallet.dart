@@ -9,21 +9,6 @@ import 'wallet.dart';
 part 'bitcoin_wallet.freezed.dart';
 part 'bitcoin_wallet.g.dart';
 
-enum ImportTypes { xpub, coldcard, descriptors, words12, words24, notSelected }
-
-extension NetworkTypeExtension on NetworkType {
-  bdk.Network get getBdkType {
-    switch (this) {
-      case NetworkType.Mainnet:
-        return bdk.Network.Bitcoin;
-      case NetworkType.Testnet:
-        return bdk.Network.Testnet;
-      case NetworkType.Signet:
-        return bdk.Network.Signet;
-    }
-  }
-}
-
 @freezed
 class BitcoinWallet extends Wallet with _$BitcoinWallet {
   factory BitcoinWallet({
@@ -69,5 +54,20 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
       bdkAddress = await bdkWallet?.getInternalAddress(addressIndex: bdk.AddressIndex.peek(index: index));
     }
     return Address.loadFromNative(bdkAddress, this, kind);
+  }
+}
+
+enum ImportTypes { xpub, coldcard, descriptors, words12, words24, notSelected }
+
+extension NetworkTypeExtension on NetworkType {
+  bdk.Network get getBdkType {
+    switch (this) {
+      case NetworkType.Mainnet:
+        return bdk.Network.Bitcoin;
+      case NetworkType.Testnet:
+        return bdk.Network.Testnet;
+      case NetworkType.Signet:
+        return bdk.Network.Signet;
+    }
   }
 }

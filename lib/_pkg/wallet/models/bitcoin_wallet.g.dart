@@ -6,22 +6,32 @@ part of 'bitcoin_wallet.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) => _$BitcoinWalletImpl(
+_$BitcoinWalletImpl _$$BitcoinWalletImplFromJson(Map<String, dynamic> json) =>
+    _$BitcoinWalletImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       balance: json['balance'] as int,
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       seedFingerprint: json['seedFingerprint'] as String,
-      bipPath: $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ?? BitcoinScriptType.bip84,
+      bipPath:
+          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
+              BitcoinScriptType.bip84,
       backupTested: json['backupTested'] as bool? ?? false,
-      lastBackupTested: json['lastBackupTested'] == null ? null : DateTime.parse(json['lastBackupTested'] as String),
-      lastSync: json['lastSync'] == null ? null : DateTime.parse(json['lastSync'] as String),
-      importType: $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ?? ImportTypes.words12,
-    )..isarid = json['isarid'] as int;
+      lastBackupTested: json['lastBackupTested'] == null
+          ? null
+          : DateTime.parse(json['lastBackupTested'] as String),
+      lastSync: json['lastSync'] == null
+          ? null
+          : DateTime.parse(json['lastSync'] as String),
+      importType:
+          $enumDecodeNullable(_$ImportTypesEnumMap, json['importType']) ??
+              ImportTypes.words12,
+    )..isarId = json['isarId'] as int;
 
-Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) => <String, dynamic>{
-      'isarid': instance.isarid,
+Map<String, dynamic> _$$BitcoinWalletImplToJson(_$BitcoinWalletImpl instance) =>
+    <String, dynamic>{
+      'isarId': instance.isarId,
       'id': instance.id,
       'name': instance.name,
       'balance': instance.balance,

@@ -26,6 +26,8 @@ mixin _$BitcoinTx {
   int get amount => throw _privateConstructorUsedError;
   int get fee => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
+  String? get psbt => throw _privateConstructorUsedError;
+  int? get broadcastTime => throw _privateConstructorUsedError;
   bool get rbfEnabled => throw _privateConstructorUsedError;
   int get version => throw _privateConstructorUsedError;
   int get vsize => throw _privateConstructorUsedError;
@@ -36,6 +38,8 @@ mixin _$BitcoinTx {
   String get toAddress => throw _privateConstructorUsedError;
   List<String> get labels => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
+  List<LiquidTxIn> get linputs => throw _privateConstructorUsedError;
+  List<LiquidTxOut> get loutputs => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,6 +59,8 @@ abstract class $BitcoinTxCopyWith<$Res> {
       int amount,
       int fee,
       int height,
+      String? psbt,
+      int? broadcastTime,
       bool rbfEnabled,
       int version,
       int vsize,
@@ -64,7 +70,9 @@ abstract class $BitcoinTxCopyWith<$Res> {
       List<BitcoinTxOut> outputs,
       String toAddress,
       List<String> labels,
-      String? walletId});
+      String? walletId,
+      List<LiquidTxIn> linputs,
+      List<LiquidTxOut> loutputs});
 }
 
 /// @nodoc
@@ -86,6 +94,8 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
+    Object? psbt = freezed,
+    Object? broadcastTime = freezed,
     Object? rbfEnabled = null,
     Object? version = null,
     Object? vsize = null,
@@ -96,6 +106,8 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
     Object? toAddress = null,
     Object? labels = null,
     Object? walletId = freezed,
+    Object? linputs = null,
+    Object? loutputs = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -122,6 +134,14 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
+      psbt: freezed == psbt
+          ? _value.psbt
+          : psbt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      broadcastTime: freezed == broadcastTime
+          ? _value.broadcastTime
+          : broadcastTime // ignore: cast_nullable_to_non_nullable
+              as int?,
       rbfEnabled: null == rbfEnabled
           ? _value.rbfEnabled
           : rbfEnabled // ignore: cast_nullable_to_non_nullable
@@ -162,6 +182,14 @@ class _$BitcoinTxCopyWithImpl<$Res, $Val extends BitcoinTx>
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
               as String?,
+      linputs: null == linputs
+          ? _value.linputs
+          : linputs // ignore: cast_nullable_to_non_nullable
+              as List<LiquidTxIn>,
+      loutputs: null == loutputs
+          ? _value.loutputs
+          : loutputs // ignore: cast_nullable_to_non_nullable
+              as List<LiquidTxOut>,
     ) as $Val);
   }
 }
@@ -181,6 +209,8 @@ abstract class _$$BitcoinTxImplCopyWith<$Res>
       int amount,
       int fee,
       int height,
+      String? psbt,
+      int? broadcastTime,
       bool rbfEnabled,
       int version,
       int vsize,
@@ -190,7 +220,9 @@ abstract class _$$BitcoinTxImplCopyWith<$Res>
       List<BitcoinTxOut> outputs,
       String toAddress,
       List<String> labels,
-      String? walletId});
+      String? walletId,
+      List<LiquidTxIn> linputs,
+      List<LiquidTxOut> loutputs});
 }
 
 /// @nodoc
@@ -210,6 +242,8 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
+    Object? psbt = freezed,
+    Object? broadcastTime = freezed,
     Object? rbfEnabled = null,
     Object? version = null,
     Object? vsize = null,
@@ -220,6 +254,8 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
     Object? toAddress = null,
     Object? labels = null,
     Object? walletId = freezed,
+    Object? linputs = null,
+    Object? loutputs = null,
   }) {
     return _then(_$BitcoinTxImpl(
       id: null == id
@@ -246,6 +282,14 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
+      psbt: freezed == psbt
+          ? _value.psbt
+          : psbt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      broadcastTime: freezed == broadcastTime
+          ? _value.broadcastTime
+          : broadcastTime // ignore: cast_nullable_to_non_nullable
+              as int?,
       rbfEnabled: null == rbfEnabled
           ? _value.rbfEnabled
           : rbfEnabled // ignore: cast_nullable_to_non_nullable
@@ -286,6 +330,14 @@ class __$$BitcoinTxImplCopyWithImpl<$Res>
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
               as String?,
+      linputs: null == linputs
+          ? _value._linputs
+          : linputs // ignore: cast_nullable_to_non_nullable
+              as List<LiquidTxIn>,
+      loutputs: null == loutputs
+          ? _value._loutputs
+          : loutputs // ignore: cast_nullable_to_non_nullable
+              as List<LiquidTxOut>,
     ));
   }
 }
@@ -300,6 +352,8 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required this.amount,
       required this.fee,
       required this.height,
+      this.psbt,
+      this.broadcastTime,
       required this.rbfEnabled,
       required this.version,
       required this.vsize,
@@ -309,10 +363,14 @@ class _$BitcoinTxImpl extends _BitcoinTx {
       required final List<BitcoinTxOut> outputs,
       required this.toAddress,
       final List<String> labels = const [],
-      required this.walletId})
+      required this.walletId,
+      final List<LiquidTxIn> linputs = const [],
+      final List<LiquidTxOut> loutputs = const []})
       : _inputs = inputs,
         _outputs = outputs,
         _labels = labels,
+        _linputs = linputs,
+        _loutputs = loutputs,
         super._();
 
   factory _$BitcoinTxImpl.fromJson(Map<String, dynamic> json) =>
@@ -330,6 +388,10 @@ class _$BitcoinTxImpl extends _BitcoinTx {
   final int fee;
   @override
   final int height;
+  @override
+  final String? psbt;
+  @override
+  final int? broadcastTime;
   @override
   final bool rbfEnabled;
   @override
@@ -369,10 +431,27 @@ class _$BitcoinTxImpl extends _BitcoinTx {
 
   @override
   final String? walletId;
+  final List<LiquidTxIn> _linputs;
+  @override
+  @JsonKey()
+  List<LiquidTxIn> get linputs {
+    if (_linputs is EqualUnmodifiableListView) return _linputs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_linputs);
+  }
+
+  final List<LiquidTxOut> _loutputs;
+  @override
+  @JsonKey()
+  List<LiquidTxOut> get loutputs {
+    if (_loutputs is EqualUnmodifiableListView) return _loutputs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_loutputs);
+  }
 
   @override
   String toString() {
-    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, labels: $labels, walletId: $walletId)';
+    return 'BitcoinTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, psbt: $psbt, broadcastTime: $broadcastTime, rbfEnabled: $rbfEnabled, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, labels: $labels, walletId: $walletId, linputs: $linputs, loutputs: $loutputs)';
   }
 
   @override
@@ -387,6 +466,9 @@ class _$BitcoinTxImpl extends _BitcoinTx {
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.fee, fee) || other.fee == fee) &&
             (identical(other.height, height) || other.height == height) &&
+            (identical(other.psbt, psbt) || other.psbt == psbt) &&
+            (identical(other.broadcastTime, broadcastTime) ||
+                other.broadcastTime == broadcastTime) &&
             (identical(other.rbfEnabled, rbfEnabled) ||
                 other.rbfEnabled == rbfEnabled) &&
             (identical(other.version, version) || other.version == version) &&
@@ -400,29 +482,36 @@ class _$BitcoinTxImpl extends _BitcoinTx {
                 other.toAddress == toAddress) &&
             const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.walletId, walletId) ||
-                other.walletId == walletId));
+                other.walletId == walletId) &&
+            const DeepCollectionEquality().equals(other._linputs, _linputs) &&
+            const DeepCollectionEquality().equals(other._loutputs, _loutputs));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      type,
-      timestamp,
-      amount,
-      fee,
-      height,
-      rbfEnabled,
-      version,
-      vsize,
-      weight,
-      locktime,
-      const DeepCollectionEquality().hash(_inputs),
-      const DeepCollectionEquality().hash(_outputs),
-      toAddress,
-      const DeepCollectionEquality().hash(_labels),
-      walletId);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        type,
+        timestamp,
+        amount,
+        fee,
+        height,
+        psbt,
+        broadcastTime,
+        rbfEnabled,
+        version,
+        vsize,
+        weight,
+        locktime,
+        const DeepCollectionEquality().hash(_inputs),
+        const DeepCollectionEquality().hash(_outputs),
+        toAddress,
+        const DeepCollectionEquality().hash(_labels),
+        walletId,
+        const DeepCollectionEquality().hash(_linputs),
+        const DeepCollectionEquality().hash(_loutputs)
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -446,6 +535,8 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final int amount,
       required final int fee,
       required final int height,
+      final String? psbt,
+      final int? broadcastTime,
       required final bool rbfEnabled,
       required final int version,
       required final int vsize,
@@ -455,7 +546,9 @@ abstract class _BitcoinTx extends BitcoinTx {
       required final List<BitcoinTxOut> outputs,
       required final String toAddress,
       final List<String> labels,
-      required final String? walletId}) = _$BitcoinTxImpl;
+      required final String? walletId,
+      final List<LiquidTxIn> linputs,
+      final List<LiquidTxOut> loutputs}) = _$BitcoinTxImpl;
   _BitcoinTx._() : super._();
 
   factory _BitcoinTx.fromJson(Map<String, dynamic> json) =
@@ -473,6 +566,10 @@ abstract class _BitcoinTx extends BitcoinTx {
   int get fee;
   @override
   int get height;
+  @override
+  String? get psbt;
+  @override
+  int? get broadcastTime;
   @override
   bool get rbfEnabled;
   @override
@@ -493,6 +590,10 @@ abstract class _BitcoinTx extends BitcoinTx {
   List<String> get labels;
   @override
   String? get walletId;
+  @override
+  List<LiquidTxIn> get linputs;
+  @override
+  List<LiquidTxOut> get loutputs;
   @override
   @JsonKey(ignore: true)
   _$$BitcoinTxImplCopyWith<_$BitcoinTxImpl> get copyWith =>
@@ -592,15 +693,17 @@ class __$$BitcoinOutPointImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$BitcoinOutPointImpl extends _BitcoinOutPoint {
-  _$BitcoinOutPointImpl({required this.txid, required this.vout}) : super._();
+class _$BitcoinOutPointImpl implements _BitcoinOutPoint {
+  const _$BitcoinOutPointImpl({this.txid = '', this.vout = 0});
 
   factory _$BitcoinOutPointImpl.fromJson(Map<String, dynamic> json) =>
       _$$BitcoinOutPointImplFromJson(json);
 
   @override
+  @JsonKey()
   final String txid;
   @override
+  @JsonKey()
   final int vout;
 
   @override
@@ -636,11 +739,9 @@ class _$BitcoinOutPointImpl extends _BitcoinOutPoint {
   }
 }
 
-abstract class _BitcoinOutPoint extends BitcoinOutPoint {
-  factory _BitcoinOutPoint(
-      {required final String txid,
-      required final int vout}) = _$BitcoinOutPointImpl;
-  _BitcoinOutPoint._() : super._();
+abstract class _BitcoinOutPoint implements BitcoinOutPoint {
+  const factory _BitcoinOutPoint({final String txid, final int vout}) =
+      _$BitcoinOutPointImpl;
 
   factory _BitcoinOutPoint.fromJson(Map<String, dynamic> json) =
       _$BitcoinOutPointImpl.fromJson;
@@ -793,10 +894,10 @@ class __$$BitcoinTxInImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BitcoinTxInImpl extends _BitcoinTxIn {
   _$BitcoinTxInImpl(
-      {required this.previousOutput,
-      required this.scriptSig,
-      required this.sequence,
-      required final List<String> witness})
+      {this.previousOutput = const BitcoinOutPoint(),
+      this.scriptSig = '',
+      this.sequence = 0,
+      final List<String> witness = const []})
       : _witness = witness,
         super._();
 
@@ -804,13 +905,17 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
       _$$BitcoinTxInImplFromJson(json);
 
   @override
+  @JsonKey()
   final BitcoinOutPoint previousOutput;
   @override
+  @JsonKey()
   final String scriptSig;
   @override
+  @JsonKey()
   final int sequence;
   final List<String> _witness;
   @override
+  @JsonKey()
   List<String> get witness {
     if (_witness is EqualUnmodifiableListView) return _witness;
     // ignore: implicit_dynamic_type
@@ -857,10 +962,10 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
 
 abstract class _BitcoinTxIn extends BitcoinTxIn {
   factory _BitcoinTxIn(
-      {required final BitcoinOutPoint previousOutput,
-      required final String scriptSig,
-      required final int sequence,
-      required final List<String> witness}) = _$BitcoinTxInImpl;
+      {final BitcoinOutPoint previousOutput,
+      final String scriptSig,
+      final int sequence,
+      final List<String> witness}) = _$BitcoinTxInImpl;
   _BitcoinTxIn._() : super._();
 
   factory _BitcoinTxIn.fromJson(Map<String, dynamic> json) =
@@ -986,17 +1091,20 @@ class __$$BitcoinTxOutImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$BitcoinTxOutImpl extends _BitcoinTxOut {
   _$BitcoinTxOutImpl(
-      {required this.value, required this.scriptPubKey, required this.address})
+      {this.value = 0, this.scriptPubKey = '', this.address = ''})
       : super._();
 
   factory _$BitcoinTxOutImpl.fromJson(Map<String, dynamic> json) =>
       _$$BitcoinTxOutImplFromJson(json);
 
   @override
+  @JsonKey()
   final int value;
   @override
+  @JsonKey()
   final String scriptPubKey;
   @override
+  @JsonKey()
   final String address;
 
   @override
@@ -1035,9 +1143,9 @@ class _$BitcoinTxOutImpl extends _BitcoinTxOut {
 
 abstract class _BitcoinTxOut extends BitcoinTxOut {
   factory _BitcoinTxOut(
-      {required final int value,
-      required final String scriptPubKey,
-      required final String address}) = _$BitcoinTxOutImpl;
+      {final int value,
+      final String scriptPubKey,
+      final String address}) = _$BitcoinTxOutImpl;
   _BitcoinTxOut._() : super._();
 
   factory _BitcoinTxOut.fromJson(Map<String, dynamic> json) =

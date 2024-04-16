@@ -32,10 +32,12 @@ mixin _$LiquidTx {
   int get size => throw _privateConstructorUsedError;
   int get weight => throw _privateConstructorUsedError;
   int get locktime => throw _privateConstructorUsedError;
-  List<LiquidTxIn> get inputs => throw _privateConstructorUsedError;
-  List<LiquidTxOut> get outputs => throw _privateConstructorUsedError;
+  List<LiquidTxIn> get linputs => throw _privateConstructorUsedError;
+  List<LiquidTxOut> get loutputs => throw _privateConstructorUsedError;
   String get toAddress => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
+  List<BitcoinTxIn> get inputs => throw _privateConstructorUsedError;
+  List<BitcoinTxOut> get outputs => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -61,10 +63,12 @@ abstract class $LiquidTxCopyWith<$Res> {
       int size,
       int weight,
       int locktime,
-      List<LiquidTxIn> inputs,
-      List<LiquidTxOut> outputs,
+      List<LiquidTxIn> linputs,
+      List<LiquidTxOut> loutputs,
       String toAddress,
-      String? walletId});
+      String? walletId,
+      List<BitcoinTxIn> inputs,
+      List<BitcoinTxOut> outputs});
 }
 
 /// @nodoc
@@ -92,10 +96,12 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
     Object? size = null,
     Object? weight = null,
     Object? locktime = null,
-    Object? inputs = null,
-    Object? outputs = null,
+    Object? linputs = null,
+    Object? loutputs = null,
     Object? toAddress = null,
     Object? walletId = freezed,
+    Object? inputs = null,
+    Object? outputs = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -146,13 +152,13 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
           ? _value.locktime
           : locktime // ignore: cast_nullable_to_non_nullable
               as int,
-      inputs: null == inputs
-          ? _value.inputs
-          : inputs // ignore: cast_nullable_to_non_nullable
+      linputs: null == linputs
+          ? _value.linputs
+          : linputs // ignore: cast_nullable_to_non_nullable
               as List<LiquidTxIn>,
-      outputs: null == outputs
-          ? _value.outputs
-          : outputs // ignore: cast_nullable_to_non_nullable
+      loutputs: null == loutputs
+          ? _value.loutputs
+          : loutputs // ignore: cast_nullable_to_non_nullable
               as List<LiquidTxOut>,
       toAddress: null == toAddress
           ? _value.toAddress
@@ -162,6 +168,14 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
               as String?,
+      inputs: null == inputs
+          ? _value.inputs
+          : inputs // ignore: cast_nullable_to_non_nullable
+              as List<BitcoinTxIn>,
+      outputs: null == outputs
+          ? _value.outputs
+          : outputs // ignore: cast_nullable_to_non_nullable
+              as List<BitcoinTxOut>,
     ) as $Val);
   }
 }
@@ -187,10 +201,12 @@ abstract class _$$LiquidTxImplCopyWith<$Res>
       int size,
       int weight,
       int locktime,
-      List<LiquidTxIn> inputs,
-      List<LiquidTxOut> outputs,
+      List<LiquidTxIn> linputs,
+      List<LiquidTxOut> loutputs,
       String toAddress,
-      String? walletId});
+      String? walletId,
+      List<BitcoinTxIn> inputs,
+      List<BitcoinTxOut> outputs});
 }
 
 /// @nodoc
@@ -216,10 +232,12 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
     Object? size = null,
     Object? weight = null,
     Object? locktime = null,
-    Object? inputs = null,
-    Object? outputs = null,
+    Object? linputs = null,
+    Object? loutputs = null,
     Object? toAddress = null,
     Object? walletId = freezed,
+    Object? inputs = null,
+    Object? outputs = null,
   }) {
     return _then(_$LiquidTxImpl(
       id: null == id
@@ -270,13 +288,13 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
           ? _value.locktime
           : locktime // ignore: cast_nullable_to_non_nullable
               as int,
-      inputs: null == inputs
-          ? _value._inputs
-          : inputs // ignore: cast_nullable_to_non_nullable
+      linputs: null == linputs
+          ? _value._linputs
+          : linputs // ignore: cast_nullable_to_non_nullable
               as List<LiquidTxIn>,
-      outputs: null == outputs
-          ? _value._outputs
-          : outputs // ignore: cast_nullable_to_non_nullable
+      loutputs: null == loutputs
+          ? _value._loutputs
+          : loutputs // ignore: cast_nullable_to_non_nullable
               as List<LiquidTxOut>,
       toAddress: null == toAddress
           ? _value.toAddress
@@ -286,6 +304,14 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
               as String?,
+      inputs: null == inputs
+          ? _value._inputs
+          : inputs // ignore: cast_nullable_to_non_nullable
+              as List<BitcoinTxIn>,
+      outputs: null == outputs
+          ? _value._outputs
+          : outputs // ignore: cast_nullable_to_non_nullable
+              as List<BitcoinTxOut>,
     ));
   }
 }
@@ -306,11 +332,15 @@ class _$LiquidTxImpl extends _LiquidTx {
       required this.size,
       required this.weight,
       required this.locktime,
-      required final List<LiquidTxIn> inputs,
-      required final List<LiquidTxOut> outputs,
+      required final List<LiquidTxIn> linputs,
+      required final List<LiquidTxOut> loutputs,
       required this.toAddress,
-      required this.walletId})
-      : _inputs = inputs,
+      required this.walletId,
+      final List<BitcoinTxIn> inputs = const [],
+      final List<BitcoinTxOut> outputs = const []})
+      : _linputs = linputs,
+        _loutputs = loutputs,
+        _inputs = inputs,
         _outputs = outputs,
         super._();
 
@@ -341,30 +371,47 @@ class _$LiquidTxImpl extends _LiquidTx {
   final int weight;
   @override
   final int locktime;
-  final List<LiquidTxIn> _inputs;
+  final List<LiquidTxIn> _linputs;
   @override
-  List<LiquidTxIn> get inputs {
-    if (_inputs is EqualUnmodifiableListView) return _inputs;
+  List<LiquidTxIn> get linputs {
+    if (_linputs is EqualUnmodifiableListView) return _linputs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_inputs);
+    return EqualUnmodifiableListView(_linputs);
   }
 
-  final List<LiquidTxOut> _outputs;
+  final List<LiquidTxOut> _loutputs;
   @override
-  List<LiquidTxOut> get outputs {
-    if (_outputs is EqualUnmodifiableListView) return _outputs;
+  List<LiquidTxOut> get loutputs {
+    if (_loutputs is EqualUnmodifiableListView) return _loutputs;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_outputs);
+    return EqualUnmodifiableListView(_loutputs);
   }
 
   @override
   final String toAddress;
   @override
   final String? walletId;
+  final List<BitcoinTxIn> _inputs;
+  @override
+  @JsonKey()
+  List<BitcoinTxIn> get inputs {
+    if (_inputs is EqualUnmodifiableListView) return _inputs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_inputs);
+  }
+
+  final List<BitcoinTxOut> _outputs;
+  @override
+  @JsonKey()
+  List<BitcoinTxOut> get outputs {
+    if (_outputs is EqualUnmodifiableListView) return _outputs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_outputs);
+  }
 
   @override
   String toString() {
-    return 'LiquidTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, version: $version, vsize: $vsize, size: $size, weight: $weight, locktime: $locktime, inputs: $inputs, outputs: $outputs, toAddress: $toAddress, walletId: $walletId)';
+    return 'LiquidTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, version: $version, vsize: $vsize, size: $size, weight: $weight, locktime: $locktime, linputs: $linputs, loutputs: $loutputs, toAddress: $toAddress, walletId: $walletId, inputs: $inputs, outputs: $outputs)';
   }
 
   @override
@@ -386,12 +433,14 @@ class _$LiquidTxImpl extends _LiquidTx {
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.locktime, locktime) ||
                 other.locktime == locktime) &&
-            const DeepCollectionEquality().equals(other._inputs, _inputs) &&
-            const DeepCollectionEquality().equals(other._outputs, _outputs) &&
+            const DeepCollectionEquality().equals(other._linputs, _linputs) &&
+            const DeepCollectionEquality().equals(other._loutputs, _loutputs) &&
             (identical(other.toAddress, toAddress) ||
                 other.toAddress == toAddress) &&
             (identical(other.walletId, walletId) ||
-                other.walletId == walletId));
+                other.walletId == walletId) &&
+            const DeepCollectionEquality().equals(other._inputs, _inputs) &&
+            const DeepCollectionEquality().equals(other._outputs, _outputs));
   }
 
   @JsonKey(ignore: true)
@@ -410,10 +459,12 @@ class _$LiquidTxImpl extends _LiquidTx {
       size,
       weight,
       locktime,
-      const DeepCollectionEquality().hash(_inputs),
-      const DeepCollectionEquality().hash(_outputs),
+      const DeepCollectionEquality().hash(_linputs),
+      const DeepCollectionEquality().hash(_loutputs),
       toAddress,
-      walletId);
+      walletId,
+      const DeepCollectionEquality().hash(_inputs),
+      const DeepCollectionEquality().hash(_outputs));
 
   @JsonKey(ignore: true)
   @override
@@ -443,10 +494,12 @@ abstract class _LiquidTx extends LiquidTx {
       required final int size,
       required final int weight,
       required final int locktime,
-      required final List<LiquidTxIn> inputs,
-      required final List<LiquidTxOut> outputs,
+      required final List<LiquidTxIn> linputs,
+      required final List<LiquidTxOut> loutputs,
       required final String toAddress,
-      required final String? walletId}) = _$LiquidTxImpl;
+      required final String? walletId,
+      final List<BitcoinTxIn> inputs,
+      final List<BitcoinTxOut> outputs}) = _$LiquidTxImpl;
   _LiquidTx._() : super._();
 
   factory _LiquidTx.fromJson(Map<String, dynamic> json) =
@@ -477,13 +530,17 @@ abstract class _LiquidTx extends LiquidTx {
   @override
   int get locktime;
   @override
-  List<LiquidTxIn> get inputs;
+  List<LiquidTxIn> get linputs;
   @override
-  List<LiquidTxOut> get outputs;
+  List<LiquidTxOut> get loutputs;
   @override
   String get toAddress;
   @override
   String? get walletId;
+  @override
+  List<BitcoinTxIn> get inputs;
+  @override
+  List<BitcoinTxOut> get outputs;
   @override
   @JsonKey(ignore: true)
   _$$LiquidTxImplCopyWith<_$LiquidTxImpl> get copyWith =>
@@ -583,15 +640,17 @@ class __$$LiquidOutPointImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$LiquidOutPointImpl extends _LiquidOutPoint {
-  _$LiquidOutPointImpl({required this.txid, required this.vout}) : super._();
+class _$LiquidOutPointImpl implements _LiquidOutPoint {
+  const _$LiquidOutPointImpl({this.txid = '', this.vout = 0});
 
   factory _$LiquidOutPointImpl.fromJson(Map<String, dynamic> json) =>
       _$$LiquidOutPointImplFromJson(json);
 
   @override
+  @JsonKey()
   final String txid;
   @override
+  @JsonKey()
   final int vout;
 
   @override
@@ -627,11 +686,9 @@ class _$LiquidOutPointImpl extends _LiquidOutPoint {
   }
 }
 
-abstract class _LiquidOutPoint extends LiquidOutPoint {
-  factory _LiquidOutPoint(
-      {required final String txid,
-      required final int vout}) = _$LiquidOutPointImpl;
-  _LiquidOutPoint._() : super._();
+abstract class _LiquidOutPoint implements LiquidOutPoint {
+  const factory _LiquidOutPoint({final String txid, final int vout}) =
+      _$LiquidOutPointImpl;
 
   factory _LiquidOutPoint.fromJson(Map<String, dynamic> json) =
       _$LiquidOutPointImpl.fromJson;
@@ -753,15 +810,18 @@ class __$$LiquidTxInImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LiquidTxInImpl extends _LiquidTxIn {
-  _$LiquidTxInImpl({required this.previousOutput, required this.scriptSig})
+  _$LiquidTxInImpl(
+      {this.previousOutput = const LiquidOutPoint(), this.scriptSig = ''})
       : super._();
 
   factory _$LiquidTxInImpl.fromJson(Map<String, dynamic> json) =>
       _$$LiquidTxInImplFromJson(json);
 
   @override
+  @JsonKey()
   final LiquidOutPoint previousOutput;
   @override
+  @JsonKey()
   final String scriptSig;
 
   @override
@@ -800,8 +860,8 @@ class _$LiquidTxInImpl extends _LiquidTxIn {
 
 abstract class _LiquidTxIn extends LiquidTxIn {
   factory _LiquidTxIn(
-      {required final LiquidOutPoint previousOutput,
-      required final String scriptSig}) = _$LiquidTxInImpl;
+      {final LiquidOutPoint previousOutput,
+      final String scriptSig}) = _$LiquidTxInImpl;
   _LiquidTxIn._() : super._();
 
   factory _LiquidTxIn.fromJson(Map<String, dynamic> json) =
@@ -922,18 +982,20 @@ class __$$LiquidTxOutImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LiquidTxOutImpl extends _LiquidTxOut {
-  _$LiquidTxOutImpl(
-      {required this.value, required this.scriptPubKey, required this.address})
+  _$LiquidTxOutImpl({this.value = 0, this.scriptPubKey = '', this.address = ''})
       : super._();
 
   factory _$LiquidTxOutImpl.fromJson(Map<String, dynamic> json) =>
       _$$LiquidTxOutImplFromJson(json);
 
   @override
+  @JsonKey()
   final int value;
   @override
+  @JsonKey()
   final String scriptPubKey;
   @override
+  @JsonKey()
   final String address;
 
   @override
@@ -972,9 +1034,9 @@ class _$LiquidTxOutImpl extends _LiquidTxOut {
 
 abstract class _LiquidTxOut extends LiquidTxOut {
   factory _LiquidTxOut(
-      {required final int value,
-      required final String scriptPubKey,
-      required final String address}) = _$LiquidTxOutImpl;
+      {final int value,
+      final String scriptPubKey,
+      final String address}) = _$LiquidTxOutImpl;
   _LiquidTxOut._() : super._();
 
   factory _LiquidTxOut.fromJson(Map<String, dynamic> json) =
