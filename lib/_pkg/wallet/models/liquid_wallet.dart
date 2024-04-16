@@ -86,7 +86,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
   }
 
   @override
-  Future<Iterable<Tx>> getTxs(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(Wallet type) async {
     final txs = await lwkWallet?.txs();
     final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 

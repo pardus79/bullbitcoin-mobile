@@ -36,7 +36,7 @@ class LightningWallet extends Wallet with _$LightningWallet {
   }
 
   @override
-  Future<Iterable<Tx>> getTxs(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(Wallet wallet) async {
     // final txs = await lwkWallet?.txs();
 
     return [] as Iterable<Tx>;

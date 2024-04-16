@@ -13,9 +13,10 @@ class TxRepository {
 
   Future<(List<Tx>?, dynamic)> listTxs(Wallet wallet) async {
     try {
-      final (txStr, _) = await storage.getValue('tx.${wallet.id}');
-      List<dynamic> txsJson = jsonDecode(txStr!);
-      final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
+      final txs = await isar.txs.where().walletIdEqualTo(wallet.id).sortByTimestamp().findAll();
+      // final (txStr, _) = await storage.getValue('tx.${wallet.id}');
+      // List<dynamic> txsJson = jsonDecode(txStr!);
+      // final txs = txsJson.map((txJson) => Tx.fromJson(txJson)).toList();
       return (txs, null);
     } catch (e) {
       return (null, e);
@@ -30,7 +31,7 @@ class TxRepository {
       // which means, first time tx is fetched or for unconfirmed txs, it's inputs, outputs and other fields are processed.
       // Then, next time, when the same tx is fetched, it's ignored and local Tx version is used.
 
-      final updatedTxs = await wallet.getTxs(wallet.type);
+      final updatedTxs = await wallet.getTxs(wallet);
       final sortedTxs = updatedTxs.toList();
       sortedTxs.sort(
         (a, b) => b.timestamp - a.timestamp,
@@ -43,8 +44,11 @@ class TxRepository {
   }
 
   Future<void> persistTxs(Wallet wallet, List<Tx> txs) async {
-    List<Map<String, dynamic>> txsJson = txs.map((tx) => tx.toJson()).toList();
-    String encoded = jsonEncode(txsJson);
-    await storage.saveValue(key: 'tx.${wallet.id}', value: encoded);
+    await isar.writeTxn(() async {
+      await isar.txs.putAllByIndex("id", txs);
+    });
+    // List<Map<String, dynamic>> txsJson = txs.map((tx) => tx.toJson()).toList();
+    // String encoded = jsonEncode(txsJson);
+    // await storage.saveValue(key: 'tx.${wallet.id}', value: encoded);
   }
 }

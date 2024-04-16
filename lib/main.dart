@@ -2,6 +2,7 @@ import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/storage/secure_storage.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
@@ -18,7 +19,7 @@ void main() async {
   final dir = await getApplicationDocumentsDirectory();
 
   final isar = await Isar.open(
-    [WalletSchema],
+    [WalletSchema, TxSchema],
     directory: dir.path,
   );
 

@@ -37,7 +37,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
   }
 
   @override
-  Future<Iterable<Tx>> getTxs(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(Wallet wallet) async {
     final txs = await bdkWallet?.listTransactions(true);
     final txsFutures = txs?.map((t) => Tx.loadFromNative(t, this)) ?? [];
 

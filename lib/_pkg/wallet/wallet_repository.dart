@@ -1,8 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
+import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:isar/isar.dart';
 
@@ -30,7 +34,16 @@ class WalletRepository {
   Future<(List<Wallet>?, dynamic)> loadWallets() async {
     try {
       final wallets = await isar.wallets.where().findAll();
-      return (wallets, null);
+      final ws = wallets.map((w) {
+        if (w.type == WalletType.Bitcoin) {
+          print(jsonEncode(w.toJson()));
+          return BitcoinWallet.fromJson(w.toJson());
+        } else if (w.type == WalletType.Liquid) {
+          return LiquidWallet.fromJson(w.toJson());
+        }
+        return w;
+      }).toList();
+      return (ws, null);
     } catch (e) {
       return (null, e);
     }

@@ -49,7 +49,31 @@ class Wallet {
   }
 
   Map<String, dynamic> toJson() {
-    return {};
+    if (this is BitcoinWallet) {
+      return (this as BitcoinWallet).toJson();
+    } else if (this is LiquidWallet) {
+      return (this as LiquidWallet).toJson();
+    }
+
+    // print(bipPath);
+    // print(bipPath?.path);
+    // print(bipPath?.name);
+    // print(bipPath?.toString());
+    // print(bipPath?.toString().split('.').last);
+    return {
+      'isarId': isarId,
+      'id': id,
+      'name': name,
+      'balance': balance,
+      'type': type.name,
+      'network': network.name,
+      'seedFingerprint': seedFingerprint,
+      'bipPath': bipPath?.toString().split('.').last,
+      'backupTested': backupTested,
+      'lastBackupTested': lastBackupTested?.toIso8601String(),
+      'lastSync': lastSync?.toIso8601String(),
+      'importType': importType?.name,
+    };
   }
 
   static Future<Wallet> setupNewWallet(WalletType type, String mnemonicStr, NetworkType network,
@@ -80,7 +104,13 @@ class Wallet {
     throw UnimplementedError('Unsupported Wallet subclass');
   }
 
-  Future<Iterable<Tx>> getTxs(WalletType type) async {
+  Future<Iterable<Tx>> getTxs(Wallet wallet) async {
+    // if (type == WalletType.Bitcoin) {
+    //   return wallet.getsTxs();
+    // } else if (type == WalletType.Liquid) {
+    //   return LiquidWallet.syncWallet(wallet as LiquidWallet);
+    // }
+    // throw UnimplementedError('Unsupported Wallet subclass');
     return [];
   }
 
