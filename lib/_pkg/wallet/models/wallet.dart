@@ -4,6 +4,7 @@ import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
+import 'package:bb_arch/_pkg/wallet/liquid_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:isar/isar.dart';
@@ -90,7 +91,7 @@ class Wallet {
     if (w.type == WalletType.Bitcoin) {
       return BitcoinWalletHelper.loadNativeSdk(w as BitcoinWallet, seed);
     } else if (w.type == WalletType.Liquid) {
-      return LiquidWallet.loadNativeSdk(w as LiquidWallet, seed);
+      return LiquidWalletHelper.loadNativeSdk(w as LiquidWallet, seed);
     }
     throw UnimplementedError('Unsupported Wallet subclass');
   }

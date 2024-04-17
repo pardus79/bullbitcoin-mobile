@@ -2,6 +2,7 @@
 
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
@@ -26,10 +27,10 @@ class WalletTypeSelectionView extends StatelessWidget {
         ),
         body: ListView.builder(
           itemBuilder: (context, index) {
-            final w = wallets[index] as BitcoinWallet;
+            final w = wallets[index];
             final syncStatus = syncStatuses[index];
             return ListTile(
-              title: Text('[${w.bipPath.name}] ${w.name} (${w.seedFingerprint}: ${w.id})'),
+              title: Text('[${w.bipPath?.name}] ${w.name} (${w.seedFingerprint}: ${w.id})'),
               subtitle: Text('Tx count: 0, Balance: ${w.balance}'),
               leading: syncStatus.name == 'loading'
                   ? const CircularProgressIndicator()
@@ -40,11 +41,18 @@ class WalletTypeSelectionView extends StatelessWidget {
                 child: const Text('Import'),
                 onPressed: () async {
                   print('Import $index wallet type');
-                  BitcoinWallet w = wallets[index] as BitcoinWallet;
                   context.read<WalletSensitiveBloc>().add(PersistAndClearSeed());
-                  context
-                      .read<WalletBloc>()
-                      .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.bipPath.name}')));
+                  if (w is BitcoinWallet) {
+                    BitcoinWallet w = wallets[index] as BitcoinWallet;
+                    context
+                        .read<WalletBloc>()
+                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.bipPath.name}')));
+                  } else if (w is LiquidWallet) {
+                    LiquidWallet w = wallets[index] as LiquidWallet;
+                    context
+                        .read<WalletBloc>()
+                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.bipPath.name}')));
+                  }
                   // await Future.delayed(const Duration(milliseconds: 1000));
                   // context.read<WalletBloc>().add(LoadAllWallets());
                   GoRouter.of(context).pop();

@@ -5,7 +5,9 @@ import 'dart:async';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
+import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_state.dart';
@@ -48,8 +50,14 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
     final (wallets, err) = await walletRepository.deriveWalletsFromSeed(event.seed);
     if (wallets != null) {
       for (int i = 0; i < wallets.length; i++) {
-        final oldWallet = wallets[i] as BitcoinWallet;
-        nameUpdatedWallets.add(oldWallet.copyWith(name: event.walletName));
+        Wallet w = wallets[i];
+        if (w is BitcoinWallet) {
+          final oldWallet = wallets[i] as BitcoinWallet;
+          nameUpdatedWallets.add(oldWallet.copyWith(name: event.walletName));
+        } else if (w is LiquidWallet) {
+          final oldWallet = wallets[i] as LiquidWallet;
+          nameUpdatedWallets.add(oldWallet.copyWith(name: event.walletName));
+        }
       }
     }
     if (err != null) {

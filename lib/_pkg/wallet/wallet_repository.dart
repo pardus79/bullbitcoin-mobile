@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
+import 'package:bb_arch/_pkg/wallet/liquid_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -58,7 +59,14 @@ class WalletRepository {
   Future<void> setupWallets() async {}
 
   Future<(List<Wallet>?, dynamic)> deriveWalletsFromSeed(Seed seed) async {
-    final ws = await BitcoinWalletHelper.initializeAllWallets(seed);
+    if (seed.walletType == WalletType.Bitcoin) {
+      final ws = await BitcoinWalletHelper.initializeAllWallets(seed);
+      return (ws, null);
+    } else if (seed.walletType == WalletType.Liquid) {
+      final ws = await LiquidWalletHelper.initializeAllWallets(seed, bipPath: [BitcoinScriptType.bip84]);
+      return (ws, null);
+    }
+    List<Wallet> ws = [];
     return (ws, null);
   }
 }
