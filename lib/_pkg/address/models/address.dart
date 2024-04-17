@@ -2,59 +2,73 @@ import 'dart:core';
 
 import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
+import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:isar/isar.dart';
 
-enum AddressKind {
-  deposit,
-  change,
-  external,
-  confidential,
-}
+part 'address.g.dart';
 
-enum AddressStatus {
-  unused,
-  active,
-  used,
-  copied,
-}
-
-enum AddressType { Bitcoin, Liquid, Lightning, Usdt }
-
-extension AddressTypeExtension on AddressType {
-  String get name {
-    switch (this) {
-      case AddressType.Bitcoin:
-        return 'Bitcoin';
-      case AddressType.Liquid:
-        return 'Liquid';
-      case AddressType.Lightning:
-        return 'Lightning';
-      case AddressType.Usdt:
-        return 'Usdt';
-    }
-  }
-}
-
+@Collection(ignore: {'copyWith'})
 class Address {
+  Id isarId = Isar.autoIncrement;
+
+  @Index()
   String address = '';
+  @Index()
   int index = 0;
+
+  @Index()
+  @Enumerated(EnumType.ordinal)
   AddressKind kind = AddressKind.deposit;
+
+  @Index()
+  @Enumerated(EnumType.ordinal)
   AddressStatus state = AddressStatus.unused;
+
+  @Enumerated(EnumType.ordinal)
   AddressType type = AddressType.Bitcoin;
+
   int balance = 0;
+
   bool spendable = true;
+
   List<String>? labels;
+
   int txCount = 0;
+
   List<String> txIds = [];
   List<String> receiveTxIds = [];
   List<String> sendTxIds = [];
-  String? walletId;
+
+  @Index()
+  String walletId = '';
 
   Map<String, dynamic> toJson() {
-    return {};
+    if (this is BitcoinAddress) {
+      return (this as BitcoinAddress).toJson();
+    } else if (this is LiquidAddress) {
+      return (this as LiquidAddress).toJson();
+    }
+
+    return {
+      'isarId': isarId,
+      'address': address,
+      'index': index,
+      'kind': kind.toString().split('.').last,
+      'state': state.toString().split('.').last,
+      'type': type.toString().split('.').last,
+      'balance': balance,
+      'spendable': spendable,
+      'labels': labels,
+      'txCount': txCount,
+      'txIds': txIds,
+      'receiveTxIds': receiveTxIds,
+      'sendTxIds': sendTxIds,
+      'walletId': walletId,
+    };
   }
 
   static Address fromJson(Map<String, dynamic> json) {
@@ -112,5 +126,36 @@ class Address {
       return b.index.compareTo(a.index);
     });
     return addresses;
+  }
+}
+
+enum AddressKind {
+  deposit,
+  change,
+  external,
+  confidential,
+}
+
+enum AddressStatus {
+  unused,
+  active,
+  used,
+  copied,
+}
+
+enum AddressType { Bitcoin, Liquid, Lightning, Usdt }
+
+extension AddressTypeExtension on AddressType {
+  String get name {
+    switch (this) {
+      case AddressType.Bitcoin:
+        return 'Bitcoin';
+      case AddressType.Liquid:
+        return 'Liquid';
+      case AddressType.Lightning:
+        return 'Lightning';
+      case AddressType.Usdt:
+        return 'Usdt';
+    }
   }
 }

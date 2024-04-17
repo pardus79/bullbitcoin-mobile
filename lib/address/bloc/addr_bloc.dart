@@ -47,16 +47,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: depositErr.toString()));
       return;
     }
+    await addrRepository.persistAddresses(event.wallet, depositAddresses!);
+
     final (changeAddresses, changeErr) =
         await addrRepository.syncAddresses(event.txs, event.oldAddresses, AddressKind.change, event.wallet);
     if (changeErr != null) {
       emit(state.copyWith(changeAddresses: [], status: LoadStatus.failure, error: changeErr.toString()));
       return;
     }
+    await addrRepository.persistAddresses(event.wallet, changeAddresses!);
 
-    // await addrRepository.persistAddresses(event.wallet, depositAddresses!);
     emit(state.copyWith(
-        depositAddresses: depositAddresses!, changeAddresses: changeAddresses!, status: LoadStatus.success));
+        depositAddresses: depositAddresses, changeAddresses: changeAddresses, status: LoadStatus.success));
   }
 
   void _onSelectAddress(SelectAddress event, Emitter<AddressState> emit) async {

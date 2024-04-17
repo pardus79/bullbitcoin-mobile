@@ -32,7 +32,7 @@ mixin _$BitcoinAddress {
   List<String> get txIds => throw _privateConstructorUsedError;
   List<String> get receiveTxIds => throw _privateConstructorUsedError;
   List<String> get sendTxIds => throw _privateConstructorUsedError;
-  String? get walletId => throw _privateConstructorUsedError;
+  String get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -59,7 +59,7 @@ abstract class $BitcoinAddressCopyWith<$Res> {
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
-      String? walletId});
+      String walletId});
 }
 
 /// @nodoc
@@ -87,7 +87,7 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
-    Object? walletId = freezed,
+    Object? walletId = null,
   }) {
     return _then(_value.copyWith(
       address: null == address
@@ -138,10 +138,10 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
           ? _value.sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      walletId: freezed == walletId
+      walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ) as $Val);
   }
 }
@@ -167,7 +167,7 @@ abstract class _$$BitcoinAddressImplCopyWith<$Res>
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
-      String? walletId});
+      String walletId});
 }
 
 /// @nodoc
@@ -193,7 +193,7 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
-    Object? walletId = freezed,
+    Object? walletId = null,
   }) {
     return _then(_$BitcoinAddressImpl(
       address: null == address
@@ -244,10 +244,10 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
           ? _value._sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      walletId: freezed == walletId
+      walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ));
   }
 }
@@ -336,7 +336,7 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
   }
 
   @override
-  final String? walletId;
+  final String walletId;
 
   @override
   String toString() {
@@ -414,7 +414,7 @@ abstract class _BitcoinAddress extends BitcoinAddress {
       final List<String> txIds,
       final List<String> receiveTxIds,
       final List<String> sendTxIds,
-      required final String? walletId}) = _$BitcoinAddressImpl;
+      required final String walletId}) = _$BitcoinAddressImpl;
   _BitcoinAddress._() : super._();
 
   factory _BitcoinAddress.fromJson(Map<String, dynamic> json) =
@@ -445,7 +445,7 @@ abstract class _BitcoinAddress extends BitcoinAddress {
   @override
   List<String> get sendTxIds;
   @override
-  String? get walletId;
+  String get walletId;
   @override
   @JsonKey(ignore: true)
   _$$BitcoinAddressImplCopyWith<_$BitcoinAddressImpl> get copyWith =>

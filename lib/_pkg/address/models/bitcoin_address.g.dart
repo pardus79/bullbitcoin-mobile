@@ -31,12 +31,15 @@ _$BitcoinAddressImpl _$$BitcoinAddressImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      walletId: json['walletId'] as String?,
-    )..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
+      walletId: json['walletId'] as String,
+    )
+      ..isarId = json['isarId'] as int
+      ..state = $enumDecode(_$AddressStatusEnumMap, json['state']);
 
 Map<String, dynamic> _$$BitcoinAddressImplToJson(
         _$BitcoinAddressImpl instance) =>
     <String, dynamic>{
+      'isarId': instance.isarId,
       'state': _$AddressStatusEnumMap[instance.state]!,
       'address': instance.address,
       'index': instance.index,

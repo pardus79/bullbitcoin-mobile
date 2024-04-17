@@ -4,17 +4,20 @@ import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:isar/isar.dart';
 
 class AddressRepository {
-  AddressRepository({required this.storage});
+  AddressRepository({required this.storage, required this.isar});
 
+  Isar isar;
   HiveStorage storage;
 
   Future<(List<Address>?, dynamic)> listAddresses(Wallet wallet) async {
     try {
-      final (addrsStr, _) = await storage.getValue('address.${wallet.id}');
-      List<dynamic> addrsJson = jsonDecode(addrsStr!);
-      final addrs = addrsJson.map((adJson) => Address.fromJson(adJson)).toList();
+      final addrs = await isar.address.where().walletIdEqualTo(wallet.id).sortByIndex().findAll();
+      // final (addrsStr, _) = await storage.getValue('address.${wallet.id}');
+      // List<dynamic> addrsJson = jsonDecode(addrsStr!);
+      // final addrs = addrsJson.map((adJson) => Address.fromJson(adJson)).toList();
       return (addrs, null);
     } catch (e) {
       return (null, e);
@@ -37,8 +40,11 @@ class AddressRepository {
   }
 
   Future<void> persistAddresses(Wallet wallet, List<Address> addresses) async {
-    List<Map<String, dynamic>> addressesJson = addresses.map((addr) => addr.toJson()).toList();
-    String encoded = jsonEncode(addressesJson);
-    await storage.saveValue(key: 'addr.${wallet.id}', value: encoded);
+    await isar.writeTxn(() async {
+      await isar.address.putAllByIndex("address", addresses);
+    });
+    //List<Map<String, dynamic>> addressesJson = addresses.map((addr) => addr.toJson()).toList();
+    //String encoded = jsonEncode(addressesJson);
+    //await storage.saveValue(key: 'addr.${wallet.id}', value: encoded);
   }
 }

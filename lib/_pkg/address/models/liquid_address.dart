@@ -26,7 +26,7 @@ class LiquidAddress extends Address with _$LiquidAddress {
     @Default([]) List<String> txIds,
     @Default([]) List<String> receiveTxIds,
     @Default([]) List<String> sendTxIds,
-    required String? walletId,
+    required String walletId,
   }) = _LiquidAddress;
   LiquidAddress._();
 
