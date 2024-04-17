@@ -22,9 +22,12 @@ Seed _$SeedFromJson(Map<String, dynamic> json) {
 mixin _$Seed {
   String get mnemonic => throw _privateConstructorUsedError;
   String get passphrase => throw _privateConstructorUsedError;
+  @Index()
   String get fingerprint => throw _privateConstructorUsedError;
+  @Enumerated(EnumType.ordinal)
   WalletType get walletType =>
       throw _privateConstructorUsedError; // TODO: Needed here?
+  @Enumerated(EnumType.ordinal)
   NetworkType get network => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,9 +43,9 @@ abstract class $SeedCopyWith<$Res> {
   $Res call(
       {String mnemonic,
       String passphrase,
-      String fingerprint,
-      WalletType walletType,
-      NetworkType network});
+      @Index() String fingerprint,
+      @Enumerated(EnumType.ordinal) WalletType walletType,
+      @Enumerated(EnumType.ordinal) NetworkType network});
 }
 
 /// @nodoc
@@ -99,9 +102,9 @@ abstract class _$$SeedImplCopyWith<$Res> implements $SeedCopyWith<$Res> {
   $Res call(
       {String mnemonic,
       String passphrase,
-      String fingerprint,
-      WalletType walletType,
-      NetworkType network});
+      @Index() String fingerprint,
+      @Enumerated(EnumType.ordinal) WalletType walletType,
+      @Enumerated(EnumType.ordinal) NetworkType network});
 }
 
 /// @nodoc
@@ -151,9 +154,9 @@ class _$SeedImpl extends _Seed {
   const _$SeedImpl(
       {required this.mnemonic,
       required this.passphrase,
-      required this.fingerprint,
-      required this.walletType,
-      required this.network})
+      @Index() required this.fingerprint,
+      @Enumerated(EnumType.ordinal) required this.walletType,
+      @Enumerated(EnumType.ordinal) required this.network})
       : super._();
 
   factory _$SeedImpl.fromJson(Map<String, dynamic> json) =>
@@ -164,11 +167,14 @@ class _$SeedImpl extends _Seed {
   @override
   final String passphrase;
   @override
+  @Index()
   final String fingerprint;
   @override
+  @Enumerated(EnumType.ordinal)
   final WalletType walletType;
 // TODO: Needed here?
   @override
+  @Enumerated(EnumType.ordinal)
   final NetworkType network;
 
   @override
@@ -213,11 +219,12 @@ class _$SeedImpl extends _Seed {
 
 abstract class _Seed extends Seed {
   const factory _Seed(
-      {required final String mnemonic,
-      required final String passphrase,
-      required final String fingerprint,
-      required final WalletType walletType,
-      required final NetworkType network}) = _$SeedImpl;
+          {required final String mnemonic,
+          required final String passphrase,
+          @Index() required final String fingerprint,
+          @Enumerated(EnumType.ordinal) required final WalletType walletType,
+          @Enumerated(EnumType.ordinal) required final NetworkType network}) =
+      _$SeedImpl;
   const _Seed._() : super._();
 
   factory _Seed.fromJson(Map<String, dynamic> json) = _$SeedImpl.fromJson;
@@ -227,10 +234,13 @@ abstract class _Seed extends Seed {
   @override
   String get passphrase;
   @override
+  @Index()
   String get fingerprint;
   @override
+  @Enumerated(EnumType.ordinal)
   WalletType get walletType;
   @override // TODO: Needed here?
+  @Enumerated(EnumType.ordinal)
   NetworkType get network;
   @override
   @JsonKey(ignore: true)

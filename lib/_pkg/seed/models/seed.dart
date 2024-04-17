@@ -4,22 +4,38 @@ import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bdk_flutter/bdk_flutter.dart' as bdk;
+import 'package:lwk_dart/lwk_dart.dart' as lwk;
+import 'package:isar/isar.dart';
 
 part 'seed.freezed.dart';
 part 'seed.g.dart';
 
+// TODO:
+// This is a Isar model now just for dev/debugging.
+// It will later be saved in Secure storage.
 @freezed
+@Collection(ignore: {'copyWith'})
 class Seed with _$Seed {
   const factory Seed({
     required String mnemonic,
     required String passphrase,
-    required String fingerprint,
-    required WalletType walletType, // TODO: Needed here?
-    required NetworkType network, // TODO: Needed here?
+    @Index() required String fingerprint,
+    @Enumerated(EnumType.ordinal) required WalletType walletType, // TODO: Needed here?
+    @Enumerated(EnumType.ordinal) required NetworkType network, // TODO: Needed here?
   }) = _Seed;
   const Seed._();
 
+  Id get isarId => Isar.autoIncrement;
+
+  @Index()
+  String get id => '${fingerprint}_${walletType.name}_${network.name}';
+
   factory Seed.fromJson(Map<String, dynamic> json) => _$SeedFromJson(json);
+
+  Future<(String?, dynamic)> getLwkFingerprint() async {
+    // lwk.Wallet.
+    return ('', null);
+  }
 
   // TODO: Is this the right place to have this?
   Future<(String?, dynamic)> getBdkFingerprint() async {
