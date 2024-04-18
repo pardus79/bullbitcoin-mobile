@@ -18,6 +18,7 @@ class TxBloc extends Bloc<TxEvent, TxState> {
     on<LoadTxs>(_onLoadTxs);
     on<SyncTxs>(_onSyncTxs);
     on<SelectTx>(_onSelectTx);
+    on<LoadTx>(_onLoadTx);
   }
 
   void _onLoadTxs(LoadTxs event, Emitter<TxState> emit) async {
@@ -49,5 +50,18 @@ class TxBloc extends Bloc<TxEvent, TxState> {
 
   void _onSelectTx(SelectTx event, Emitter<TxState> emit) async {
     emit(state.copyWith(selectedTx: event.tx));
+  }
+
+  void _onLoadTx(LoadTx event, Emitter<TxState> emit) async {
+    emit(state.copyWith(status: LoadStatus.loading));
+
+    print('_onLoadTx: ${event.txid}');
+
+    final tx = await txRepository.loadTx(event.walletId, event.txid);
+    //if (err != null) {
+    //  emit(state.copyWith(selectedTx: null, status: LoadStatus.failure, error: err.toString()));
+    //  return;
+    //}
+    emit(state.copyWith(selectedTx: tx, status: LoadStatus.success));
   }
 }

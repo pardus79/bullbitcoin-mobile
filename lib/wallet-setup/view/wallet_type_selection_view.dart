@@ -31,7 +31,7 @@ class WalletTypeSelectionView extends StatelessWidget {
             final syncStatus = syncStatuses[index];
             return ListTile(
               title: Text('[${w.bipPath?.name}] ${w.name} (${w.seedFingerprint}: ${w.id})'),
-              subtitle: Text('Tx count: 0, Balance: ${w.balance}'),
+              subtitle: Text('Tx count: ${w.txCount}, Balance: ${w.balance}'),
               leading: syncStatus.name == 'loading'
                   ? const CircularProgressIndicator()
                   : syncStatus.name == 'initial'

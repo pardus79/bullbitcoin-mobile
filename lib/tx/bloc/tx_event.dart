@@ -16,3 +16,9 @@ class SelectTx extends TxEvent {
   final Tx tx;
   SelectTx({required this.tx});
 }
+
+class LoadTx extends TxEvent {
+  final String walletId;
+  final String txid;
+  LoadTx({required this.walletId, required this.txid});
+}

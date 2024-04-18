@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class WalletSetupPage extends StatelessWidget {
   const WalletSetupPage({super.key});
 
-  static String route = '/wallet/setup';
+  static String route = '/wallet/0/setup';
 
   @override
   Widget build(BuildContext context) {

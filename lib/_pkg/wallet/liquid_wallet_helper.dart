@@ -18,6 +18,7 @@ class LiquidWalletHelper {
         id: seed.fingerprint,
         name: '',
         balance: 0,
+        txCount: 0,
         type: WalletType.Liquid,
         network: seed.network,
         importType: ImportTypes.words12,
@@ -62,7 +63,9 @@ class LiquidWalletHelper {
       final balances = await w.lwkWallet?.balance();
       int finalBalance = balances?.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first ?? 0;
 
-      return w.copyWith(balance: finalBalance, lastSync: DateTime.now());
+      final txs = await w.lwkWallet?.txs();
+
+      return w.copyWith(balance: finalBalance, txCount: txs?.length ?? 0, lastSync: DateTime.now());
     } catch (e) {
       print('Error syncing wallet: $e');
       return w;

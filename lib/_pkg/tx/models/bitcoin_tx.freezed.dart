@@ -764,6 +764,7 @@ BitcoinTxIn _$BitcoinTxInFromJson(Map<String, dynamic> json) {
 mixin _$BitcoinTxIn {
   BitcoinOutPoint get previousOutput => throw _privateConstructorUsedError;
   String get scriptSig => throw _privateConstructorUsedError;
+  String get scriptSigStr => throw _privateConstructorUsedError;
   int get sequence => throw _privateConstructorUsedError;
   List<String> get witness => throw _privateConstructorUsedError;
 
@@ -782,6 +783,7 @@ abstract class $BitcoinTxInCopyWith<$Res> {
   $Res call(
       {BitcoinOutPoint previousOutput,
       String scriptSig,
+      String scriptSigStr,
       int sequence,
       List<String> witness});
 
@@ -803,6 +805,7 @@ class _$BitcoinTxInCopyWithImpl<$Res, $Val extends BitcoinTxIn>
   $Res call({
     Object? previousOutput = null,
     Object? scriptSig = null,
+    Object? scriptSigStr = null,
     Object? sequence = null,
     Object? witness = null,
   }) {
@@ -814,6 +817,10 @@ class _$BitcoinTxInCopyWithImpl<$Res, $Val extends BitcoinTxIn>
       scriptSig: null == scriptSig
           ? _value.scriptSig
           : scriptSig // ignore: cast_nullable_to_non_nullable
+              as String,
+      scriptSigStr: null == scriptSigStr
+          ? _value.scriptSigStr
+          : scriptSigStr // ignore: cast_nullable_to_non_nullable
               as String,
       sequence: null == sequence
           ? _value.sequence
@@ -846,6 +853,7 @@ abstract class _$$BitcoinTxInImplCopyWith<$Res>
   $Res call(
       {BitcoinOutPoint previousOutput,
       String scriptSig,
+      String scriptSigStr,
       int sequence,
       List<String> witness});
 
@@ -866,6 +874,7 @@ class __$$BitcoinTxInImplCopyWithImpl<$Res>
   $Res call({
     Object? previousOutput = null,
     Object? scriptSig = null,
+    Object? scriptSigStr = null,
     Object? sequence = null,
     Object? witness = null,
   }) {
@@ -877,6 +886,10 @@ class __$$BitcoinTxInImplCopyWithImpl<$Res>
       scriptSig: null == scriptSig
           ? _value.scriptSig
           : scriptSig // ignore: cast_nullable_to_non_nullable
+              as String,
+      scriptSigStr: null == scriptSigStr
+          ? _value.scriptSigStr
+          : scriptSigStr // ignore: cast_nullable_to_non_nullable
               as String,
       sequence: null == sequence
           ? _value.sequence
@@ -896,6 +909,7 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
   _$BitcoinTxInImpl(
       {this.previousOutput = const BitcoinOutPoint(),
       this.scriptSig = '',
+      this.scriptSigStr = '',
       this.sequence = 0,
       final List<String> witness = const []})
       : _witness = witness,
@@ -912,6 +926,9 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
   final String scriptSig;
   @override
   @JsonKey()
+  final String scriptSigStr;
+  @override
+  @JsonKey()
   final int sequence;
   final List<String> _witness;
   @override
@@ -924,7 +941,7 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
 
   @override
   String toString() {
-    return 'BitcoinTxIn(previousOutput: $previousOutput, scriptSig: $scriptSig, sequence: $sequence, witness: $witness)';
+    return 'BitcoinTxIn(previousOutput: $previousOutput, scriptSig: $scriptSig, scriptSigStr: $scriptSigStr, sequence: $sequence, witness: $witness)';
   }
 
   @override
@@ -936,6 +953,8 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
                 other.previousOutput == previousOutput) &&
             (identical(other.scriptSig, scriptSig) ||
                 other.scriptSig == scriptSig) &&
+            (identical(other.scriptSigStr, scriptSigStr) ||
+                other.scriptSigStr == scriptSigStr) &&
             (identical(other.sequence, sequence) ||
                 other.sequence == sequence) &&
             const DeepCollectionEquality().equals(other._witness, _witness));
@@ -944,7 +963,7 @@ class _$BitcoinTxInImpl extends _BitcoinTxIn {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, previousOutput, scriptSig,
-      sequence, const DeepCollectionEquality().hash(_witness));
+      scriptSigStr, sequence, const DeepCollectionEquality().hash(_witness));
 
   @JsonKey(ignore: true)
   @override
@@ -964,6 +983,7 @@ abstract class _BitcoinTxIn extends BitcoinTxIn {
   factory _BitcoinTxIn(
       {final BitcoinOutPoint previousOutput,
       final String scriptSig,
+      final String scriptSigStr,
       final int sequence,
       final List<String> witness}) = _$BitcoinTxInImpl;
   _BitcoinTxIn._() : super._();
@@ -975,6 +995,8 @@ abstract class _BitcoinTxIn extends BitcoinTxIn {
   BitcoinOutPoint get previousOutput;
   @override
   String get scriptSig;
+  @override
+  String get scriptSigStr;
   @override
   int get sequence;
   @override

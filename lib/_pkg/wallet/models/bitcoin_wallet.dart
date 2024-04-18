@@ -15,6 +15,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     required String id,
     required String name,
     required int balance,
+    required int txCount,
     required WalletType type,
     required NetworkType network,
     required String seedFingerprint,
@@ -33,7 +34,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Wallet'}) async {
     return BitcoinWallet(
-        id: name, name: name, balance: 0, type: WalletType.Bitcoin, network: network, seedFingerprint: '');
+        id: name, name: name, balance: 0, txCount: 0, type: WalletType.Bitcoin, network: network, seedFingerprint: '');
   }
 
   @override

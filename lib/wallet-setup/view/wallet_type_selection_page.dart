@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class WalletTypeSelectionPage extends StatelessWidget {
   const WalletTypeSelectionPage({super.key});
 
-  static String route = '/wallet/setup/type-select';
+  static String route = '/wallet/0/setup/type-select';
 
   @override
   Widget build(BuildContext context) {

@@ -37,7 +37,6 @@ class WalletRepository {
       final wallets = await isar.wallets.where().findAll();
       final ws = wallets.map((w) {
         if (w.type == WalletType.Bitcoin) {
-          print(jsonEncode(w.toJson()));
           return BitcoinWallet.fromJson(w.toJson());
         } else if (w.type == WalletType.Liquid) {
           return LiquidWallet.fromJson(w.toJson());

@@ -20,6 +20,7 @@ class Wallet {
 
   String name = '';
   int balance = 0;
+  int txCount = 0;
 
   @Enumerated(EnumType.ordinal)
   WalletType type = WalletType.Bitcoin;
@@ -66,6 +67,7 @@ class Wallet {
       'id': id,
       'name': name,
       'balance': balance,
+      'txCount': txCount,
       'type': type.name,
       'network': network.name,
       'seedFingerprint': seedFingerprint,

@@ -29,13 +29,15 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
               ImportTypes.words12,
     )
       ..isarId = json['isarId'] as int
-      ..name = json['name'] as String;
+      ..name = json['name'] as String
+      ..txCount = json['txCount'] as int;
 
 Map<String, dynamic> _$$LightningWalletImplToJson(
         _$LightningWalletImpl instance) =>
     <String, dynamic>{
       'isarId': instance.isarId,
       'name': instance.name,
+      'txCount': instance.txCount,
       'id': instance.id,
       'balance': instance.balance,
       'backupTested': instance.backupTested,

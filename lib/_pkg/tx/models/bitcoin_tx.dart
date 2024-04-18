@@ -118,19 +118,26 @@ class BitcoinTxIn with _$BitcoinTxIn {
 
       return BitcoinTxIn(
         previousOutput: BitcoinOutPoint(txid: previousOut[0], vout: int.parse(previousOut[1])),
-        scriptSig: scriptSigStr.toString(),
+        scriptSig: txIn['script_sig'],
+        scriptSigStr: scriptSigStr.toString(),
         sequence: txIn['sequence'],
         witness: (txIn['witness'] as Iterable<dynamic>).map((e) => e.toString()).toList(), //
       );
     } catch (e) {
       print('Error: $e');
-      return BitcoinTxIn(previousOutput: BitcoinOutPoint(txid: '', vout: 0), scriptSig: '', sequence: 0, witness: []);
+      return BitcoinTxIn(
+          previousOutput: const BitcoinOutPoint(txid: '', vout: 0),
+          scriptSig: '',
+          scriptSigStr: '',
+          sequence: 0,
+          witness: []);
     }
   }
 
   factory BitcoinTxIn(
       {@Default(BitcoinOutPoint()) BitcoinOutPoint previousOutput,
       @Default('') String scriptSig,
+      @Default('') String scriptSigStr,
       @Default(0) int sequence,
       @Default([]) List<String> witness}) = _BitcoinTxIn;
   BitcoinTxIn._();

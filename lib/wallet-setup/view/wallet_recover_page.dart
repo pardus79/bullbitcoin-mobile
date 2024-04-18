@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class WalletRecoverPage extends StatelessWidget {
   const WalletRecoverPage({super.key});
 
-  static String route = '/wallet/setup/recover';
+  static String route = '/wallet/0/setup/recover';
 
   @override
   Widget build(BuildContext context) {

@@ -23,6 +23,7 @@ mixin _$BitcoinWallet {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   int get balance => throw _privateConstructorUsedError;
+  int get txCount => throw _privateConstructorUsedError;
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   String get seedFingerprint => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       {String id,
       String name,
       int balance,
+      int txCount,
       WalletType type,
       NetworkType network,
       String seedFingerprint,
@@ -86,6 +88,7 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? id = null,
     Object? name = null,
     Object? balance = null,
+    Object? txCount = null,
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
@@ -110,6 +113,10 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
+              as int,
+      txCount: null == txCount
+          ? _value.txCount
+          : txCount // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
           ? _value.type
@@ -171,6 +178,7 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       {String id,
       String name,
       int balance,
+      int txCount,
       WalletType type,
       NetworkType network,
       String seedFingerprint,
@@ -201,6 +209,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? balance = null,
+    Object? txCount = null,
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
@@ -225,6 +234,10 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
       balance: null == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
+              as int,
+      txCount: null == txCount
+          ? _value.txCount
+          : txCount // ignore: cast_nullable_to_non_nullable
               as int,
       type: null == type
           ? _value.type
@@ -281,6 +294,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       {required this.id,
       required this.name,
       required this.balance,
+      required this.txCount,
       required this.type,
       required this.network,
       required this.seedFingerprint,
@@ -304,6 +318,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   final String name;
   @override
   final int balance;
+  @override
+  final int txCount;
   @override
   final WalletType type;
   @override
@@ -335,7 +351,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, txCount: $txCount, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
   }
 
   @override
@@ -346,6 +362,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.balance, balance) || other.balance == balance) &&
+            (identical(other.txCount, txCount) || other.txCount == txCount) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.network, network) || other.network == network) &&
             (identical(other.seedFingerprint, seedFingerprint) ||
@@ -374,6 +391,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       id,
       name,
       balance,
+      txCount,
       type,
       network,
       seedFingerprint,
@@ -405,6 +423,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       {required final String id,
       required final String name,
       required final int balance,
+      required final int txCount,
       required final WalletType type,
       required final NetworkType network,
       required final String seedFingerprint,
@@ -430,6 +449,8 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   String get name;
   @override
   int get balance;
+  @override
+  int get txCount;
   @override
   WalletType get type;
   @override

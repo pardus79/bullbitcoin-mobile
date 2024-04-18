@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WalletView extends StatelessWidget {
-  const WalletView({super.key});
+  const WalletView({super.key, required this.id});
+
+  final String id;
 
   @override
   Widget build(BuildContext context) {

@@ -43,7 +43,7 @@ class WalletListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${wallet.name} (${wallet.type.name}: ${wallet.network.name})'),
-      subtitle: Text('Balance: ${wallet.balance.toString()}'),
+      subtitle: Text('Tx: ${wallet.txCount}, Balance: ${wallet.balance.toString()}'),
       leading: syncStatus.name == 'loading'
           ? const CircularProgressIndicator()
           : syncStatus.name == 'initial'
@@ -52,9 +52,9 @@ class WalletListItem extends StatelessWidget {
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
         context.read<WalletBloc>().add(SelectWallet(wallet: wallet));
-        context.read<TxBloc>().add(LoadTxs(wallet: wallet));
-        context.read<TxBloc>().add(SyncTxs(wallet: wallet));
-        GoRouter.of(context).push('/wallet');
+        // context.read<TxBloc>().add(LoadTxs(wallet: wallet));
+        // context.read<TxBloc>().add(SyncTxs(wallet: wallet));
+        GoRouter.of(context).push('/wallet/${wallet.id}');
       },
     );
   }

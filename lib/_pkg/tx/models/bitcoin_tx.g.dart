@@ -295,13 +295,18 @@ const BitcoinTxInSchema = Schema(
       name: r'scriptSig',
       type: IsarType.string,
     ),
-    r'sequence': PropertySchema(
+    r'scriptSigStr': PropertySchema(
       id: 2,
+      name: r'scriptSigStr',
+      type: IsarType.string,
+    ),
+    r'sequence': PropertySchema(
+      id: 3,
       name: r'sequence',
       type: IsarType.long,
     ),
     r'witness': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'witness',
       type: IsarType.stringList,
     )
@@ -322,6 +327,7 @@ int _bitcoinTxInEstimateSize(
       BitcoinOutPointSchema.estimateSize(
           object.previousOutput, allOffsets[BitcoinOutPoint]!, allOffsets);
   bytesCount += 3 + object.scriptSig.length * 3;
+  bytesCount += 3 + object.scriptSigStr.length * 3;
   bytesCount += 3 + object.witness.length * 3;
   {
     for (var i = 0; i < object.witness.length; i++) {
@@ -345,8 +351,9 @@ void _bitcoinTxInSerialize(
     object.previousOutput,
   );
   writer.writeString(offsets[1], object.scriptSig);
-  writer.writeLong(offsets[2], object.sequence);
-  writer.writeStringList(offsets[3], object.witness);
+  writer.writeString(offsets[2], object.scriptSigStr);
+  writer.writeLong(offsets[3], object.sequence);
+  writer.writeStringList(offsets[4], object.witness);
 }
 
 BitcoinTxIn _bitcoinTxInDeserialize(
@@ -363,8 +370,9 @@ BitcoinTxIn _bitcoinTxInDeserialize(
         ) ??
         BitcoinOutPoint(),
     scriptSig: reader.readString(offsets[1]),
-    sequence: reader.readLong(offsets[2]),
-    witness: reader.readStringList(offsets[3]) ?? [],
+    scriptSigStr: reader.readString(offsets[2]),
+    sequence: reader.readLong(offsets[3]),
+    witness: reader.readStringList(offsets[4]) ?? [],
   );
   return object;
 }
@@ -386,8 +394,10 @@ P _bitcoinTxInDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 3:
+      return (reader.readLong(offset)) as P;
+    case 4:
       return (reader.readStringList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -527,6 +537,142 @@ extension BitcoinTxInQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'scriptSig',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scriptSigStr',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'scriptSigStr',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'scriptSigStr',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scriptSigStr',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BitcoinTxIn, BitcoinTxIn, QAfterFilterCondition>
+      scriptSigStrIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'scriptSigStr',
         value: '',
       ));
     });
@@ -1332,6 +1478,7 @@ _$BitcoinTxInImpl _$$BitcoinTxInImplFromJson(Map<String, dynamic> json) =>
           : BitcoinOutPoint.fromJson(
               json['previousOutput'] as Map<String, dynamic>),
       scriptSig: json['scriptSig'] as String? ?? '',
+      scriptSigStr: json['scriptSigStr'] as String? ?? '',
       sequence: json['sequence'] as int? ?? 0,
       witness: (json['witness'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -1343,6 +1490,7 @@ Map<String, dynamic> _$$BitcoinTxInImplToJson(_$BitcoinTxInImpl instance) =>
     <String, dynamic>{
       'previousOutput': instance.previousOutput,
       'scriptSig': instance.scriptSig,
+      'scriptSigStr': instance.scriptSigStr,
       'sequence': instance.sequence,
       'witness': instance.witness,
     };

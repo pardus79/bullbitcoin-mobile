@@ -1,5 +1,6 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/address/models/address.dart';
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/storage/secure_storage.dart';
@@ -20,7 +21,7 @@ void main() async {
   final dir = await getApplicationDocumentsDirectory();
 
   final isar = await Isar.open(
-    [WalletSchema, TxSchema, AddressSchema],
+    [WalletSchema, TxSchema, AddressSchema, SeedSchema],
     directory: dir.path,
   );
 
@@ -29,7 +30,7 @@ void main() async {
 
   final SecureStorage secureStorage = SecureStorage();
 
-  final SeedRepository seedRepository = SeedRepository(storage: storage);
+  final SeedRepository seedRepository = SeedRepository(storage: storage, isar: isar);
   final WalletRepository walletRepository = WalletRepository(storage: storage, isar: isar);
   final TxRepository txRepository = TxRepository(storage: storage, isar: isar);
   final AddressRepository addressRepository = AddressRepository(storage: storage, isar: isar);

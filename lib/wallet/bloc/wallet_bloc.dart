@@ -59,21 +59,23 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   // This could be avoided by storing wallet states more granularly, and having wallet specific sync events/updates.
   void _onSyncAllWallets(SyncAllWallets event, Emitter<WalletState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
+    await Future.delayed(const Duration(seconds: 5));
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 
     List<Wallet> loadedWallets = [];
     for (int i = 0; i < state.wallets.length; i++) {
       final w = state.wallets[i];
       Wallet newWallet = w;
+      String seedId = '${w.seedFingerprint}_${w.type.name}_${w.network.name}';
       if (w is BitcoinWallet) {
         if (w.bdkWallet == null) {
-          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
+          final (seed, _) = await seedRepository.loadSeed(seedId);
           newWallet = await BitcoinWalletHelper.loadNativeSdk(w, seed!);
         }
       } else if (w is LiquidWallet) {
         LiquidWallet lw = w;
         if (lw.lwkWallet == null) {
-          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
+          final (seed, _) = await seedRepository.loadSeed(seedId);
           newWallet = await LiquidWallet.loadNativeSdk(lw, seed!);
         }
       }

@@ -70,8 +70,13 @@ const WalletSchema = CollectionSchema(
       name: r'seedFingerprint',
       type: IsarType.string,
     ),
-    r'type': PropertySchema(
+    r'txCount': PropertySchema(
       id: 10,
+      name: r'txCount',
+      type: IsarType.long,
+    ),
+    r'type': PropertySchema(
+      id: 11,
       name: r'type',
       type: IsarType.byte,
       enumMap: _WallettypeEnumValueMap,
@@ -146,7 +151,8 @@ void _walletSerialize(
   writer.writeString(offsets[7], object.name);
   writer.writeByte(offsets[8], object.network.index);
   writer.writeString(offsets[9], object.seedFingerprint);
-  writer.writeByte(offsets[10], object.type.index);
+  writer.writeLong(offsets[10], object.txCount);
+  writer.writeByte(offsets[11], object.type.index);
 }
 
 Wallet _walletDeserialize(
@@ -170,7 +176,8 @@ Wallet _walletDeserialize(
       _WalletnetworkValueEnumMap[reader.readByteOrNull(offsets[8])] ??
           NetworkType.Mainnet;
   object.seedFingerprint = reader.readString(offsets[9]);
-  object.type = _WallettypeValueEnumMap[reader.readByteOrNull(offsets[10])] ??
+  object.txCount = reader.readLong(offsets[10]);
+  object.type = _WallettypeValueEnumMap[reader.readByteOrNull(offsets[11])] ??
       WalletType.Bitcoin;
   return object;
 }
@@ -204,6 +211,8 @@ P _walletDeserializeProp<P>(
     case 9:
       return (reader.readString(offset)) as P;
     case 10:
+      return (reader.readLong(offset)) as P;
+    case 11:
       return (_WallettypeValueEnumMap[reader.readByteOrNull(offset)] ??
           WalletType.Bitcoin) as P;
     default:
@@ -1326,6 +1335,59 @@ extension WalletQueryFilter on QueryBuilder<Wallet, Wallet, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> txCountEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'txCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> txCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'txCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> txCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'txCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> txCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'txCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterFilterCondition> typeEqualTo(
       WalletType value) {
     return QueryBuilder.apply(this, (query) {
@@ -1505,6 +1567,18 @@ extension WalletQuerySortBy on QueryBuilder<Wallet, Wallet, QSortBy> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByTxCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'txCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByTxCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'txCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -1651,6 +1725,18 @@ extension WalletQuerySortThenBy on QueryBuilder<Wallet, Wallet, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByTxCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'txCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByTxCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'txCount', Sort.desc);
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.asc);
@@ -1729,6 +1815,12 @@ extension WalletQueryWhereDistinct on QueryBuilder<Wallet, Wallet, QDistinct> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QDistinct> distinctByTxCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'txCount');
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QDistinct> distinctByType() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'type');
@@ -1800,6 +1892,12 @@ extension WalletQueryProperty on QueryBuilder<Wallet, Wallet, QQueryProperty> {
   QueryBuilder<Wallet, String, QQueryOperations> seedFingerprintProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'seedFingerprint');
+    });
+  }
+
+  QueryBuilder<Wallet, int, QQueryOperations> txCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'txCount');
     });
   }
 

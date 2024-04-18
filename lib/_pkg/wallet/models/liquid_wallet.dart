@@ -21,6 +21,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
     required String id,
     required String name,
     required int balance,
+    required int txCount,
     required WalletType type,
     required NetworkType network,
     required String seedFingerprint,
@@ -37,7 +38,7 @@ class LiquidWallet extends Wallet with _$LiquidWallet {
 
   static Future<Wallet> setupNewWallet(String mnemonicStr, NetworkType network, {String name = 'Liquid wallet'}) async {
     return LiquidWallet(
-        id: name, name: name, balance: 0, type: WalletType.Liquid, network: network, seedFingerprint: '');
+        id: name, name: name, balance: 0, txCount: 0, type: WalletType.Liquid, network: network, seedFingerprint: '');
   }
 
   static Future<LiquidWallet> loadNativeSdk(LiquidWallet w, Seed seed) async {

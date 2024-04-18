@@ -25,7 +25,7 @@ class TxList extends StatelessWidget {
           onTap: () {
             print('TxList: tx: $tx');
             context.read<TxBloc>().add(SelectTx(tx: tx));
-            GoRouter.of(context).push('/wallet/tx');
+            GoRouter.of(context).push('/wallet/${tx.walletId}/tx/${tx.id}');
           },
         );
       },

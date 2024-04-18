@@ -43,6 +43,11 @@ class TxRepository {
     }
   }
 
+  Future<Tx> loadTx(String walletid, String txid) async {
+    final txs = await isar.txs.where().idEqualTo(txid).filter().walletIdEqualTo(walletid).findAll();
+    return txs.first;
+  }
+
   Future<void> persistTxs(Wallet wallet, List<Tx> txs) async {
     await isar.writeTxn(() async {
       await isar.txs.putAllByIndex("id", txs);

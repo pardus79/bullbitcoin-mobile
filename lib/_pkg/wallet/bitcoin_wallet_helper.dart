@@ -134,6 +134,7 @@ class BitcoinWalletHelper {
         id: walletHashId,
         name: '',
         balance: 0,
+        txCount: 0,
         type: WalletType.Bitcoin,
         network: network,
         importType: ImportTypes.words12,
@@ -154,6 +155,7 @@ class BitcoinWalletHelper {
         id: 'id',
         name: 'name',
         balance: 0,
+        txCount: 0,
         type: WalletType.Bitcoin,
         network: NetworkType.Testnet,
         seedFingerprint: '');
@@ -172,6 +174,8 @@ class BitcoinWalletHelper {
     final balance = bal?.confirmed ?? 0;
     print('balance is $balance');
 
-    return w.copyWith(balance: balance, lastSync: DateTime.now());
+    final txs = await w.bdkWallet?.listTransactions(false);
+
+    return w.copyWith(balance: balance, txCount: txs?.length ?? 0, lastSync: DateTime.now());
   }
 }

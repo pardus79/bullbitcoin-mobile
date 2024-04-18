@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class WalletImportPage extends StatelessWidget {
   const WalletImportPage({super.key});
 
-  static String route = '/wallet/setup/import';
+  static String route = '/wallet/0/setup/import';
 
   @override
   Widget build(BuildContext context) {
