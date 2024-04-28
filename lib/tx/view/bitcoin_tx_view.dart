@@ -45,10 +45,11 @@ class BitcoinTxView extends StatelessWidget {
               const Text('Inputs'),
               if (tx is BitcoinTx)
                 ...tx.inputs.map((e) {
-                  return Column(children: [
+                  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text('- ${e.previousOutput.toString()}'),
+                    Text('- Witness (${e.witness.length})'),
                     ...e.witness.map((w) => Text('    - $w')).toList(),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 16),
                   ]);
                 }).toList(),
               const SizedBox(height: 8),

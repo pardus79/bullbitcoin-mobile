@@ -35,6 +35,7 @@ class WalletRepository {
   Future<(List<Wallet>?, dynamic)> loadWallets() async {
     try {
       final wallets = await isar.wallets.where().findAll();
+      // TODO: Find better way
       final ws = wallets.map((w) {
         if (w.type == WalletType.Bitcoin) {
           return BitcoinWallet.fromJson(w.toJson());

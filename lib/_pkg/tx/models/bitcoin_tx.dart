@@ -51,47 +51,52 @@ class BitcoinTx extends Tx with _$BitcoinTx {
       throw TypeError();
     }
 
-    bdk.TransactionDetails t = tx;
-    final sTx = jsonDecode(t.serializedTx!);
+    try {
+      bdk.TransactionDetails t = tx;
+      final sTx = jsonDecode(t.serializedTx!);
 
-    final isRbf = await t.transaction?.isExplicitlyRbf() ?? false;
-    final version = await t.transaction?.version() ?? 0;
-    final vsize = await t.transaction?.vsize() ?? 0;
-    final weight = await t.transaction?.weight() ?? 0;
-    final locktime = await t.transaction?.lockTime() ?? 0;
+      final isRbf = await t.transaction?.isExplicitlyRbf() ?? false;
+      final version = await t.transaction?.version() ?? 0;
+      final vsize = await t.transaction?.vsize() ?? 0;
+      final weight = await t.transaction?.weight() ?? 0;
+      final locktime = await t.transaction?.lockTime() ?? 0;
 
-    final ins = sTx['input'] as List;
-    List<BitcoinTxIn> inputs = [];
-    for (int i = 0; i < ins.length; i++) {
-      final txIn = await BitcoinTxIn.fromNative(ins[i]);
-      inputs.add(txIn);
+      final ins = sTx['input'] as List;
+      List<BitcoinTxIn> inputs = [];
+      for (int i = 0; i < ins.length; i++) {
+        final txIn = await BitcoinTxIn.fromNative(ins[i]);
+        inputs.add(txIn);
+      }
+
+      final outs = sTx['output'] as List;
+      List<BitcoinTxOut> outputs = [];
+      for (int i = 0; i < outs.length; i++) {
+        final txOut = await BitcoinTxOut.fromNative(outs[i], wallet.network);
+        outputs.add(txOut);
+      }
+
+      return BitcoinTx(
+        id: t.txid,
+        type: TxType.Bitcoin,
+        timestamp: t.confirmationTime?.timestamp ?? 0,
+        amount: t.sent - t.received,
+        fee: t.fee ?? 0,
+        height: t.confirmationTime?.height ?? 0,
+        labels: [],
+        rbfEnabled: isRbf,
+        version: version,
+        vsize: vsize,
+        weight: weight,
+        locktime: locktime,
+        inputs: inputs,
+        outputs: outputs,
+        toAddress: outputs[0].address ?? '',
+        walletId: wallet.id,
+      );
+    } catch (e) {
+      print(e);
+      rethrow;
     }
-
-    final outs = sTx['output'] as List;
-    List<BitcoinTxOut> outputs = [];
-    for (int i = 0; i < outs.length; i++) {
-      final txOut = await BitcoinTxOut.fromNative(outs[i], wallet.network);
-      outputs.add(txOut);
-    }
-
-    return BitcoinTx(
-      id: t.txid,
-      type: TxType.Bitcoin,
-      timestamp: t.confirmationTime?.timestamp ?? 0,
-      amount: t.sent - t.received,
-      fee: t.fee ?? 0,
-      height: t.confirmationTime?.height ?? 0,
-      labels: [],
-      rbfEnabled: isRbf,
-      version: version,
-      vsize: vsize,
-      weight: weight,
-      locktime: locktime,
-      inputs: inputs,
-      outputs: outputs,
-      toAddress: outputs[0].address ?? '',
-      walletId: wallet.id,
-    );
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
@@ -34,6 +36,7 @@ class Tx {
   int? weight;
   int? locktime;
 
+  // TODO: Ideally shouldn't have both BitcoinTxIn and LiquidTxIn
   List<BitcoinTxIn>? inputs;
   List<BitcoinTxOut>? outputs;
 
@@ -48,8 +51,47 @@ class Tx {
   @Index()
   String? walletId;
 
+  // TODO: Manually doing this sucks
+  // This is done, because Tx is not @freezed at base class level.
+  // To be experimented
   Map<String, dynamic> toJson() {
-    return {};
+    if (this is BitcoinTx) {
+      return (this as BitcoinTx).toJson();
+    } else if (this is LiquidTx) {
+      return (this as LiquidTx).toJson();
+    }
+
+    return {
+      'isarId': isarId,
+      'id': id,
+      'type': type.name,
+      'timestamp': timestamp,
+      'amount': amount,
+      'fee': fee,
+      'height': height,
+      'psbt': psbt,
+      'broadcastTime': broadcastTime,
+      'rbfEnabled': rbfEnabled,
+      'version': version,
+      'vsize': vsize,
+      'weight': weight,
+      'locktime': locktime,
+      'inputs': inputs?.map((e) {
+        // TODO: Better way to do this?
+        // Without this decode / encode gimmick, e.toJson() returns Map<String, dynamic>,
+        // where `previousOutput` is of type BitcoinOutPoint rather than Map<String, dynamic>
+        print('input');
+        print(e.toJson());
+        print(jsonEncode(e.toJson()));
+        return jsonDecode(jsonEncode(e.toJson()));
+      }).toList(),
+      'outputs': outputs?.map((e) => e.toJson()).toList(),
+      'linputs': linputs?.map((e) => e.toJson()).toList(),
+      'loutputs': loutputs?.map((e) => e.toJson()).toList(),
+      'toAddress': toAddress,
+      'labels': labels,
+      'walletId': walletId,
+    };
   }
 
   static Tx fromJson(Map<String, dynamic> json) {
