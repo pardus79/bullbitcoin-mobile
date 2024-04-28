@@ -941,10 +941,8 @@ _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
       amount: json['amount'] as int,
       fee: json['fee'] as int,
       height: json['height'] as int,
-      label: json['label'] as String,
       version: json['version'] as int,
       vsize: json['vsize'] as int,
-      size: json['size'] as int,
       weight: json['weight'] as int,
       locktime: json['locktime'] as int,
       linputs: (json['linputs'] as List<dynamic>)
@@ -954,6 +952,10 @@ _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
           .map((e) => LiquidTxOut.fromJson(e as Map<String, dynamic>))
           .toList(),
       toAddress: json['toAddress'] as String,
+      labels: (json['labels'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       walletId: json['walletId'] as String?,
       inputs: (json['inputs'] as List<dynamic>?)
               ?.map((e) => BitcoinTxIn.fromJson(e as Map<String, dynamic>))
@@ -967,9 +969,7 @@ _$LiquidTxImpl _$$LiquidTxImplFromJson(Map<String, dynamic> json) =>
       ..isarId = json['isarId'] as int
       ..psbt = json['psbt'] as String?
       ..broadcastTime = json['broadcastTime'] as int?
-      ..rbfEnabled = json['rbfEnabled'] as bool?
-      ..labels =
-          (json['labels'] as List<dynamic>?)?.map((e) => e as String).toList();
+      ..rbfEnabled = json['rbfEnabled'] as bool?;
 
 Map<String, dynamic> _$$LiquidTxImplToJson(_$LiquidTxImpl instance) =>
     <String, dynamic>{
@@ -977,22 +977,20 @@ Map<String, dynamic> _$$LiquidTxImplToJson(_$LiquidTxImpl instance) =>
       'psbt': instance.psbt,
       'broadcastTime': instance.broadcastTime,
       'rbfEnabled': instance.rbfEnabled,
-      'labels': instance.labels,
       'id': instance.id,
       'type': _$TxTypeEnumMap[instance.type]!,
       'timestamp': instance.timestamp,
       'amount': instance.amount,
       'fee': instance.fee,
       'height': instance.height,
-      'label': instance.label,
       'version': instance.version,
       'vsize': instance.vsize,
-      'size': instance.size,
       'weight': instance.weight,
       'locktime': instance.locktime,
       'linputs': instance.linputs,
       'loutputs': instance.loutputs,
       'toAddress': instance.toAddress,
+      'labels': instance.labels,
       'walletId': instance.walletId,
       'inputs': instance.inputs,
       'outputs': instance.outputs,

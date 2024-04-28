@@ -86,8 +86,12 @@ class Tx {
         return jsonDecode(jsonEncode(e.toJson()));
       }).toList(),
       'outputs': outputs?.map((e) => e.toJson()).toList(),
-      'linputs': linputs?.map((e) => e.toJson()).toList(),
-      'loutputs': loutputs?.map((e) => e.toJson()).toList(),
+      'linputs': linputs?.map((e) {
+        return jsonDecode(jsonEncode(e.toJson()));
+      }).toList(),
+      'loutputs': loutputs?.map((e) {
+        return jsonDecode(jsonEncode(e.toJson()));
+      }).toList(),
       'toAddress': toAddress,
       'labels': labels,
       'walletId': walletId,

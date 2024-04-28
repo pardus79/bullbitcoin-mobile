@@ -26,15 +26,14 @@ mixin _$LiquidTx {
   int get amount => throw _privateConstructorUsedError;
   int get fee => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
-  String get label => throw _privateConstructorUsedError;
   int get version => throw _privateConstructorUsedError;
   int get vsize => throw _privateConstructorUsedError;
-  int get size => throw _privateConstructorUsedError;
   int get weight => throw _privateConstructorUsedError;
   int get locktime => throw _privateConstructorUsedError;
   List<LiquidTxIn> get linputs => throw _privateConstructorUsedError;
   List<LiquidTxOut> get loutputs => throw _privateConstructorUsedError;
   String get toAddress => throw _privateConstructorUsedError;
+  List<String> get labels => throw _privateConstructorUsedError;
   String? get walletId => throw _privateConstructorUsedError;
   List<BitcoinTxIn> get inputs => throw _privateConstructorUsedError;
   List<BitcoinTxOut> get outputs => throw _privateConstructorUsedError;
@@ -57,15 +56,14 @@ abstract class $LiquidTxCopyWith<$Res> {
       int amount,
       int fee,
       int height,
-      String label,
       int version,
       int vsize,
-      int size,
       int weight,
       int locktime,
       List<LiquidTxIn> linputs,
       List<LiquidTxOut> loutputs,
       String toAddress,
+      List<String> labels,
       String? walletId,
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs});
@@ -90,15 +88,14 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
-    Object? label = null,
     Object? version = null,
     Object? vsize = null,
-    Object? size = null,
     Object? weight = null,
     Object? locktime = null,
     Object? linputs = null,
     Object? loutputs = null,
     Object? toAddress = null,
+    Object? labels = null,
     Object? walletId = freezed,
     Object? inputs = null,
     Object? outputs = null,
@@ -128,10 +125,6 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -139,10 +132,6 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
       vsize: null == vsize
           ? _value.vsize
           : vsize // ignore: cast_nullable_to_non_nullable
-              as int,
-      size: null == size
-          ? _value.size
-          : size // ignore: cast_nullable_to_non_nullable
               as int,
       weight: null == weight
           ? _value.weight
@@ -164,6 +153,10 @@ class _$LiquidTxCopyWithImpl<$Res, $Val extends LiquidTx>
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
               as String,
+      labels: null == labels
+          ? _value.labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -195,15 +188,14 @@ abstract class _$$LiquidTxImplCopyWith<$Res>
       int amount,
       int fee,
       int height,
-      String label,
       int version,
       int vsize,
-      int size,
       int weight,
       int locktime,
       List<LiquidTxIn> linputs,
       List<LiquidTxOut> loutputs,
       String toAddress,
+      List<String> labels,
       String? walletId,
       List<BitcoinTxIn> inputs,
       List<BitcoinTxOut> outputs});
@@ -226,15 +218,14 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
     Object? amount = null,
     Object? fee = null,
     Object? height = null,
-    Object? label = null,
     Object? version = null,
     Object? vsize = null,
-    Object? size = null,
     Object? weight = null,
     Object? locktime = null,
     Object? linputs = null,
     Object? loutputs = null,
     Object? toAddress = null,
+    Object? labels = null,
     Object? walletId = freezed,
     Object? inputs = null,
     Object? outputs = null,
@@ -264,10 +255,6 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
           ? _value.height
           : height // ignore: cast_nullable_to_non_nullable
               as int,
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
@@ -275,10 +262,6 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
       vsize: null == vsize
           ? _value.vsize
           : vsize // ignore: cast_nullable_to_non_nullable
-              as int,
-      size: null == size
-          ? _value.size
-          : size // ignore: cast_nullable_to_non_nullable
               as int,
       weight: null == weight
           ? _value.weight
@@ -300,6 +283,10 @@ class __$$LiquidTxImplCopyWithImpl<$Res>
           ? _value.toAddress
           : toAddress // ignore: cast_nullable_to_non_nullable
               as String,
+      labels: null == labels
+          ? _value._labels
+          : labels // ignore: cast_nullable_to_non_nullable
+              as List<String>,
       walletId: freezed == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -326,20 +313,20 @@ class _$LiquidTxImpl extends _LiquidTx {
       required this.amount,
       required this.fee,
       required this.height,
-      required this.label,
       required this.version,
       required this.vsize,
-      required this.size,
       required this.weight,
       required this.locktime,
       required final List<LiquidTxIn> linputs,
       required final List<LiquidTxOut> loutputs,
       required this.toAddress,
+      final List<String> labels = const [],
       required this.walletId,
       final List<BitcoinTxIn> inputs = const [],
       final List<BitcoinTxOut> outputs = const []})
       : _linputs = linputs,
         _loutputs = loutputs,
+        _labels = labels,
         _inputs = inputs,
         _outputs = outputs,
         super._();
@@ -360,13 +347,9 @@ class _$LiquidTxImpl extends _LiquidTx {
   @override
   final int height;
   @override
-  final String label;
-  @override
   final int version;
   @override
   final int vsize;
-  @override
-  final int size;
   @override
   final int weight;
   @override
@@ -389,6 +372,15 @@ class _$LiquidTxImpl extends _LiquidTx {
 
   @override
   final String toAddress;
+  final List<String> _labels;
+  @override
+  @JsonKey()
+  List<String> get labels {
+    if (_labels is EqualUnmodifiableListView) return _labels;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_labels);
+  }
+
   @override
   final String? walletId;
   final List<BitcoinTxIn> _inputs;
@@ -411,7 +403,7 @@ class _$LiquidTxImpl extends _LiquidTx {
 
   @override
   String toString() {
-    return 'LiquidTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, label: $label, version: $version, vsize: $vsize, size: $size, weight: $weight, locktime: $locktime, linputs: $linputs, loutputs: $loutputs, toAddress: $toAddress, walletId: $walletId, inputs: $inputs, outputs: $outputs)';
+    return 'LiquidTx(id: $id, type: $type, timestamp: $timestamp, amount: $amount, fee: $fee, height: $height, version: $version, vsize: $vsize, weight: $weight, locktime: $locktime, linputs: $linputs, loutputs: $loutputs, toAddress: $toAddress, labels: $labels, walletId: $walletId, inputs: $inputs, outputs: $outputs)';
   }
 
   @override
@@ -426,10 +418,8 @@ class _$LiquidTxImpl extends _LiquidTx {
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.fee, fee) || other.fee == fee) &&
             (identical(other.height, height) || other.height == height) &&
-            (identical(other.label, label) || other.label == label) &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.vsize, vsize) || other.vsize == vsize) &&
-            (identical(other.size, size) || other.size == size) &&
             (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.locktime, locktime) ||
                 other.locktime == locktime) &&
@@ -437,6 +427,7 @@ class _$LiquidTxImpl extends _LiquidTx {
             const DeepCollectionEquality().equals(other._loutputs, _loutputs) &&
             (identical(other.toAddress, toAddress) ||
                 other.toAddress == toAddress) &&
+            const DeepCollectionEquality().equals(other._labels, _labels) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId) &&
             const DeepCollectionEquality().equals(other._inputs, _inputs) &&
@@ -453,15 +444,14 @@ class _$LiquidTxImpl extends _LiquidTx {
       amount,
       fee,
       height,
-      label,
       version,
       vsize,
-      size,
       weight,
       locktime,
       const DeepCollectionEquality().hash(_linputs),
       const DeepCollectionEquality().hash(_loutputs),
       toAddress,
+      const DeepCollectionEquality().hash(_labels),
       walletId,
       const DeepCollectionEquality().hash(_inputs),
       const DeepCollectionEquality().hash(_outputs));
@@ -488,15 +478,14 @@ abstract class _LiquidTx extends LiquidTx {
       required final int amount,
       required final int fee,
       required final int height,
-      required final String label,
       required final int version,
       required final int vsize,
-      required final int size,
       required final int weight,
       required final int locktime,
       required final List<LiquidTxIn> linputs,
       required final List<LiquidTxOut> loutputs,
       required final String toAddress,
+      final List<String> labels,
       required final String? walletId,
       final List<BitcoinTxIn> inputs,
       final List<BitcoinTxOut> outputs}) = _$LiquidTxImpl;
@@ -518,13 +507,9 @@ abstract class _LiquidTx extends LiquidTx {
   @override
   int get height;
   @override
-  String get label;
-  @override
   int get version;
   @override
   int get vsize;
-  @override
-  int get size;
   @override
   int get weight;
   @override
@@ -535,6 +520,8 @@ abstract class _LiquidTx extends LiquidTx {
   List<LiquidTxOut> get loutputs;
   @override
   String get toAddress;
+  @override
+  List<String> get labels;
   @override
   String? get walletId;
   @override

@@ -41,11 +41,11 @@ class TxBloc extends Bloc<TxEvent, TxState> {
 
     final (txs, err) = await txRepository.syncTxs(event.wallet);
     if (err != null) {
-      emit(state.copyWith(txs: [], status: LoadStatus.failure, error: err.toString()));
+      emit(state.copyWith(status: LoadStatus.failure, error: err.toString()));
       return;
     }
     await txRepository.persistTxs(event.wallet, txs!);
-    emit(state.copyWith(txs: txs!, status: LoadStatus.success));
+    emit(state.copyWith(txs: txs, status: LoadStatus.success));
   }
 
   void _onSelectTx(SelectTx event, Emitter<TxState> emit) async {

@@ -45,7 +45,7 @@ class LiquidTxView extends StatelessWidget {
               const SizedBox(height: 8),
               const Text('Inputs'),
               if (tx is LiquidTx)
-                ...tx.inputs.map((e) {
+                ...tx.linputs.map((e) {
                   return Column(children: [
                     Text('- ${e.previousOutput.toString()}'),
                     const SizedBox(height: 4),
@@ -54,8 +54,8 @@ class LiquidTxView extends StatelessWidget {
               const SizedBox(height: 8),
               const Text('Outputs'),
               if (tx is LiquidTx)
-                ...tx.outputs.map((e) {
-                  return Text('- ${e.address}');
+                ...tx.loutputs.map((e) {
+                  return Text('- ${e.address} ${e.scriptPubKey}: ${e.value}');
                 }).toList(),
             ],
           ),

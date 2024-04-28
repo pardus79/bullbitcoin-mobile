@@ -102,19 +102,20 @@ class Wallet {
     if (wallet.type == WalletType.Bitcoin) {
       return BitcoinWalletHelper.syncWallet(wallet as BitcoinWallet);
     } else if (wallet.type == WalletType.Liquid) {
-      return LiquidWallet.syncWallet(wallet as LiquidWallet);
+      return LiquidWalletHelper.syncWallet(wallet as LiquidWallet);
     }
     throw UnimplementedError('Unsupported Wallet subclass');
   }
 
-  Future<Iterable<Tx>> getTxs(Wallet wallet) async {
+  Future<(Iterable<Tx>?, dynamic)> getTxs(Wallet wallet) async {
     // if (type == WalletType.Bitcoin) {
     //   return wallet.getsTxs();
     // } else if (type == WalletType.Liquid) {
     //   return LiquidWallet.syncWallet(wallet as LiquidWallet);
     // }
     // throw UnimplementedError('Unsupported Wallet subclass');
-    return [];
+    Iterable<Tx> txs = [];
+    return (txs, null);
   }
 
   Future<Address> getAddress(int index, AddressKind kind) async {

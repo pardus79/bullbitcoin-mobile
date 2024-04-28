@@ -25,15 +25,14 @@ class LiquidTx extends Tx with _$LiquidTx {
     required int amount,
     required int fee,
     required int height,
-    required String label,
     required int version,
     required int vsize,
-    required int size,
     required int weight,
     required int locktime,
     required List<LiquidTxIn> linputs,
     required List<LiquidTxOut> loutputs,
     required String toAddress,
+    @Default([]) List<String> labels,
     required String? walletId,
     @Default([]) List<BitcoinTxIn> inputs,
     @Default([]) List<BitcoinTxOut> outputs,
@@ -50,8 +49,10 @@ class LiquidTx extends Tx with _$LiquidTx {
     String assetIdToPick = wallet.network == NetworkType.Mainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
 
     lwk.Tx t = tx;
+    //t.inputs[0].
+    //t.outputs[0].
     final balances = t.balances;
-    int finalBalance = balances.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first;
+    int finalBalance = balances.where((b) => b.assetId == assetIdToPick).map((e) => e.value).first;
 
     List<LiquidTxIn> inputs = [];
     for (int i = 0; i < t.inputs.length; i++) {
@@ -72,14 +73,13 @@ class LiquidTx extends Tx with _$LiquidTx {
       amount: finalBalance,
       fee: t.fee,
       height: 0,
-      label: '',
       version: 1,
       vsize: 0,
-      size: 0,
       weight: 0,
       locktime: 0,
       linputs: inputs,
       loutputs: outputs,
+      labels: [],
       toAddress: '',
       walletId: wallet.id, //
     );
@@ -106,7 +106,7 @@ class LiquidTxIn with _$LiquidTxIn {
       );
     } catch (e) {
       print('Error: $e');
-      return LiquidTxIn(previousOutput: LiquidOutPoint(txid: '', vout: 0), scriptSig: '');
+      return LiquidTxIn(previousOutput: const LiquidOutPoint(txid: '', vout: 0), scriptSig: '');
     }
   }
 

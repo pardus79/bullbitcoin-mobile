@@ -6,6 +6,7 @@ import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
+import 'package:bb_arch/_pkg/wallet/liquid_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -59,7 +60,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   // This could be avoided by storing wallet states more granularly, and having wallet specific sync events/updates.
   void _onSyncAllWallets(SyncAllWallets event, Emitter<WalletState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 1));
     emit(state.copyWith(syncWalletStatus: state.wallets.map((e) => LoadStatus.loading).toList()));
 
     List<Wallet> loadedWallets = [];
@@ -76,7 +77,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
         LiquidWallet lw = w;
         if (lw.lwkWallet == null) {
           final (seed, _) = await seedRepository.loadSeed(seedId);
-          newWallet = await LiquidWallet.loadNativeSdk(lw, seed!);
+          newWallet = await LiquidWalletHelper.loadNativeSdk(lw, seed!);
         }
       }
       loadedWallets.add(newWallet);
@@ -115,8 +116,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     }
 
     await completer.future;
-    // await walletRepository.persistWallet(state.wallets);
-    // await Future.delayed(const Duration(seconds: 5));
+
+    for (Wallet w in state.wallets) {
+      await walletRepository.persistWallet(w);
+    }
     emit(state.copyWith(status: LoadStatus.success));
     print('OnSyncAllWallets: DONE');
   }

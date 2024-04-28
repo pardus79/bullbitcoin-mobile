@@ -43,13 +43,16 @@ class TxRepository {
       // which means, first time tx is fetched or for unconfirmed txs, it's inputs, outputs and other fields are processed.
       // Then, next time, when the same tx is fetched, it's ignored and local Tx version is used.
 
-      final updatedTxs = await wallet.getTxs(wallet);
-      final sortedTxs = updatedTxs.toList();
-      sortedTxs.sort(
+      final (updatedTxs, err) = await wallet.getTxs(wallet);
+      if (err != null) {
+        return (null, err);
+      }
+      final sortedTxs = updatedTxs?.toList();
+      sortedTxs?.sort(
         (a, b) => b.timestamp - a.timestamp,
       );
 
-      return (sortedTxs, null);
+      return (sortedTxs ?? [], null);
     } catch (e) {
       return (null, e);
     }

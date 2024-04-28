@@ -61,7 +61,7 @@ class LiquidWalletHelper {
       String assetIdToPick = w.network == NetworkType.Mainnet ? lwk.lBtcAssetId : lwk.lTestAssetId;
 
       final balances = await w.lwkWallet?.balance();
-      int finalBalance = balances?.where((b) => b.$1 == assetIdToPick).map((e) => e.$2).first ?? 0;
+      int finalBalance = balances?.where((b) => b.assetId == assetIdToPick).map((e) => e.value).first ?? 0;
 
       final txs = await w.lwkWallet?.txs();
 
