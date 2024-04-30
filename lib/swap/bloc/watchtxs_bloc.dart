@@ -6,6 +6,8 @@ import 'package:bb_mobile/_pkg/boltz/swap.dart';
 import 'package:bb_mobile/_pkg/error.dart';
 import 'package:bb_mobile/_pkg/wallet/transaction.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
+import 'package:bb_mobile/locator.dart';
+import 'package:bb_mobile/receive/bloc/receive_cubit.dart';
 import 'package:bb_mobile/swap/bloc/watchtxs_event.dart';
 import 'package:bb_mobile/swap/bloc/watchtxs_state.dart';
 import 'package:bb_mobile/wallet/bloc/event.dart';
@@ -88,8 +90,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     }
     _boltzWatcher = watcher;
 
-    final (watcherTestnet, errTestnet) =
-        await _swapBoltz.initializeBoltzApi(true);
+    final (watcherTestnet, errTestnet) = await _swapBoltz.initializeBoltzApi(true);
     if (errTestnet != null) {
       emit(state.copyWith(errWatchingInvoice: errTestnet.message));
       return;
@@ -106,8 +107,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     final swapsToWatch = <SwapTx>[];
     for (final walletBloc in walletBlocs) {
       final wallet = walletBloc.state.wallet!;
-      for (final swapTx in wallet.swapsToProcess())
-        add(ProcessSwapTx(walletId: wallet.id, swapTx: swapTx));
+      for (final swapTx in wallet.swapsToProcess()) add(ProcessSwapTx(walletId: wallet.id, swapTx: swapTx));
       swapsToWatch.addAll(wallet.swaps);
     }
     swapsToWatch.removeWhere((_) => _.failed());
@@ -137,8 +137,7 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
     if (_boltzWatcher == null && _boltzApiTestnet == null) {
       emit(
         state.copyWith(
-          errWatchingInvoice:
-              'Watcher not initialized. Re-initializing. Try Again.',
+          errWatchingInvoice: 'Watcher not initialized. Re-initializing. Try Again.',
         ),
       );
 
@@ -177,9 +176,15 @@ class WatchTxsBloc extends Bloc<WatchTxsEvent, WatchTxsState> {
         final id = swapId;
         print('SwapStatusUpdate: $id - ${status.status}');
         if (!state.isListeningId(id)) return;
-        final swapTx = walletBloc.state.wallet!
-            .getOngoingSwap(id)!
-            .copyWith(status: status);
+        final swapTx = walletBloc.state.wallet!.getOngoingSwap(id)!.copyWith(status: status);
+
+        if (locator.isRegistered<ReceiveCubit>()) {
+          final rcvCubit = locator<ReceiveCubit>();
+          if (rcvCubit.state.receiveSwapId == id) {
+            print('updated Receive cubit status');
+            rcvCubit.emit(rcvCubit.state.copyWith(receiveSwapStatus: rcvCubit.state.receiveSwapStatus));
+          }
+        }
 
         add(
           ProcessSwapTx(

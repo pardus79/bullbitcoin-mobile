@@ -2,6 +2,7 @@ import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
+import 'package:boltz_dart/boltz_dart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
@@ -29,8 +30,8 @@ class ReceiveState with _$ReceiveState {
     int? updateAddressGap,
     @Default(false) bool switchToSecure,
     @Default(false) bool switchToInstant,
-
-    // required SwapCubit swapBloc,
+    String? receiveSwapId,
+    SwapStatus? receiveSwapStatus,
   }) = _ReceiveState;
   const ReceiveState._();
 
@@ -71,8 +72,7 @@ class ReceiveState with _$ReceiveState {
 
   bool showQR(SwapTx? swapTx) {
     return (swapTx != null && paymentNetwork == ReceivePaymentNetwork.lightning) ||
-        (paymentNetwork == ReceivePaymentNetwork.bitcoin ||
-            paymentNetwork == ReceivePaymentNetwork.liquid);
+        (paymentNetwork == ReceivePaymentNetwork.bitcoin || paymentNetwork == ReceivePaymentNetwork.liquid);
   }
 
   bool isLn() => paymentNetwork == ReceivePaymentNetwork.lightning;

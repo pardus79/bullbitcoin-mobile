@@ -21,6 +21,10 @@ class ReceiveCubit extends Cubit<ReceiveState> {
   final WalletAddress _walletAddress;
   final WalletsStorageRepository _walletsStorageRepository;
 
+  void updateReceiveSwapId(String swapId) {
+    emit(state.copyWith(receiveSwapId: swapId));
+  }
+
   void updateWalletBloc(WalletBloc walletBloc) {
     emit(
       state.copyWith(
@@ -32,8 +36,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       ),
     );
 
-    if (state.paymentNetwork == ReceivePaymentNetwork.lightning)
-      emit(state.copyWith(defaultAddress: null));
+    if (state.paymentNetwork == ReceivePaymentNetwork.lightning) emit(state.copyWith(defaultAddress: null));
 
     final watchOnly = walletBloc.state.wallet!.watchOnly();
     if (watchOnly) emit(state.copyWith(paymentNetwork: ReceivePaymentNetwork.bitcoin));
@@ -58,13 +61,11 @@ class ReceiveCubit extends Cubit<ReceiveState> {
 
     emit(state.copyWith(paymentNetwork: selectedPaymentNetwork));
 
-    if (selectedPaymentNetwork == ReceivePaymentNetwork.lightning)
-      emit(state.copyWith(defaultAddress: null));
+    if (selectedPaymentNetwork == ReceivePaymentNetwork.lightning) emit(state.copyWith(defaultAddress: null));
 
     if (selectedPaymentNetwork != ReceivePaymentNetwork.bitcoin) loadAddress();
 
-    if (currentPayNetwork != ReceivePaymentNetwork.bitcoin &&
-        selectedPaymentNetwork == ReceivePaymentNetwork.bitcoin) {
+    if (currentPayNetwork != ReceivePaymentNetwork.bitcoin && selectedPaymentNetwork == ReceivePaymentNetwork.bitcoin) {
       emit(state.copyWith(switchToSecure: true));
       return;
     }
@@ -75,8 +76,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       return;
     }
 
-    if (currentPayNetwork != ReceivePaymentNetwork.liquid &&
-        selectedPaymentNetwork == ReceivePaymentNetwork.liquid) {
+    if (currentPayNetwork != ReceivePaymentNetwork.liquid && selectedPaymentNetwork == ReceivePaymentNetwork.liquid) {
       emit(state.copyWith(switchToInstant: true));
       return;
     }
