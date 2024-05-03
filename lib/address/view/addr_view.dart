@@ -44,7 +44,7 @@ class AddressView extends StatelessWidget {
               Text(address?.kind.name ?? ''),
               const SizedBox(height: 8),
               const Text('Status'),
-              Text(address?.state.name ?? ''),
+              Text(address?.status.name ?? ''),
               const SizedBox(height: 8),
               const Text('Type'),
               Text(address?.type.name ?? ''),

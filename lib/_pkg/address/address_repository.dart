@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
+import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
+import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -12,13 +14,25 @@ class AddressRepository {
   Isar isar;
   HiveStorage storage;
 
-  Future<(List<Address>?, dynamic)> listAddresses(Wallet wallet) async {
+  Future<(List<Address>?, dynamic)> listAddresses(String walletId) async {
     try {
-      final addrs = await isar.address.where().walletIdEqualTo(wallet.id).sortByIndex().findAll();
+      final addrs = await isar.address.where().walletIdEqualTo(walletId).sortByIndex().findAll();
+      int index = 0;
+      // TODO: Find better way
+      final ads = addrs.map((t) {
+        print(index++);
+        if (t.type == AddressType.Bitcoin) {
+          print(jsonEncode(t.toJson()));
+          return BitcoinAddress.fromJson(t.toJson());
+        } else if (t.type == AddressType.Liquid) {
+          return LiquidAddress.fromJson(t.toJson());
+        }
+        return t;
+      }).toList();
       // final (addrsStr, _) = await storage.getValue('address.${wallet.id}');
       // List<dynamic> addrsJson = jsonDecode(addrsStr!);
       // final addrs = addrsJson.map((adJson) => Address.fromJson(adJson)).toList();
-      return (addrs, null);
+      return (ads, null);
     } catch (e) {
       return (null, e);
     }
@@ -46,5 +60,17 @@ class AddressRepository {
     //List<Map<String, dynamic>> addressesJson = addresses.map((addr) => addr.toJson()).toList();
     //String encoded = jsonEncode(addressesJson);
     //await storage.saveValue(key: 'addr.${wallet.id}', value: encoded);
+  }
+
+  Future<Address> loadAddress(String walletid, String address) async {
+    final addresses = await isar.address.where().addressEqualTo(address).filter().walletIdEqualTo(walletid).findAll();
+    final addr = addresses.first;
+    if (addr.type == TxType.Bitcoin) {
+      print(jsonEncode(addr.toJson()));
+      return BitcoinAddress.fromJson(addr.toJson());
+    } else if (addr.type == TxType.Liquid) {
+      return LiquidAddress.fromJson(addr.toJson());
+    }
+    return addr;
   }
 }

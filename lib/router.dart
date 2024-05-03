@@ -46,21 +46,21 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
       },
       routes: <RouteBase>[
         GoRoute(
-            // TODO: Should be ideally '/wallet/{walletId}/tx/{txId}'
             path: 'tx/:txId',
             builder: (context, state) {
-              print(state.pathParameters);
               return TxPage(walletId: state.pathParameters['walletId'] ?? '', id: state.pathParameters['txId'] ?? '');
             }),
         GoRoute(
             path: 'address-list',
             builder: (context, state) {
-              return const AddressListPage();
+              return AddressListPage(walletId: state.pathParameters['walletId'] ?? '');
             }),
         GoRoute(
-            path: 'address',
+            path: 'address/:addressId',
             builder: (context, state) {
-              return const AddressPage();
+              return AddressPage(
+                  walletId: state.pathParameters['walletId'] ?? '', id: state.pathParameters['addressId'] ?? '');
+              //return const AddressPage();
             }),
         GoRoute(
           path: WalletSetupPage.route.split('/').last,

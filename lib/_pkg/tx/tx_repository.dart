@@ -62,7 +62,7 @@ class TxRepository {
     final txs = await isar.txs.where().idEqualTo(txid).filter().walletIdEqualTo(walletid).findAll();
     final tx = txs.first;
     if (tx.type == TxType.Bitcoin) {
-      print(jsonEncode(tx.toJson()));
+      // print(jsonEncode(tx.toJson()));
       return BitcoinTx.fromJson(tx.toJson());
     } else if (tx.type == TxType.Liquid) {
       return LiquidTx.fromJson(tx.toJson());

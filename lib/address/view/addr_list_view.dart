@@ -22,9 +22,9 @@ class _AddressListView extends State<AddressListView> {
   AddressKind selectedKind = AddressKind.deposit;
   @override
   Widget build(BuildContext context) {
-    final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet);
-    final depositAddresses = context.select((AddressBloc cubit) => cubit.state.depositAddresses);
-    final changeAddresses = context.select((AddressBloc cubit) => cubit.state.changeAddresses);
+    final wallet = context.select((WalletBloc bloc) => bloc.state.selectedWallet);
+    final depositAddresses = context.select((AddressBloc bloc) => bloc.state.depositAddresses);
+    final changeAddresses = context.select((AddressBloc bloc) => bloc.state.changeAddresses);
 
     print('selectedKind: ${selectedKind}');
 

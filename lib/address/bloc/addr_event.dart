@@ -3,8 +3,8 @@ part of 'addr_bloc.dart';
 class AddressEvent {}
 
 class LoadAddresses extends AddressEvent {
-  final Wallet wallet;
-  LoadAddresses({required this.wallet});
+  final String walletId;
+  LoadAddresses({required this.walletId});
 }
 
 class SyncAddresss extends AddressEvent {
@@ -17,6 +17,12 @@ class SyncAddresss extends AddressEvent {
 class SelectAddress extends AddressEvent {
   final Address address;
   SelectAddress({required this.address});
+}
+
+class LoadAddress extends AddressEvent {
+  final String walletId;
+  final String address;
+  LoadAddress({required this.walletId, required this.address});
 }
 
 class ChangeSelectedAddressKind extends AddressEvent {

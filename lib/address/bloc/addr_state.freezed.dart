@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AddressState {
   LoadStatus get status => throw _privateConstructorUsedError;
+  Wallet? get selectedWallet => throw _privateConstructorUsedError;
   List<Address> get depositAddresses => throw _privateConstructorUsedError;
   List<Address> get changeAddresses => throw _privateConstructorUsedError;
   Address? get selectedAddress => throw _privateConstructorUsedError;
@@ -36,6 +37,7 @@ abstract class $AddressStateCopyWith<$Res> {
   @useResult
   $Res call(
       {LoadStatus status,
+      Wallet? selectedWallet,
       List<Address> depositAddresses,
       List<Address> changeAddresses,
       Address? selectedAddress,
@@ -57,6 +59,7 @@ class _$AddressStateCopyWithImpl<$Res, $Val extends AddressState>
   @override
   $Res call({
     Object? status = null,
+    Object? selectedWallet = freezed,
     Object? depositAddresses = null,
     Object? changeAddresses = null,
     Object? selectedAddress = freezed,
@@ -68,6 +71,10 @@ class _$AddressStateCopyWithImpl<$Res, $Val extends AddressState>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as LoadStatus,
+      selectedWallet: freezed == selectedWallet
+          ? _value.selectedWallet
+          : selectedWallet // ignore: cast_nullable_to_non_nullable
+              as Wallet?,
       depositAddresses: null == depositAddresses
           ? _value.depositAddresses
           : depositAddresses // ignore: cast_nullable_to_non_nullable
@@ -102,6 +109,7 @@ abstract class _$$AddressStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {LoadStatus status,
+      Wallet? selectedWallet,
       List<Address> depositAddresses,
       List<Address> changeAddresses,
       Address? selectedAddress,
@@ -121,6 +129,7 @@ class __$$AddressStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? selectedWallet = freezed,
     Object? depositAddresses = null,
     Object? changeAddresses = null,
     Object? selectedAddress = freezed,
@@ -132,6 +141,10 @@ class __$$AddressStateImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as LoadStatus,
+      selectedWallet: freezed == selectedWallet
+          ? _value.selectedWallet
+          : selectedWallet // ignore: cast_nullable_to_non_nullable
+              as Wallet?,
       depositAddresses: null == depositAddresses
           ? _value._depositAddresses
           : depositAddresses // ignore: cast_nullable_to_non_nullable
@@ -161,6 +174,7 @@ class __$$AddressStateImplCopyWithImpl<$Res>
 class _$AddressStateImpl implements _AddressState {
   const _$AddressStateImpl(
       {this.status = LoadStatus.initial,
+      this.selectedWallet = null,
       final List<Address> depositAddresses = const [],
       final List<Address> changeAddresses = const [],
       this.selectedAddress = null,
@@ -172,6 +186,9 @@ class _$AddressStateImpl implements _AddressState {
   @override
   @JsonKey()
   final LoadStatus status;
+  @override
+  @JsonKey()
+  final Wallet? selectedWallet;
   final List<Address> _depositAddresses;
   @override
   @JsonKey()
@@ -203,7 +220,7 @@ class _$AddressStateImpl implements _AddressState {
 
   @override
   String toString() {
-    return 'AddressState(status: $status, depositAddresses: $depositAddresses, changeAddresses: $changeAddresses, selectedAddress: $selectedAddress, selectedAddressKind: $selectedAddressKind, error: $error)';
+    return 'AddressState(status: $status, selectedWallet: $selectedWallet, depositAddresses: $depositAddresses, changeAddresses: $changeAddresses, selectedAddress: $selectedAddress, selectedAddressKind: $selectedAddressKind, error: $error)';
   }
 
   @override
@@ -212,6 +229,8 @@ class _$AddressStateImpl implements _AddressState {
         (other.runtimeType == runtimeType &&
             other is _$AddressStateImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.selectedWallet, selectedWallet) ||
+                other.selectedWallet == selectedWallet) &&
             const DeepCollectionEquality()
                 .equals(other._depositAddresses, _depositAddresses) &&
             const DeepCollectionEquality()
@@ -227,6 +246,7 @@ class _$AddressStateImpl implements _AddressState {
   int get hashCode => Object.hash(
       runtimeType,
       status,
+      selectedWallet,
       const DeepCollectionEquality().hash(_depositAddresses),
       const DeepCollectionEquality().hash(_changeAddresses),
       selectedAddress,
@@ -243,6 +263,7 @@ class _$AddressStateImpl implements _AddressState {
 abstract class _AddressState implements AddressState {
   const factory _AddressState(
       {final LoadStatus status,
+      final Wallet? selectedWallet,
       final List<Address> depositAddresses,
       final List<Address> changeAddresses,
       final Address? selectedAddress,
@@ -251,6 +272,8 @@ abstract class _AddressState implements AddressState {
 
   @override
   LoadStatus get status;
+  @override
+  Wallet? get selectedWallet;
   @override
   List<Address> get depositAddresses;
   @override

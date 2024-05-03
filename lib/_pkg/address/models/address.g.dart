@@ -58,11 +58,11 @@ const AddressSchema = CollectionSchema(
       name: r'spendable',
       type: IsarType.bool,
     ),
-    r'state': PropertySchema(
+    r'status': PropertySchema(
       id: 8,
-      name: r'state',
+      name: r'status',
       type: IsarType.byte,
-      enumMap: _AddressstateEnumValueMap,
+      enumMap: _AddressstatusEnumValueMap,
     ),
     r'txCount': PropertySchema(
       id: 9,
@@ -131,14 +131,14 @@ const AddressSchema = CollectionSchema(
         )
       ],
     ),
-    r'state': IndexSchema(
-      id: 7917036384617311412,
-      name: r'state',
+    r'status': IndexSchema(
+      id: -107785170620420283,
+      name: r'status',
       unique: false,
       replace: false,
       properties: [
         IndexPropertySchema(
-          name: r'state',
+          name: r'status',
           type: IndexType.value,
           caseSensitive: false,
         )
@@ -224,7 +224,7 @@ void _addressSerialize(
   writer.writeStringList(offsets[5], object.receiveTxIds);
   writer.writeStringList(offsets[6], object.sendTxIds);
   writer.writeBool(offsets[7], object.spendable);
-  writer.writeByte(offsets[8], object.state.index);
+  writer.writeByte(offsets[8], object.status.index);
   writer.writeLong(offsets[9], object.txCount);
   writer.writeStringList(offsets[10], object.txIds);
   writer.writeByte(offsets[11], object.type.index);
@@ -248,8 +248,9 @@ Address _addressDeserialize(
   object.receiveTxIds = reader.readStringList(offsets[5]) ?? [];
   object.sendTxIds = reader.readStringList(offsets[6]) ?? [];
   object.spendable = reader.readBool(offsets[7]);
-  object.state = _AddressstateValueEnumMap[reader.readByteOrNull(offsets[8])] ??
-      AddressStatus.unused;
+  object.status =
+      _AddressstatusValueEnumMap[reader.readByteOrNull(offsets[8])] ??
+          AddressStatus.unused;
   object.txCount = reader.readLong(offsets[9]);
   object.txIds = reader.readStringList(offsets[10]) ?? [];
   object.type = _AddresstypeValueEnumMap[reader.readByteOrNull(offsets[11])] ??
@@ -283,7 +284,7 @@ P _addressDeserializeProp<P>(
     case 7:
       return (reader.readBool(offset)) as P;
     case 8:
-      return (_AddressstateValueEnumMap[reader.readByteOrNull(offset)] ??
+      return (_AddressstatusValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressStatus.unused) as P;
     case 9:
       return (reader.readLong(offset)) as P;
@@ -311,13 +312,13 @@ const _AddresskindValueEnumMap = {
   2: AddressKind.external,
   3: AddressKind.confidential,
 };
-const _AddressstateEnumValueMap = {
+const _AddressstatusEnumValueMap = {
   'unused': 0,
   'active': 1,
   'used': 2,
   'copied': 3,
 };
-const _AddressstateValueEnumMap = {
+const _AddressstatusValueEnumMap = {
   0: AddressStatus.unused,
   1: AddressStatus.active,
   2: AddressStatus.used,
@@ -371,10 +372,10 @@ extension AddressQueryWhereSort on QueryBuilder<Address, Address, QWhere> {
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhere> anyState() {
+  QueryBuilder<Address, Address, QAfterWhere> anyStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'state'),
+        const IndexWhereClause.any(indexName: r'status'),
       );
     });
   }
@@ -670,91 +671,91 @@ extension AddressQueryWhere on QueryBuilder<Address, Address, QWhereClause> {
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhereClause> stateEqualTo(
-      AddressStatus state) {
+  QueryBuilder<Address, Address, QAfterWhereClause> statusEqualTo(
+      AddressStatus status) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'state',
-        value: [state],
+        indexName: r'status',
+        value: [status],
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhereClause> stateNotEqualTo(
-      AddressStatus state) {
+  QueryBuilder<Address, Address, QAfterWhereClause> statusNotEqualTo(
+      AddressStatus status) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'state',
+              indexName: r'status',
               lower: [],
-              upper: [state],
+              upper: [status],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'state',
-              lower: [state],
+              indexName: r'status',
+              lower: [status],
               includeLower: false,
               upper: [],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'state',
-              lower: [state],
+              indexName: r'status',
+              lower: [status],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'state',
+              indexName: r'status',
               lower: [],
-              upper: [state],
+              upper: [status],
               includeUpper: false,
             ));
       }
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhereClause> stateGreaterThan(
-    AddressStatus state, {
+  QueryBuilder<Address, Address, QAfterWhereClause> statusGreaterThan(
+    AddressStatus status, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'state',
-        lower: [state],
+        indexName: r'status',
+        lower: [status],
         includeLower: include,
         upper: [],
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhereClause> stateLessThan(
-    AddressStatus state, {
+  QueryBuilder<Address, Address, QAfterWhereClause> statusLessThan(
+    AddressStatus status, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'state',
+        indexName: r'status',
         lower: [],
-        upper: [state],
+        upper: [status],
         includeUpper: include,
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterWhereClause> stateBetween(
-    AddressStatus lowerState,
-    AddressStatus upperState, {
+  QueryBuilder<Address, Address, QAfterWhereClause> statusBetween(
+    AddressStatus lowerStatus,
+    AddressStatus upperStatus, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'state',
-        lower: [lowerState],
+        indexName: r'status',
+        lower: [lowerStatus],
         includeLower: includeLower,
-        upper: [upperState],
+        upper: [upperStatus],
         includeUpper: includeUpper,
       ));
     });
@@ -1836,43 +1837,43 @@ extension AddressQueryFilter
     });
   }
 
-  QueryBuilder<Address, Address, QAfterFilterCondition> stateEqualTo(
+  QueryBuilder<Address, Address, QAfterFilterCondition> statusEqualTo(
       AddressStatus value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'state',
+        property: r'status',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterFilterCondition> stateGreaterThan(
+  QueryBuilder<Address, Address, QAfterFilterCondition> statusGreaterThan(
     AddressStatus value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'state',
+        property: r'status',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterFilterCondition> stateLessThan(
+  QueryBuilder<Address, Address, QAfterFilterCondition> statusLessThan(
     AddressStatus value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'state',
+        property: r'status',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Address, Address, QAfterFilterCondition> stateBetween(
+  QueryBuilder<Address, Address, QAfterFilterCondition> statusBetween(
     AddressStatus lower,
     AddressStatus upper, {
     bool includeLower = true,
@@ -1880,7 +1881,7 @@ extension AddressQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'state',
+        property: r'status',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2408,15 +2409,15 @@ extension AddressQuerySortBy on QueryBuilder<Address, Address, QSortBy> {
     });
   }
 
-  QueryBuilder<Address, Address, QAfterSortBy> sortByState() {
+  QueryBuilder<Address, Address, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.asc);
+      return query.addSortBy(r'status', Sort.asc);
     });
   }
 
-  QueryBuilder<Address, Address, QAfterSortBy> sortByStateDesc() {
+  QueryBuilder<Address, Address, QAfterSortBy> sortByStatusDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.desc);
+      return query.addSortBy(r'status', Sort.desc);
     });
   }
 
@@ -2531,15 +2532,15 @@ extension AddressQuerySortThenBy
     });
   }
 
-  QueryBuilder<Address, Address, QAfterSortBy> thenByState() {
+  QueryBuilder<Address, Address, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.asc);
+      return query.addSortBy(r'status', Sort.asc);
     });
   }
 
-  QueryBuilder<Address, Address, QAfterSortBy> thenByStateDesc() {
+  QueryBuilder<Address, Address, QAfterSortBy> thenByStatusDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'state', Sort.desc);
+      return query.addSortBy(r'status', Sort.desc);
     });
   }
 
@@ -2631,9 +2632,9 @@ extension AddressQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Address, Address, QDistinct> distinctByState() {
+  QueryBuilder<Address, Address, QDistinct> distinctByStatus() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'state');
+      return query.addDistinctBy(r'status');
     });
   }
 
@@ -2719,9 +2720,9 @@ extension AddressQueryProperty
     });
   }
 
-  QueryBuilder<Address, AddressStatus, QQueryOperations> stateProperty() {
+  QueryBuilder<Address, AddressStatus, QQueryOperations> statusProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'state');
+      return query.addPropertyName(r'status');
     });
   }
 

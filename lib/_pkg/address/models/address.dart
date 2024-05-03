@@ -26,7 +26,7 @@ class Address {
 
   @Index()
   @Enumerated(EnumType.ordinal)
-  AddressStatus state = AddressStatus.unused;
+  AddressStatus status = AddressStatus.unused;
 
   @Enumerated(EnumType.ordinal)
   AddressType type = AddressType.Bitcoin;
@@ -58,7 +58,7 @@ class Address {
       'address': address,
       'index': index,
       'kind': kind.toString().split('.').last,
-      'state': state.toString().split('.').last,
+      'status': status.toString().split('.').last,
       'type': type.toString().split('.').last,
       'balance': balance,
       'spendable': spendable,
