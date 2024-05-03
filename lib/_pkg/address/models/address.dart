@@ -44,6 +44,9 @@ class Address {
   List<String> sendTxIds = [];
 
   @Index()
+  bool frozen = false;
+
+  @Index()
   String walletId = '';
 
   Map<String, dynamic> toJson() {
@@ -67,6 +70,7 @@ class Address {
       'txIds': txIds,
       'receiveTxIds': receiveTxIds,
       'sendTxIds': sendTxIds,
+      'frozen': frozen,
       'walletId': walletId,
     };
   }

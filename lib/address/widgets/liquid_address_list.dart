@@ -8,9 +8,11 @@ import 'package:go_router/go_router.dart';
 class LiquidAddressList extends StatelessWidget {
   const LiquidAddressList({
     super.key,
+    required this.walletId,
     required this.addresses,
   });
 
+  final String walletId;
   final List<LiquidAddress> addresses;
 
   @override
@@ -26,8 +28,7 @@ class LiquidAddressList extends StatelessWidget {
           trailing: const Icon(Icons.chevron_right),
           onTap: () {
             print('AddressList: addr: $addr');
-            context.read<AddressBloc>().add(SelectAddress(address: addr));
-            // GoRouter.of(context).push('/wallet/address');
+            GoRouter.of(context).push('/wallet/$walletId/address/${addr.address}');
           },
         );
       },

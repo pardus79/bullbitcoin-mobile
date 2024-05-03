@@ -34,6 +34,7 @@ mixin _$LiquidAddress {
   List<String> get txIds => throw _privateConstructorUsedError;
   List<String> get receiveTxIds => throw _privateConstructorUsedError;
   List<String> get sendTxIds => throw _privateConstructorUsedError;
+  bool get frozen => throw _privateConstructorUsedError;
   String get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -62,6 +63,7 @@ abstract class $LiquidAddressCopyWith<$Res> {
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
+      bool frozen,
       String walletId});
 }
 
@@ -91,6 +93,7 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
+    Object? frozen = null,
     Object? walletId = null,
   }) {
     return _then(_value.copyWith(
@@ -146,6 +149,10 @@ class _$LiquidAddressCopyWithImpl<$Res, $Val extends LiquidAddress>
           ? _value.sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      frozen: null == frozen
+          ? _value.frozen
+          : frozen // ignore: cast_nullable_to_non_nullable
+              as bool,
       walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -176,6 +183,7 @@ abstract class _$$LiquidAddressImplCopyWith<$Res>
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
+      bool frozen,
       String walletId});
 }
 
@@ -203,6 +211,7 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
+    Object? frozen = null,
     Object? walletId = null,
   }) {
     return _then(_$LiquidAddressImpl(
@@ -258,6 +267,10 @@ class __$$LiquidAddressImplCopyWithImpl<$Res>
           ? _value._sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      frozen: null == frozen
+          ? _value.frozen
+          : frozen // ignore: cast_nullable_to_non_nullable
+              as bool,
       walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -283,6 +296,7 @@ class _$LiquidAddressImpl extends _LiquidAddress {
       final List<String> txIds = const [],
       final List<String> receiveTxIds = const [],
       final List<String> sendTxIds = const [],
+      this.frozen = false,
       required this.walletId})
       : _labels = labels,
         _txIds = txIds,
@@ -354,11 +368,14 @@ class _$LiquidAddressImpl extends _LiquidAddress {
   }
 
   @override
+  @JsonKey()
+  final bool frozen;
+  @override
   final String walletId;
 
   @override
   String toString() {
-    return 'LiquidAddress(address: $address, regularAddress: $regularAddress, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, walletId: $walletId)';
+    return 'LiquidAddress(address: $address, regularAddress: $regularAddress, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, frozen: $frozen, walletId: $walletId)';
   }
 
   @override
@@ -383,6 +400,7 @@ class _$LiquidAddressImpl extends _LiquidAddress {
                 .equals(other._receiveTxIds, _receiveTxIds) &&
             const DeepCollectionEquality()
                 .equals(other._sendTxIds, _sendTxIds) &&
+            (identical(other.frozen, frozen) || other.frozen == frozen) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -404,6 +422,7 @@ class _$LiquidAddressImpl extends _LiquidAddress {
       const DeepCollectionEquality().hash(_txIds),
       const DeepCollectionEquality().hash(_receiveTxIds),
       const DeepCollectionEquality().hash(_sendTxIds),
+      frozen,
       walletId);
 
   @JsonKey(ignore: true)
@@ -435,6 +454,7 @@ abstract class _LiquidAddress extends LiquidAddress {
       final List<String> txIds,
       final List<String> receiveTxIds,
       final List<String> sendTxIds,
+      final bool frozen,
       required final String walletId}) = _$LiquidAddressImpl;
   _LiquidAddress._() : super._();
 
@@ -467,6 +487,8 @@ abstract class _LiquidAddress extends LiquidAddress {
   List<String> get receiveTxIds;
   @override
   List<String> get sendTxIds;
+  @override
+  bool get frozen;
   @override
   String get walletId;
   @override

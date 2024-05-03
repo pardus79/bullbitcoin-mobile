@@ -32,6 +32,7 @@ _$LiquidAddressImpl _$$LiquidAddressImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      frozen: json['frozen'] as bool? ?? false,
       walletId: json['walletId'] as String,
     )..isarId = json['isarId'] as int;
 
@@ -51,6 +52,7 @@ Map<String, dynamic> _$$LiquidAddressImplToJson(_$LiquidAddressImpl instance) =>
       'txIds': instance.txIds,
       'receiveTxIds': instance.receiveTxIds,
       'sendTxIds': instance.sendTxIds,
+      'frozen': instance.frozen,
       'walletId': instance.walletId,
     };
 

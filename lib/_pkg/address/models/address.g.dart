@@ -27,61 +27,66 @@ const AddressSchema = CollectionSchema(
       name: r'balance',
       type: IsarType.long,
     ),
-    r'index': PropertySchema(
+    r'frozen': PropertySchema(
       id: 2,
+      name: r'frozen',
+      type: IsarType.bool,
+    ),
+    r'index': PropertySchema(
+      id: 3,
       name: r'index',
       type: IsarType.long,
     ),
     r'kind': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'kind',
       type: IsarType.byte,
       enumMap: _AddresskindEnumValueMap,
     ),
     r'labels': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'labels',
       type: IsarType.stringList,
     ),
     r'receiveTxIds': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'receiveTxIds',
       type: IsarType.stringList,
     ),
     r'sendTxIds': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'sendTxIds',
       type: IsarType.stringList,
     ),
     r'spendable': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'spendable',
       type: IsarType.bool,
     ),
     r'status': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'status',
       type: IsarType.byte,
       enumMap: _AddressstatusEnumValueMap,
     ),
     r'txCount': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'txCount',
       type: IsarType.long,
     ),
     r'txIds': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'txIds',
       type: IsarType.stringList,
     ),
     r'type': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'type',
       type: IsarType.byte,
       enumMap: _AddresstypeEnumValueMap,
     ),
     r'walletId': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'walletId',
       type: IsarType.string,
     )
@@ -139,6 +144,19 @@ const AddressSchema = CollectionSchema(
       properties: [
         IndexPropertySchema(
           name: r'status',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    ),
+    r'frozen': IndexSchema(
+      id: -5701016416355378763,
+      name: r'frozen',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'frozen',
           type: IndexType.value,
           caseSensitive: false,
         )
@@ -218,17 +236,18 @@ void _addressSerialize(
 ) {
   writer.writeString(offsets[0], object.address);
   writer.writeLong(offsets[1], object.balance);
-  writer.writeLong(offsets[2], object.index);
-  writer.writeByte(offsets[3], object.kind.index);
-  writer.writeStringList(offsets[4], object.labels);
-  writer.writeStringList(offsets[5], object.receiveTxIds);
-  writer.writeStringList(offsets[6], object.sendTxIds);
-  writer.writeBool(offsets[7], object.spendable);
-  writer.writeByte(offsets[8], object.status.index);
-  writer.writeLong(offsets[9], object.txCount);
-  writer.writeStringList(offsets[10], object.txIds);
-  writer.writeByte(offsets[11], object.type.index);
-  writer.writeString(offsets[12], object.walletId);
+  writer.writeBool(offsets[2], object.frozen);
+  writer.writeLong(offsets[3], object.index);
+  writer.writeByte(offsets[4], object.kind.index);
+  writer.writeStringList(offsets[5], object.labels);
+  writer.writeStringList(offsets[6], object.receiveTxIds);
+  writer.writeStringList(offsets[7], object.sendTxIds);
+  writer.writeBool(offsets[8], object.spendable);
+  writer.writeByte(offsets[9], object.status.index);
+  writer.writeLong(offsets[10], object.txCount);
+  writer.writeStringList(offsets[11], object.txIds);
+  writer.writeByte(offsets[12], object.type.index);
+  writer.writeString(offsets[13], object.walletId);
 }
 
 Address _addressDeserialize(
@@ -240,22 +259,23 @@ Address _addressDeserialize(
   final object = Address();
   object.address = reader.readString(offsets[0]);
   object.balance = reader.readLong(offsets[1]);
-  object.index = reader.readLong(offsets[2]);
+  object.frozen = reader.readBool(offsets[2]);
+  object.index = reader.readLong(offsets[3]);
   object.isarId = id;
-  object.kind = _AddresskindValueEnumMap[reader.readByteOrNull(offsets[3])] ??
+  object.kind = _AddresskindValueEnumMap[reader.readByteOrNull(offsets[4])] ??
       AddressKind.deposit;
-  object.labels = reader.readStringList(offsets[4]);
-  object.receiveTxIds = reader.readStringList(offsets[5]) ?? [];
-  object.sendTxIds = reader.readStringList(offsets[6]) ?? [];
-  object.spendable = reader.readBool(offsets[7]);
+  object.labels = reader.readStringList(offsets[5]);
+  object.receiveTxIds = reader.readStringList(offsets[6]) ?? [];
+  object.sendTxIds = reader.readStringList(offsets[7]) ?? [];
+  object.spendable = reader.readBool(offsets[8]);
   object.status =
-      _AddressstatusValueEnumMap[reader.readByteOrNull(offsets[8])] ??
+      _AddressstatusValueEnumMap[reader.readByteOrNull(offsets[9])] ??
           AddressStatus.unused;
-  object.txCount = reader.readLong(offsets[9]);
-  object.txIds = reader.readStringList(offsets[10]) ?? [];
-  object.type = _AddresstypeValueEnumMap[reader.readByteOrNull(offsets[11])] ??
+  object.txCount = reader.readLong(offsets[10]);
+  object.txIds = reader.readStringList(offsets[11]) ?? [];
+  object.type = _AddresstypeValueEnumMap[reader.readByteOrNull(offsets[12])] ??
       AddressType.Bitcoin;
-  object.walletId = reader.readString(offsets[12]);
+  object.walletId = reader.readString(offsets[13]);
   return object;
 }
 
@@ -271,29 +291,31 @@ P _addressDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 3:
+      return (reader.readLong(offset)) as P;
+    case 4:
       return (_AddresskindValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressKind.deposit) as P;
-    case 4:
-      return (reader.readStringList(offset)) as P;
     case 5:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringList(offset)) as P;
     case 6:
       return (reader.readStringList(offset) ?? []) as P;
     case 7:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 8:
+      return (reader.readBool(offset)) as P;
+    case 9:
       return (_AddressstatusValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressStatus.unused) as P;
-    case 9:
-      return (reader.readLong(offset)) as P;
     case 10:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLong(offset)) as P;
     case 11:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 12:
       return (_AddresstypeValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressType.Bitcoin) as P;
-    case 12:
+    case 13:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -376,6 +398,14 @@ extension AddressQueryWhereSort on QueryBuilder<Address, Address, QWhere> {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'status'),
+      );
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterWhere> anyFrozen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'frozen'),
       );
     });
   }
@@ -761,6 +791,50 @@ extension AddressQueryWhere on QueryBuilder<Address, Address, QWhereClause> {
     });
   }
 
+  QueryBuilder<Address, Address, QAfterWhereClause> frozenEqualTo(bool frozen) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'frozen',
+        value: [frozen],
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterWhereClause> frozenNotEqualTo(
+      bool frozen) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'frozen',
+              lower: [],
+              upper: [frozen],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'frozen',
+              lower: [frozen],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'frozen',
+              lower: [frozen],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'frozen',
+              lower: [],
+              upper: [frozen],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
   QueryBuilder<Address, Address, QAfterWhereClause> walletIdEqualTo(
       String walletId) {
     return QueryBuilder.apply(this, (query) {
@@ -988,6 +1062,16 @@ extension AddressQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> frozenEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'frozen',
+        value: value,
       ));
     });
   }
@@ -2373,6 +2457,18 @@ extension AddressQuerySortBy on QueryBuilder<Address, Address, QSortBy> {
     });
   }
 
+  QueryBuilder<Address, Address, QAfterSortBy> sortByFrozen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frozen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterSortBy> sortByFrozenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frozen', Sort.desc);
+    });
+  }
+
   QueryBuilder<Address, Address, QAfterSortBy> sortByIndex() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'index', Sort.asc);
@@ -2481,6 +2577,18 @@ extension AddressQuerySortThenBy
   QueryBuilder<Address, Address, QAfterSortBy> thenByBalanceDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'balance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterSortBy> thenByFrozen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frozen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterSortBy> thenByFrozenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'frozen', Sort.desc);
     });
   }
 
@@ -2596,6 +2704,12 @@ extension AddressQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Address, Address, QDistinct> distinctByFrozen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'frozen');
+    });
+  }
+
   QueryBuilder<Address, Address, QDistinct> distinctByIndex() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'index');
@@ -2681,6 +2795,12 @@ extension AddressQueryProperty
   QueryBuilder<Address, int, QQueryOperations> balanceProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'balance');
+    });
+  }
+
+  QueryBuilder<Address, bool, QQueryOperations> frozenProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'frozen');
     });
   }
 

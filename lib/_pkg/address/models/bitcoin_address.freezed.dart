@@ -32,6 +32,7 @@ mixin _$BitcoinAddress {
   List<String> get txIds => throw _privateConstructorUsedError;
   List<String> get receiveTxIds => throw _privateConstructorUsedError;
   List<String> get sendTxIds => throw _privateConstructorUsedError;
+  bool get frozen => throw _privateConstructorUsedError;
   String get walletId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,6 +60,7 @@ abstract class $BitcoinAddressCopyWith<$Res> {
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
+      bool frozen,
       String walletId});
 }
 
@@ -87,6 +89,7 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
+    Object? frozen = null,
     Object? walletId = null,
   }) {
     return _then(_value.copyWith(
@@ -138,6 +141,10 @@ class _$BitcoinAddressCopyWithImpl<$Res, $Val extends BitcoinAddress>
           ? _value.sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      frozen: null == frozen
+          ? _value.frozen
+          : frozen // ignore: cast_nullable_to_non_nullable
+              as bool,
       walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -167,6 +174,7 @@ abstract class _$$BitcoinAddressImplCopyWith<$Res>
       List<String> txIds,
       List<String> receiveTxIds,
       List<String> sendTxIds,
+      bool frozen,
       String walletId});
 }
 
@@ -193,6 +201,7 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
     Object? txIds = null,
     Object? receiveTxIds = null,
     Object? sendTxIds = null,
+    Object? frozen = null,
     Object? walletId = null,
   }) {
     return _then(_$BitcoinAddressImpl(
@@ -244,6 +253,10 @@ class __$$BitcoinAddressImplCopyWithImpl<$Res>
           ? _value._sendTxIds
           : sendTxIds // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      frozen: null == frozen
+          ? _value.frozen
+          : frozen // ignore: cast_nullable_to_non_nullable
+              as bool,
       walletId: null == walletId
           ? _value.walletId
           : walletId // ignore: cast_nullable_to_non_nullable
@@ -268,6 +281,7 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       final List<String> txIds = const [],
       final List<String> receiveTxIds = const [],
       final List<String> sendTxIds = const [],
+      this.frozen = false,
       required this.walletId})
       : _labels = labels,
         _txIds = txIds,
@@ -336,11 +350,14 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
   }
 
   @override
+  @JsonKey()
+  final bool frozen;
+  @override
   final String walletId;
 
   @override
   String toString() {
-    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, walletId: $walletId)';
+    return 'BitcoinAddress(address: $address, index: $index, kind: $kind, status: $status, type: $type, balance: $balance, spendable: $spendable, labels: $labels, txCount: $txCount, txIds: $txIds, receiveTxIds: $receiveTxIds, sendTxIds: $sendTxIds, frozen: $frozen, walletId: $walletId)';
   }
 
   @override
@@ -363,6 +380,7 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
                 .equals(other._receiveTxIds, _receiveTxIds) &&
             const DeepCollectionEquality()
                 .equals(other._sendTxIds, _sendTxIds) &&
+            (identical(other.frozen, frozen) || other.frozen == frozen) &&
             (identical(other.walletId, walletId) ||
                 other.walletId == walletId));
   }
@@ -383,6 +401,7 @@ class _$BitcoinAddressImpl extends _BitcoinAddress {
       const DeepCollectionEquality().hash(_txIds),
       const DeepCollectionEquality().hash(_receiveTxIds),
       const DeepCollectionEquality().hash(_sendTxIds),
+      frozen,
       walletId);
 
   @JsonKey(ignore: true)
@@ -414,6 +433,7 @@ abstract class _BitcoinAddress extends BitcoinAddress {
       final List<String> txIds,
       final List<String> receiveTxIds,
       final List<String> sendTxIds,
+      final bool frozen,
       required final String walletId}) = _$BitcoinAddressImpl;
   _BitcoinAddress._() : super._();
 
@@ -444,6 +464,8 @@ abstract class _BitcoinAddress extends BitcoinAddress {
   List<String> get receiveTxIds;
   @override
   List<String> get sendTxIds;
+  @override
+  bool get frozen;
   @override
   String get walletId;
   @override

@@ -32,15 +32,17 @@ class _AddressListView extends State<AddressListView> {
     if (wallet?.type == WalletType.Bitcoin) {
       if (selectedKind == AddressKind.deposit) {
         print('loading with deposit addr');
-        listView = BitcoinAddressList(addresses: List<BitcoinAddress>.from(depositAddresses));
+        listView =
+            BitcoinAddressList(walletId: wallet?.id ?? '', addresses: List<BitcoinAddress>.from(depositAddresses));
       } else if (selectedKind == AddressKind.change) {
         print('loading with change addr');
-        listView = BitcoinAddressList(addresses: List<BitcoinAddress>.from(changeAddresses));
+        listView =
+            BitcoinAddressList(walletId: wallet?.id ?? '', addresses: List<BitcoinAddress>.from(changeAddresses));
       } else {
         listView = const Text('Unsupported address kind');
       }
     } else if (wallet?.type == WalletType.Liquid) {
-      listView = LiquidAddressList(addresses: List<LiquidAddress>.from(depositAddresses));
+      listView = LiquidAddressList(walletId: wallet?.id ?? '', addresses: List<LiquidAddress>.from(depositAddresses));
     } else {
       listView = const Text('Unsupported wallet type');
     }

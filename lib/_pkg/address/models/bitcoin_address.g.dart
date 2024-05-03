@@ -31,6 +31,7 @@ _$BitcoinAddressImpl _$$BitcoinAddressImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      frozen: json['frozen'] as bool? ?? false,
       walletId: json['walletId'] as String,
     )..isarId = json['isarId'] as int;
 
@@ -50,6 +51,7 @@ Map<String, dynamic> _$$BitcoinAddressImplToJson(
       'txIds': instance.txIds,
       'receiveTxIds': instance.receiveTxIds,
       'sendTxIds': instance.sendTxIds,
+      'frozen': instance.frozen,
       'walletId': instance.walletId,
     };
 
