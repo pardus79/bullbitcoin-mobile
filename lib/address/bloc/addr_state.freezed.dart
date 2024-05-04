@@ -171,7 +171,7 @@ class __$$AddressStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AddressStateImpl implements _AddressState {
+class _$AddressStateImpl extends _AddressState {
   const _$AddressStateImpl(
       {this.status = LoadStatus.initial,
       this.selectedWallet = null,
@@ -181,7 +181,8 @@ class _$AddressStateImpl implements _AddressState {
       this.selectedAddressKind = AddressKind.deposit,
       this.error = ''})
       : _depositAddresses = depositAddresses,
-        _changeAddresses = changeAddresses;
+        _changeAddresses = changeAddresses,
+        super._();
 
   @override
   @JsonKey()
@@ -260,7 +261,7 @@ class _$AddressStateImpl implements _AddressState {
       __$$AddressStateImplCopyWithImpl<_$AddressStateImpl>(this, _$identity);
 }
 
-abstract class _AddressState implements AddressState {
+abstract class _AddressState extends AddressState {
   const factory _AddressState(
       {final LoadStatus status,
       final Wallet? selectedWallet,
@@ -269,6 +270,7 @@ abstract class _AddressState implements AddressState {
       final Address? selectedAddress,
       final AddressKind selectedAddressKind,
       final String error}) = _$AddressStateImpl;
+  const _AddressState._() : super._();
 
   @override
   LoadStatus get status;

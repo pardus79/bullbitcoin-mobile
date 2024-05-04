@@ -7,6 +7,7 @@ part 'addr_state.freezed.dart';
 
 @freezed
 class AddressState with _$AddressState {
+  const AddressState._();
   const factory AddressState({
     @Default(LoadStatus.initial) LoadStatus status,
     @Default(null) Wallet? selectedWallet,
@@ -16,4 +17,9 @@ class AddressState with _$AddressState {
     @Default(AddressKind.deposit) AddressKind selectedAddressKind,
     @Default('') String error,
   }) = _AddressState;
+
+  // TODO: Find this and update in the Address model on sync
+  bool isMyAddress(String addr) {
+    return depositAddresses.any((a) => a.address == addr) || changeAddresses.any((a) => a.address == addr);
+  }
 }

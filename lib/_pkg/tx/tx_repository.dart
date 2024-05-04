@@ -5,6 +5,7 @@ import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:isar/isar.dart';
 
 class TxRepository {
@@ -13,9 +14,28 @@ class TxRepository {
   Isar isar;
   HiveStorage storage;
 
+  Future<(List<Tx>?, dynamic)> fetchLatestTxsAcrossWallets(int limit) async {
+    try {
+      final txs = await isar.txs.where().sortByTimestampDesc().limit(limit).findAll();
+
+      // TODO: Find better way
+      final ts = txs.map((t) {
+        if (t.type == TxType.Bitcoin) {
+          return BitcoinTx.fromJson(t.toJson());
+        } else if (t.type == TxType.Liquid) {
+          return LiquidTx.fromJson(t.toJson());
+        }
+        return t;
+      }).toList();
+      return (ts, null);
+    } catch (e) {
+      return (null, e);
+    }
+  }
+
   Future<(List<Tx>?, dynamic)> listTxs(Wallet wallet) async {
     try {
-      final txs = await isar.txs.where().walletIdEqualTo(wallet.id).sortByTimestamp().findAll();
+      final txs = await isar.txs.where().walletIdEqualTo(wallet.id).sortByTimestampDesc().findAll();
 
       // TODO: Find better way
       final ts = txs.map((t) {

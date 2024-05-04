@@ -1,26 +1,16 @@
 import 'package:bb_arch/_pkg/address/models/address.dart';
-import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
-import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
-import 'package:bb_arch/_pkg/misc.dart';
-import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
-import 'package:bb_arch/_pkg/tx/models/tx.dart';
-import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
-import 'package:bb_arch/address/widgets/bitcoin_address_list.dart';
-import 'package:bb_arch/address/widgets/liquid_address_list.dart';
-import 'package:bb_arch/tx/bloc/tx_bloc.dart';
-import 'package:bb_arch/tx/widgets/tx_list.dart';
-import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
-import 'package:bb_arch/wallet/widgets/wallet_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AddressView extends StatelessWidget {
-  const AddressView({super.key});
+  const AddressView({super.key, required this.walletId});
+
+  final String walletId;
 
   @override
   Widget build(BuildContext context) {
-    final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet);
     final address = context.select((AddressBloc cubit) => cubit.state.selectedAddress);
 
     return Scaffold(
@@ -30,7 +20,7 @@ class AddressView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -56,24 +46,10 @@ class AddressView extends StatelessWidget {
               Text(address?.txCount.toString() ?? ''),
               const SizedBox(height: 8),
               const Text('Receive Txs'),
-              ...(address?.receiveTxIds.map((txid) {
-                        return Column(children: [
-                          Text(txid),
-                          const SizedBox(height: 4),
-                        ]);
-                      }) ??
-                      [])
-                  .toList(),
+              ...(address?.receiveTxIds.map((txid) => TxRow(walletId: walletId, txid: txid)) ?? []),
               const SizedBox(height: 8),
               const Text('Spend Txs'),
-              ...(address?.sendTxIds.map((txid) {
-                        return Column(children: [
-                          Text(txid),
-                          const SizedBox(height: 4),
-                        ]);
-                      }) ??
-                      [])
-                  .toList(),
+              ...(address?.sendTxIds.map((txid) => TxRow(walletId: walletId, txid: txid)) ?? []),
               const SizedBox(height: 8),
             ],
           ),
@@ -81,6 +57,26 @@ class AddressView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
           tooltip: 'Load Tx', heroTag: 'loadTx', onPressed: () {}, child: const Icon(Icons.front_loader)),
+    );
+  }
+}
+
+class TxRow extends StatelessWidget {
+  const TxRow({super.key, required this.walletId, required this.txid});
+
+  final String walletId;
+  final String txid;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextButton(
+        child: Text(txid),
+        onPressed: () {
+          GoRouter.of(context).push('/wallet/$walletId/tx/$txid');
+        },
+      ),
     );
   }
 }

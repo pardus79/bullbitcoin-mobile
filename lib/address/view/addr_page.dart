@@ -29,11 +29,11 @@ class AddressPage extends StatelessWidget {
             Widget addrView;
             Address? addr = state.selectedAddress;
             if (addr?.type == AddressType.Bitcoin) {
-              addrView = const AddressView();
+              addrView = AddressView(walletId: walletId);
             } else if (addr?.type == AddressType.Liquid) {
-              addrView = const AddressView();
+              addrView = AddressView(walletId: walletId);
             } else {
-              addrView = const Text('Unsupported Tx type');
+              addrView = const Text('Unsupported Address type');
             }
             return addrView;
           },

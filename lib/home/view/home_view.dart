@@ -4,6 +4,7 @@ import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/settings/view/settings_page.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
+import 'package:bb_arch/tx/widgets/tx_list.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/widgets/wallets_list.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,8 @@ class _HomeViewState extends State<HomeView> {
     final loadStatus = context.select((WalletBloc cubit) => cubit.state.status);
     final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
     final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
+    final txsStatus = context.select((TxBloc cubit) => cubit.state.status);
+    final txs = context.select((TxBloc cubit) => cubit.state.txs);
 
     print('HomeView.build: $loadStatus');
 
@@ -50,15 +53,27 @@ class _HomeViewState extends State<HomeView> {
               }),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: WalletList(wallets: wallets, syncStatus: syncStatus),
+          ),
+          Container(
+            color: Colors.grey,
+            height: 4,
+          ),
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: WalletList(wallets: wallets, syncStatus: syncStatus),
+              child: txsStatus == LoadStatus.loading
+                  ? const CircularProgressIndicator()
+                  : TxList(
+                      txs: txs,
+                    ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

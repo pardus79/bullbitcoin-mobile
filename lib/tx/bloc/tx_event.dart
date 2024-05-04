@@ -2,6 +2,11 @@ part of 'tx_bloc.dart';
 
 class TxEvent {}
 
+class FetchLatestTxsAcrossWallets extends TxEvent {
+  final int limit;
+  FetchLatestTxsAcrossWallets({required this.limit});
+}
+
 class LoadTxs extends TxEvent {
   final Wallet wallet;
   LoadTxs({required this.wallet});

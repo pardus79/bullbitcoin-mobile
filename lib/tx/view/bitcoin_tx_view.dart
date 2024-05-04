@@ -2,12 +2,14 @@ import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/address/bloc/addr_bloc.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/tx/widgets/tx_list.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/widgets/wallet_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class BitcoinTxView extends StatelessWidget {
   const BitcoinTxView({super.key});
@@ -54,16 +56,36 @@ class BitcoinTxView extends StatelessWidget {
                 }).toList(),
               const SizedBox(height: 8),
               const Text('Outputs'),
-              if (tx is BitcoinTx)
-                ...tx.outputs.map((e) {
-                  return Text('- ${e.address}');
-                }).toList(),
+              if (tx is BitcoinTx) ...tx.outputs.map((e) => AddressRow(walletId: tx.walletId ?? '', address: e.address))
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
           tooltip: 'Load Tx', heroTag: 'loadTx', onPressed: () {}, child: const Icon(Icons.front_loader)),
+    );
+  }
+}
+
+class AddressRow extends StatelessWidget {
+  const AddressRow({super.key, required this.walletId, required this.address});
+
+  final String walletId;
+  final String address;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMyAddress = context.select((AddressBloc bloc) => bloc.state.isMyAddress(address));
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: isMyAddress
+          ? TextButton(
+              child: Text(' - $address'),
+              onPressed: () {
+                GoRouter.of(context).push('/wallet/$walletId/address/$address');
+              },
+            )
+          : Text(' - $address'),
     );
   }
 }
