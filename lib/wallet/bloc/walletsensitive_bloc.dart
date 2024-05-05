@@ -36,7 +36,7 @@ class WalletSensitiveBloc extends Bloc<WalletSensitiveEvent, WalletSensitiveStat
   }
 
   void _onPersistSeed(PersistSeed event, Emitter<WalletSensitiveState> emit) async {
-    await seedRepository.persistSeed(seedRepository.seed!);
+    await seedRepository.persistSeed(event.seed);
   }
 
   void _onDeriveWalletFromStoredSeed(DeriveWalletFromStoredSeed event, Emitter<WalletSensitiveState> emit) async {

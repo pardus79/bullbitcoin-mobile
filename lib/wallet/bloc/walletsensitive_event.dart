@@ -10,4 +10,7 @@ class DeriveWalletFromStoredSeed extends WalletSensitiveEvent {
 
 class CreateNewSeed extends WalletSensitiveEvent {}
 
-class PersistSeed extends WalletSensitiveEvent {}
+class PersistSeed extends WalletSensitiveEvent {
+  final Seed seed;
+  PersistSeed({required this.seed});
+}

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
@@ -11,7 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class WalletTypeSelectionView extends StatelessWidget {
-  const WalletTypeSelectionView({super.key});
+  const WalletTypeSelectionView({super.key, required this.seed});
+
+  final Seed seed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class WalletTypeSelectionView extends StatelessWidget {
                 child: const Text('Import'),
                 onPressed: () async {
                   print('Import $index wallet type');
-                  context.read<WalletSensitiveBloc>().add(PersistSeed());
+                  context.read<WalletSensitiveBloc>().add(PersistSeed(seed: seed));
                   if (w is BitcoinWallet) {
                     BitcoinWallet w = wallets[index] as BitcoinWallet;
                     context

@@ -50,7 +50,7 @@ class WalletTypeSelectionPage extends StatelessWidget {
                         WalletSensitiveBloc(walletRepository: walletRepository, seedRepository: seedRepository)
                           ..add(DeriveWalletFromStoredSeed(seed: seed, walletName: walletName))),
               ],
-              child: const WalletTypeSelectionView(),
+              child: WalletTypeSelectionView(seed: seed),
             );
           } else {
             return const Center(child: CircularProgressIndicator());
