@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 class LiquidWalletHelper {
   static Future<List<LiquidWallet>> initializeAllWallets(Seed seed,
-      {List<BitcoinScriptType> bipPath = const [
+      {List<BitcoinScriptType> scriptType = const [
         BitcoinScriptType.bip44,
         BitcoinScriptType.bip49,
         BitcoinScriptType.bip84,
@@ -23,7 +23,7 @@ class LiquidWalletHelper {
         network: seed.network,
         importType: ImportTypes.words12,
         seedFingerprint: seed.fingerprint,
-        bipPath: bipPath.first);
+        scriptType: scriptType.first);
 
     final loadedWallet = await loadNativeSdk(wallet, seed);
 

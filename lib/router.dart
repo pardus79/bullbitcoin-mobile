@@ -70,7 +70,13 @@ final GoRouter router = GoRouter(navigatorKey: navigatorKey, initialLocation: '/
             GoRoute(
                 path: WalletTypeSelectionPage.route.split('/').last,
                 builder: (context, state) {
-                  return const WalletTypeSelectionPage();
+                  final q = state.uri.queryParameters;
+                  return WalletTypeSelectionPage(
+                    mnemonic: q[WalletTypeSelectionPage.routeQParamMnemonic] ?? '',
+                    passphrase: q[WalletTypeSelectionPage.routeQParamPassphrase] ?? '',
+                    walletName: q[WalletTypeSelectionPage.routeQParamWalletName] ?? '',
+                    walletType: q[WalletTypeSelectionPage.routeQParamWalletType] ?? '',
+                  );
                 }),
           ],
         ),

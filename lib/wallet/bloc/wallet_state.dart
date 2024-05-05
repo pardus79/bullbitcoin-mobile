@@ -10,6 +10,7 @@ class WalletState with _$WalletState {
     @Default(LoadStatus.initial) LoadStatus status,
     @Default([]) List<LoadStatus> syncWalletStatus,
     @Default([]) List<Wallet> wallets,
+    // TODO: Will be a problem, if at all a future requirement needs user to work with multiple wallets at a time.
     @Default(null) Wallet? selectedWallet,
     @Default('') String error,
   }) = _WalletState;

@@ -19,7 +19,7 @@ class BitcoinWallet extends Wallet with _$BitcoinWallet {
     required WalletType type,
     required NetworkType network,
     required String seedFingerprint,
-    @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
+    @Default(BitcoinScriptType.bip84) BitcoinScriptType scriptType,
     @Default(false) bool backupTested,
     DateTime? lastBackupTested,
     DateTime? lastSync,

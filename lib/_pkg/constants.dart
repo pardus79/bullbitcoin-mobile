@@ -4,3 +4,5 @@ const btcElectrumTimeout = 5;
 const btcElectrumRetry = 5;
 const btcElectrumValidateDomain = true;
 const liquidElectrumUrl = 'blockstream.info:465';
+
+const WALLET_SYNC_INTERVAL_MINS = 10;

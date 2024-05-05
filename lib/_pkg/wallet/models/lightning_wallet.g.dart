@@ -18,8 +18,8 @@ _$LightningWalletImpl _$$LightningWalletImplFromJson(
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       seedFingerprint: json['seedFingerprint'] as String,
-      bipPath:
-          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
+      scriptType:
+          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['scriptType']) ??
               BitcoinScriptType.bip84,
       lastSync: json['lastSync'] == null
           ? null
@@ -45,7 +45,7 @@ Map<String, dynamic> _$$LightningWalletImplToJson(
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'seedFingerprint': instance.seedFingerprint,
-      'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
+      'scriptType': _$BitcoinScriptTypeEnumMap[instance.scriptType]!,
       'lastSync': instance.lastSync?.toIso8601String(),
       'importType': _$ImportTypesEnumMap[instance.importType]!,
     };

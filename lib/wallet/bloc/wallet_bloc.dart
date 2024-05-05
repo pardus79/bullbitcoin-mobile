@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:bb_arch/_pkg/constants.dart';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
@@ -28,7 +29,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<SelectWallet>(_onSelectWallet);
     on<PersistWallet>(_onPersistWallet);
 
-    _loadWalletsTimer = Timer.periodic(const Duration(minutes: 10), (timer) {
+    _loadWalletsTimer = Timer.periodic(const Duration(minutes: WALLET_SYNC_INTERVAL_MINS), (timer) {
       add(SyncAllWallets());
     });
   }

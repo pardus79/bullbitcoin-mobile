@@ -27,7 +27,7 @@ mixin _$LightningWallet {
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   String get seedFingerprint => throw _privateConstructorUsedError;
-  BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
+  BitcoinScriptType get scriptType => throw _privateConstructorUsedError;
   DateTime? get lastSync => throw _privateConstructorUsedError;
   ImportTypes get importType => throw _privateConstructorUsedError;
 
@@ -51,7 +51,7 @@ abstract class $LightningWalletCopyWith<$Res> {
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      BitcoinScriptType bipPath,
+      BitcoinScriptType scriptType,
       DateTime? lastSync,
       ImportTypes importType});
 }
@@ -76,7 +76,7 @@ class _$LightningWalletCopyWithImpl<$Res, $Val extends LightningWallet>
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
-    Object? bipPath = null,
+    Object? scriptType = null,
     Object? lastSync = freezed,
     Object? importType = null,
   }) {
@@ -109,9 +109,9 @@ class _$LightningWalletCopyWithImpl<$Res, $Val extends LightningWallet>
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
-      bipPath: null == bipPath
-          ? _value.bipPath
-          : bipPath // ignore: cast_nullable_to_non_nullable
+      scriptType: null == scriptType
+          ? _value.scriptType
+          : scriptType // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
       lastSync: freezed == lastSync
           ? _value.lastSync
@@ -141,7 +141,7 @@ abstract class _$$LightningWalletImplCopyWith<$Res>
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      BitcoinScriptType bipPath,
+      BitcoinScriptType scriptType,
       DateTime? lastSync,
       ImportTypes importType});
 }
@@ -164,7 +164,7 @@ class __$$LightningWalletImplCopyWithImpl<$Res>
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
-    Object? bipPath = null,
+    Object? scriptType = null,
     Object? lastSync = freezed,
     Object? importType = null,
   }) {
@@ -197,9 +197,9 @@ class __$$LightningWalletImplCopyWithImpl<$Res>
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
-      bipPath: null == bipPath
-          ? _value.bipPath
-          : bipPath // ignore: cast_nullable_to_non_nullable
+      scriptType: null == scriptType
+          ? _value.scriptType
+          : scriptType // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
       lastSync: freezed == lastSync
           ? _value.lastSync
@@ -224,7 +224,7 @@ class _$LightningWalletImpl extends _LightningWallet {
       required this.type,
       required this.network,
       required this.seedFingerprint,
-      this.bipPath = BitcoinScriptType.bip84,
+      this.scriptType = BitcoinScriptType.bip84,
       this.lastSync,
       this.importType = ImportTypes.words12})
       : super._();
@@ -249,7 +249,7 @@ class _$LightningWalletImpl extends _LightningWallet {
   final String seedFingerprint;
   @override
   @JsonKey()
-  final BitcoinScriptType bipPath;
+  final BitcoinScriptType scriptType;
   @override
   final DateTime? lastSync;
   @override
@@ -258,7 +258,7 @@ class _$LightningWalletImpl extends _LightningWallet {
 
   @override
   String toString() {
-    return 'LightningWallet(id: $id, balance: $balance, backupTested: $backupTested, lastBackupTested: $lastBackupTested, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, lastSync: $lastSync, importType: $importType)';
+    return 'LightningWallet(id: $id, balance: $balance, backupTested: $backupTested, lastBackupTested: $lastBackupTested, type: $type, network: $network, seedFingerprint: $seedFingerprint, scriptType: $scriptType, lastSync: $lastSync, importType: $importType)';
   }
 
   @override
@@ -276,7 +276,8 @@ class _$LightningWalletImpl extends _LightningWallet {
             (identical(other.network, network) || other.network == network) &&
             (identical(other.seedFingerprint, seedFingerprint) ||
                 other.seedFingerprint == seedFingerprint) &&
-            (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
+            (identical(other.scriptType, scriptType) ||
+                other.scriptType == scriptType) &&
             (identical(other.lastSync, lastSync) ||
                 other.lastSync == lastSync) &&
             (identical(other.importType, importType) ||
@@ -294,7 +295,7 @@ class _$LightningWalletImpl extends _LightningWallet {
       type,
       network,
       seedFingerprint,
-      bipPath,
+      scriptType,
       lastSync,
       importType);
 
@@ -322,7 +323,7 @@ abstract class _LightningWallet extends LightningWallet {
       required final WalletType type,
       required final NetworkType network,
       required final String seedFingerprint,
-      final BitcoinScriptType bipPath,
+      final BitcoinScriptType scriptType,
       final DateTime? lastSync,
       final ImportTypes importType}) = _$LightningWalletImpl;
   _LightningWallet._() : super._();
@@ -345,7 +346,7 @@ abstract class _LightningWallet extends LightningWallet {
   @override
   String get seedFingerprint;
   @override
-  BitcoinScriptType get bipPath;
+  BitcoinScriptType get scriptType;
   @override
   DateTime? get lastSync;
   @override

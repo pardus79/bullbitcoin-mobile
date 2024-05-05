@@ -36,6 +36,8 @@ class WalletRepository {
     try {
       final wallets = await isar.wallets.where().findAll();
       // TODO: Find better way
+      // This is to convert `Wallet` type returned by Isar to `BitcoinWallet` or `LiquidWallet`
+      // Should this be even done here?
       final ws = wallets.map((w) {
         if (w.type == WalletType.Bitcoin) {
           return BitcoinWallet.fromJson(w.toJson());
@@ -63,7 +65,7 @@ class WalletRepository {
       final ws = await BitcoinWalletHelper.initializeAllWallets(seed);
       return (ws, null);
     } else if (seed.walletType == WalletType.Liquid) {
-      final ws = await LiquidWalletHelper.initializeAllWallets(seed, bipPath: [BitcoinScriptType.bip84]);
+      final ws = await LiquidWalletHelper.initializeAllWallets(seed, scriptType: [BitcoinScriptType.bip84]);
       return (ws, null);
     }
     List<Wallet> ws = [];

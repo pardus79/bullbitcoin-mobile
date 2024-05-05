@@ -27,7 +27,7 @@ mixin _$BitcoinWallet {
   WalletType get type => throw _privateConstructorUsedError;
   NetworkType get network => throw _privateConstructorUsedError;
   String get seedFingerprint => throw _privateConstructorUsedError;
-  BitcoinScriptType get bipPath => throw _privateConstructorUsedError;
+  BitcoinScriptType get scriptType => throw _privateConstructorUsedError;
   bool get backupTested => throw _privateConstructorUsedError;
   DateTime? get lastBackupTested => throw _privateConstructorUsedError;
   DateTime? get lastSync => throw _privateConstructorUsedError;
@@ -59,7 +59,7 @@ abstract class $BitcoinWalletCopyWith<$Res> {
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      BitcoinScriptType bipPath,
+      BitcoinScriptType scriptType,
       bool backupTested,
       DateTime? lastBackupTested,
       DateTime? lastSync,
@@ -92,7 +92,7 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
-    Object? bipPath = null,
+    Object? scriptType = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
     Object? lastSync = freezed,
@@ -130,9 +130,9 @@ class _$BitcoinWalletCopyWithImpl<$Res, $Val extends BitcoinWallet>
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
-      bipPath: null == bipPath
-          ? _value.bipPath
-          : bipPath // ignore: cast_nullable_to_non_nullable
+      scriptType: null == scriptType
+          ? _value.scriptType
+          : scriptType // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
       backupTested: null == backupTested
           ? _value.backupTested
@@ -182,7 +182,7 @@ abstract class _$$BitcoinWalletImplCopyWith<$Res>
       WalletType type,
       NetworkType network,
       String seedFingerprint,
-      BitcoinScriptType bipPath,
+      BitcoinScriptType scriptType,
       bool backupTested,
       DateTime? lastBackupTested,
       DateTime? lastSync,
@@ -213,7 +213,7 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
     Object? type = null,
     Object? network = null,
     Object? seedFingerprint = null,
-    Object? bipPath = null,
+    Object? scriptType = null,
     Object? backupTested = null,
     Object? lastBackupTested = freezed,
     Object? lastSync = freezed,
@@ -251,9 +251,9 @@ class __$$BitcoinWalletImplCopyWithImpl<$Res>
           ? _value.seedFingerprint
           : seedFingerprint // ignore: cast_nullable_to_non_nullable
               as String,
-      bipPath: null == bipPath
-          ? _value.bipPath
-          : bipPath // ignore: cast_nullable_to_non_nullable
+      scriptType: null == scriptType
+          ? _value.scriptType
+          : scriptType // ignore: cast_nullable_to_non_nullable
               as BitcoinScriptType,
       backupTested: null == backupTested
           ? _value.backupTested
@@ -298,7 +298,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       required this.type,
       required this.network,
       required this.seedFingerprint,
-      this.bipPath = BitcoinScriptType.bip84,
+      this.scriptType = BitcoinScriptType.bip84,
       this.backupTested = false,
       this.lastBackupTested,
       this.lastSync,
@@ -328,7 +328,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
   final String seedFingerprint;
   @override
   @JsonKey()
-  final BitcoinScriptType bipPath;
+  final BitcoinScriptType scriptType;
   @override
   @JsonKey()
   final bool backupTested;
@@ -351,7 +351,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
 
   @override
   String toString() {
-    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, txCount: $txCount, type: $type, network: $network, seedFingerprint: $seedFingerprint, bipPath: $bipPath, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
+    return 'BitcoinWallet(id: $id, name: $name, balance: $balance, txCount: $txCount, type: $type, network: $network, seedFingerprint: $seedFingerprint, scriptType: $scriptType, backupTested: $backupTested, lastBackupTested: $lastBackupTested, lastSync: $lastSync, importType: $importType, bdkBlockchain: $bdkBlockchain, bdkWallet: $bdkWallet, bdkSigningWallet: $bdkSigningWallet)';
   }
 
   @override
@@ -367,7 +367,8 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
             (identical(other.network, network) || other.network == network) &&
             (identical(other.seedFingerprint, seedFingerprint) ||
                 other.seedFingerprint == seedFingerprint) &&
-            (identical(other.bipPath, bipPath) || other.bipPath == bipPath) &&
+            (identical(other.scriptType, scriptType) ||
+                other.scriptType == scriptType) &&
             (identical(other.backupTested, backupTested) ||
                 other.backupTested == backupTested) &&
             (identical(other.lastBackupTested, lastBackupTested) ||
@@ -395,7 +396,7 @@ class _$BitcoinWalletImpl extends _BitcoinWallet {
       type,
       network,
       seedFingerprint,
-      bipPath,
+      scriptType,
       backupTested,
       lastBackupTested,
       lastSync,
@@ -427,7 +428,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
       required final WalletType type,
       required final NetworkType network,
       required final String seedFingerprint,
-      final BitcoinScriptType bipPath,
+      final BitcoinScriptType scriptType,
       final bool backupTested,
       final DateTime? lastBackupTested,
       final DateTime? lastSync,
@@ -458,7 +459,7 @@ abstract class _BitcoinWallet extends BitcoinWallet {
   @override
   String get seedFingerprint;
   @override
-  BitcoinScriptType get bipPath;
+  BitcoinScriptType get scriptType;
   @override
   bool get backupTested;
   @override

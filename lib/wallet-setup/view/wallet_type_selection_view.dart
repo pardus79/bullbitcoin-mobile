@@ -30,7 +30,7 @@ class WalletTypeSelectionView extends StatelessWidget {
             final w = wallets[index];
             final syncStatus = syncStatuses[index];
             return ListTile(
-              title: Text('[${w.bipPath?.name}] ${w.name} (${w.seedFingerprint}: ${w.id})'),
+              title: Text('[${w.scriptType?.name}] ${w.name} (${w.seedFingerprint}: ${w.id})'),
               subtitle: Text('Tx count: ${w.txCount}, Balance: ${w.balance}'),
               leading: syncStatus.name == 'loading'
                   ? const CircularProgressIndicator()
@@ -41,17 +41,17 @@ class WalletTypeSelectionView extends StatelessWidget {
                 child: const Text('Import'),
                 onPressed: () async {
                   print('Import $index wallet type');
-                  context.read<WalletSensitiveBloc>().add(PersistAndClearSeed());
+                  context.read<WalletSensitiveBloc>().add(PersistSeed());
                   if (w is BitcoinWallet) {
                     BitcoinWallet w = wallets[index] as BitcoinWallet;
                     context
                         .read<WalletBloc>()
-                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.bipPath.name}')));
+                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.scriptType.name}')));
                   } else if (w is LiquidWallet) {
                     LiquidWallet w = wallets[index] as LiquidWallet;
                     context
                         .read<WalletBloc>()
-                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.bipPath.name}')));
+                        .add(PersistWallet(wallet: w.copyWith(name: '${w.name}: ${w.scriptType.name}')));
                   }
                   // await Future.delayed(const Duration(milliseconds: 1000));
                   // context.read<WalletBloc>().add(LoadAllWallets());

@@ -18,7 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$WalletState {
   LoadStatus get status => throw _privateConstructorUsedError;
   List<LoadStatus> get syncWalletStatus => throw _privateConstructorUsedError;
-  List<Wallet> get wallets => throw _privateConstructorUsedError;
+  List<Wallet> get wallets =>
+      throw _privateConstructorUsedError; // TODO: Will be a problem, if at all a future requirement needs user to work with multiple wallets at a time.
   Wallet? get selectedWallet => throw _privateConstructorUsedError;
   String get error => throw _privateConstructorUsedError;
 
@@ -177,6 +178,7 @@ class _$WalletStateImpl implements _WalletState {
     return EqualUnmodifiableListView(_wallets);
   }
 
+// TODO: Will be a problem, if at all a future requirement needs user to work with multiple wallets at a time.
   @override
   @JsonKey()
   final Wallet? selectedWallet;
@@ -233,7 +235,7 @@ abstract class _WalletState implements WalletState {
   List<LoadStatus> get syncWalletStatus;
   @override
   List<Wallet> get wallets;
-  @override
+  @override // TODO: Will be a problem, if at all a future requirement needs user to work with multiple wallets at a time.
   Wallet? get selectedWallet;
   @override
   String get error;

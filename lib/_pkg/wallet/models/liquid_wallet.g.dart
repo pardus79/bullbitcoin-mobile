@@ -15,8 +15,8 @@ _$LiquidWalletImpl _$$LiquidWalletImplFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$WalletTypeEnumMap, json['type']),
       network: $enumDecode(_$NetworkTypeEnumMap, json['network']),
       seedFingerprint: json['seedFingerprint'] as String,
-      bipPath:
-          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['bipPath']) ??
+      scriptType:
+          $enumDecodeNullable(_$BitcoinScriptTypeEnumMap, json['scriptType']) ??
               BitcoinScriptType.bip84,
       backupTested: json['backupTested'] as bool? ?? false,
       lastBackupTested: json['lastBackupTested'] == null
@@ -40,7 +40,7 @@ Map<String, dynamic> _$$LiquidWalletImplToJson(_$LiquidWalletImpl instance) =>
       'type': _$WalletTypeEnumMap[instance.type]!,
       'network': _$NetworkTypeEnumMap[instance.network]!,
       'seedFingerprint': instance.seedFingerprint,
-      'bipPath': _$BitcoinScriptTypeEnumMap[instance.bipPath]!,
+      'scriptType': _$BitcoinScriptTypeEnumMap[instance.scriptType]!,
       'backupTested': instance.backupTested,
       'lastBackupTested': instance.lastBackupTested?.toIso8601String(),
       'lastSync': instance.lastSync?.toIso8601String(),

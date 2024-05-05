@@ -21,7 +21,7 @@ class LightningWallet extends Wallet with _$LightningWallet {
     required WalletType type,
     required NetworkType network,
     required String seedFingerprint,
-    @Default(BitcoinScriptType.bip84) BitcoinScriptType bipPath,
+    @Default(BitcoinScriptType.bip84) BitcoinScriptType scriptType,
     DateTime? lastSync,
     @Default(ImportTypes.words12) ImportTypes importType,
   }) = _LightningWallet;

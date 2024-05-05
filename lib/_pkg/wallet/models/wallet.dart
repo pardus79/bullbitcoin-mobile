@@ -32,7 +32,7 @@ class Wallet {
   String seedFingerprint = '';
 
   @Enumerated(EnumType.ordinal32)
-  BitcoinScriptType? bipPath = BitcoinScriptType.bip84;
+  BitcoinScriptType? scriptType = BitcoinScriptType.bip84;
 
   bool backupTested = false;
   DateTime? lastBackupTested;
@@ -57,11 +57,11 @@ class Wallet {
       return (this as LiquidWallet).toJson();
     }
 
-    // print(bipPath);
-    // print(bipPath?.path);
-    // print(bipPath?.name);
-    // print(bipPath?.toString());
-    // print(bipPath?.toString().split('.').last);
+    // print(scriptType);
+    // print(scriptType?.path);
+    // print(scriptType?.name);
+    // print(scriptType?.toString());
+    // print(scriptType?.toString().split('.').last);
     return {
       'isarId': isarId,
       'id': id,
@@ -71,7 +71,7 @@ class Wallet {
       'type': type.name,
       'network': network.name,
       'seedFingerprint': seedFingerprint,
-      'bipPath': bipPath?.toString().split('.').last,
+      'scriptType': scriptType?.toString().split('.').last,
       'backupTested': backupTested,
       'lastBackupTested': lastBackupTested?.toIso8601String(),
       'lastSync': lastSync?.toIso8601String(),
@@ -137,6 +137,20 @@ extension WalletTypeExtension on WalletType {
       case WalletType.Usdt:
         return 'Usdt';
     }
+  }
+
+  static WalletType fromString(String name) {
+    switch (name) {
+      case 'Bitcoin':
+        return WalletType.Bitcoin;
+      case 'Liquid':
+        return WalletType.Liquid;
+      case 'Lightning':
+        return WalletType.Lightning;
+      case 'Usdt':
+        return WalletType.Usdt;
+    }
+    return WalletType.Bitcoin;
   }
 }
 

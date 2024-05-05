@@ -27,43 +27,43 @@ const WalletSchema = CollectionSchema(
       name: r'balance',
       type: IsarType.long,
     ),
-    r'bipPath': PropertySchema(
-      id: 2,
-      name: r'bipPath',
-      type: IsarType.int,
-      enumMap: _WalletbipPathEnumValueMap,
-    ),
     r'id': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'id',
       type: IsarType.string,
     ),
     r'importType': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'importType',
       type: IsarType.int,
       enumMap: _WalletimportTypeEnumValueMap,
     ),
     r'lastBackupTested': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'lastBackupTested',
       type: IsarType.dateTime,
     ),
     r'lastSync': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'lastSync',
       type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 7,
+      id: 6,
       name: r'name',
       type: IsarType.string,
     ),
     r'network': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'network',
       type: IsarType.byte,
       enumMap: _WalletnetworkEnumValueMap,
+    ),
+    r'scriptType': PropertySchema(
+      id: 8,
+      name: r'scriptType',
+      type: IsarType.int,
+      enumMap: _WalletscriptTypeEnumValueMap,
     ),
     r'seedFingerprint': PropertySchema(
       id: 9,
@@ -143,13 +143,13 @@ void _walletSerialize(
 ) {
   writer.writeBool(offsets[0], object.backupTested);
   writer.writeLong(offsets[1], object.balance);
-  writer.writeInt(offsets[2], object.bipPath?.index);
-  writer.writeString(offsets[3], object.id);
-  writer.writeInt(offsets[4], object.importType?.index);
-  writer.writeDateTime(offsets[5], object.lastBackupTested);
-  writer.writeDateTime(offsets[6], object.lastSync);
-  writer.writeString(offsets[7], object.name);
-  writer.writeByte(offsets[8], object.network.index);
+  writer.writeString(offsets[2], object.id);
+  writer.writeInt(offsets[3], object.importType?.index);
+  writer.writeDateTime(offsets[4], object.lastBackupTested);
+  writer.writeDateTime(offsets[5], object.lastSync);
+  writer.writeString(offsets[6], object.name);
+  writer.writeByte(offsets[7], object.network.index);
+  writer.writeInt(offsets[8], object.scriptType?.index);
   writer.writeString(offsets[9], object.seedFingerprint);
   writer.writeLong(offsets[10], object.txCount);
   writer.writeByte(offsets[11], object.type.index);
@@ -164,17 +164,18 @@ Wallet _walletDeserialize(
   final object = Wallet();
   object.backupTested = reader.readBool(offsets[0]);
   object.balance = reader.readLong(offsets[1]);
-  object.bipPath = _WalletbipPathValueEnumMap[reader.readIntOrNull(offsets[2])];
-  object.id = reader.readString(offsets[3]);
+  object.id = reader.readString(offsets[2]);
   object.importType =
-      _WalletimportTypeValueEnumMap[reader.readIntOrNull(offsets[4])];
+      _WalletimportTypeValueEnumMap[reader.readIntOrNull(offsets[3])];
   object.isarId = id;
-  object.lastBackupTested = reader.readDateTimeOrNull(offsets[5]);
-  object.lastSync = reader.readDateTimeOrNull(offsets[6]);
-  object.name = reader.readString(offsets[7]);
+  object.lastBackupTested = reader.readDateTimeOrNull(offsets[4]);
+  object.lastSync = reader.readDateTimeOrNull(offsets[5]);
+  object.name = reader.readString(offsets[6]);
   object.network =
-      _WalletnetworkValueEnumMap[reader.readByteOrNull(offsets[8])] ??
+      _WalletnetworkValueEnumMap[reader.readByteOrNull(offsets[7])] ??
           NetworkType.Mainnet;
+  object.scriptType =
+      _WalletscriptTypeValueEnumMap[reader.readIntOrNull(offsets[8])];
   object.seedFingerprint = reader.readString(offsets[9]);
   object.txCount = reader.readLong(offsets[10]);
   object.type = _WallettypeValueEnumMap[reader.readByteOrNull(offsets[11])] ??
@@ -194,20 +195,20 @@ P _walletDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (_WalletbipPathValueEnumMap[reader.readIntOrNull(offset)]) as P;
-    case 3:
       return (reader.readString(offset)) as P;
-    case 4:
+    case 3:
       return (_WalletimportTypeValueEnumMap[reader.readIntOrNull(offset)]) as P;
+    case 4:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 6:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 7:
       return (reader.readString(offset)) as P;
-    case 8:
+    case 7:
       return (_WalletnetworkValueEnumMap[reader.readByteOrNull(offset)] ??
           NetworkType.Mainnet) as P;
+    case 8:
+      return (_WalletscriptTypeValueEnumMap[reader.readIntOrNull(offset)]) as P;
     case 9:
       return (reader.readString(offset)) as P;
     case 10:
@@ -220,18 +221,6 @@ P _walletDeserializeProp<P>(
   }
 }
 
-const _WalletbipPathEnumValueMap = {
-  'bip86': 0,
-  'bip84': 1,
-  'bip49': 2,
-  'bip44': 3,
-};
-const _WalletbipPathValueEnumMap = {
-  0: BitcoinScriptType.bip86,
-  1: BitcoinScriptType.bip84,
-  2: BitcoinScriptType.bip49,
-  3: BitcoinScriptType.bip44,
-};
 const _WalletimportTypeEnumValueMap = {
   'xpub': 0,
   'coldcard': 1,
@@ -257,6 +246,18 @@ const _WalletnetworkValueEnumMap = {
   0: NetworkType.Mainnet,
   1: NetworkType.Testnet,
   2: NetworkType.Signet,
+};
+const _WalletscriptTypeEnumValueMap = {
+  'bip86': 0,
+  'bip84': 1,
+  'bip49': 2,
+  'bip44': 3,
+};
+const _WalletscriptTypeValueEnumMap = {
+  0: BitcoinScriptType.bip86,
+  1: BitcoinScriptType.bip84,
+  2: BitcoinScriptType.bip49,
+  3: BitcoinScriptType.bip44,
 };
 const _WallettypeEnumValueMap = {
   'Bitcoin': 0,
@@ -555,75 +556,6 @@ extension WalletQueryFilter on QueryBuilder<Wallet, Wallet, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'balance',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'bipPath',
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'bipPath',
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathEqualTo(
-      BitcoinScriptType? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'bipPath',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathGreaterThan(
-    BitcoinScriptType? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'bipPath',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathLessThan(
-    BitcoinScriptType? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'bipPath',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> bipPathBetween(
-    BitcoinScriptType? lower,
-    BitcoinScriptType? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'bipPath',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1203,6 +1135,75 @@ extension WalletQueryFilter on QueryBuilder<Wallet, Wallet, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'scriptType',
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'scriptType',
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeEqualTo(
+      BitcoinScriptType? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scriptType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeGreaterThan(
+    BitcoinScriptType? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scriptType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeLessThan(
+    BitcoinScriptType? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scriptType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterFilterCondition> scriptTypeBetween(
+    BitcoinScriptType? lower,
+    BitcoinScriptType? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scriptType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterFilterCondition> seedFingerprintEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1471,18 +1472,6 @@ extension WalletQuerySortBy on QueryBuilder<Wallet, Wallet, QSortBy> {
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByBipPath() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'bipPath', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByBipPathDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'bipPath', Sort.desc);
-    });
-  }
-
   QueryBuilder<Wallet, Wallet, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1555,6 +1544,18 @@ extension WalletQuerySortBy on QueryBuilder<Wallet, Wallet, QSortBy> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByScriptType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scriptType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> sortByScriptTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scriptType', Sort.desc);
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterSortBy> sortBySeedFingerprint() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'seedFingerprint', Sort.asc);
@@ -1614,18 +1615,6 @@ extension WalletQuerySortThenBy on QueryBuilder<Wallet, Wallet, QSortThenBy> {
   QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByBalanceDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'balance', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByBipPath() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'bipPath', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByBipPathDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'bipPath', Sort.desc);
     });
   }
 
@@ -1713,6 +1702,18 @@ extension WalletQuerySortThenBy on QueryBuilder<Wallet, Wallet, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByScriptType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scriptType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QAfterSortBy> thenByScriptTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'scriptType', Sort.desc);
+    });
+  }
+
   QueryBuilder<Wallet, Wallet, QAfterSortBy> thenBySeedFingerprint() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'seedFingerprint', Sort.asc);
@@ -1763,12 +1764,6 @@ extension WalletQueryWhereDistinct on QueryBuilder<Wallet, Wallet, QDistinct> {
     });
   }
 
-  QueryBuilder<Wallet, Wallet, QDistinct> distinctByBipPath() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'bipPath');
-    });
-  }
-
   QueryBuilder<Wallet, Wallet, QDistinct> distinctById(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1804,6 +1799,12 @@ extension WalletQueryWhereDistinct on QueryBuilder<Wallet, Wallet, QDistinct> {
   QueryBuilder<Wallet, Wallet, QDistinct> distinctByNetwork() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'network');
+    });
+  }
+
+  QueryBuilder<Wallet, Wallet, QDistinct> distinctByScriptType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'scriptType');
     });
   }
 
@@ -1847,12 +1848,6 @@ extension WalletQueryProperty on QueryBuilder<Wallet, Wallet, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Wallet, BitcoinScriptType?, QQueryOperations> bipPathProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'bipPath');
-    });
-  }
-
   QueryBuilder<Wallet, String, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
@@ -1886,6 +1881,13 @@ extension WalletQueryProperty on QueryBuilder<Wallet, Wallet, QQueryProperty> {
   QueryBuilder<Wallet, NetworkType, QQueryOperations> networkProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'network');
+    });
+  }
+
+  QueryBuilder<Wallet, BitcoinScriptType?, QQueryOperations>
+      scriptTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'scriptType');
     });
   }
 

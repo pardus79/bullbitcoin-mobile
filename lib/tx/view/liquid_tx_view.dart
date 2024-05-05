@@ -1,12 +1,6 @@
-import 'package:bb_arch/_pkg/misc.dart';
-import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
-import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
-import 'package:bb_arch/tx/widgets/tx_list.dart';
-import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
-import 'package:bb_arch/wallet/widgets/wallet_heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
