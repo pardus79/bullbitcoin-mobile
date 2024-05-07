@@ -20,6 +20,6 @@ class WalletRecoverPage extends StatelessWidget {
     //   ],
     //   child: WalletRecoverView(),
     // );
-    return const WalletRecoverView();
+    return const WalletRecoverScaffold();
   }
 }

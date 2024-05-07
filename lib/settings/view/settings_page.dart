@@ -8,7 +8,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsView();
+    return const SettingsScaffold();
     // return MultiBlocProvider(
     //   providers: [BlocProvider(create: (_) => HomeCubit())],
     //   child: const SettingsView(),

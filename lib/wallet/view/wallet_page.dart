@@ -23,7 +23,7 @@ class WalletPage extends StatelessWidget {
               ..add(SyncTxs(wallet: wallet))),
         BlocProvider(create: (_) => WalletPageCubit()),
       ],
-      child: WalletView(id: id),
+      child: WalletScaffold(id: id),
     );
   }
 }

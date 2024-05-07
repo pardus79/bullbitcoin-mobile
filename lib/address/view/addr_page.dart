@@ -29,9 +29,9 @@ class AddressPage extends StatelessWidget {
             Widget addrView;
             Address? addr = state.selectedAddress;
             if (addr?.type == AddressType.Bitcoin) {
-              addrView = AddressView(walletId: walletId);
+              addrView = AddressScaffold(walletId: walletId);
             } else if (addr?.type == AddressType.Liquid) {
-              addrView = AddressView(walletId: walletId);
+              addrView = AddressScaffold(walletId: walletId);
             } else {
               addrView = const Text('Unsupported Address type');
             }

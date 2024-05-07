@@ -8,7 +8,7 @@ class WalletSetupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WalletSetupView();
+    return const WalletSetupScaffold();
     // return MultiBlocProvider(
     //   providers: [
     //     BlocProvider(create: (_) => WalletPageCubit()),

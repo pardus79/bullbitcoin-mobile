@@ -33,16 +33,16 @@ class TxPage extends StatelessWidget {
         ],
         child: BlocBuilder<TxBloc, TxState>(
           builder: (context, state) {
-            Widget txView;
+            Widget txScaffold;
             Tx? tx = state.selectedTx;
             if (tx?.type == TxType.Bitcoin) {
-              txView = const BitcoinTxView();
+              txScaffold = const BitcoinTxScaffold();
             } else if (tx?.type == TxType.Liquid) {
-              txView = const LiquidTxView();
+              txScaffold = const LiquidTxScaffold();
             } else {
-              txView = const Text('Unsupported Tx type');
+              txScaffold = const Text('Unsupported Tx type');
             }
-            return txView;
+            return txScaffold;
           },
         ));
   }

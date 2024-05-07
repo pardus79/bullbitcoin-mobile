@@ -11,12 +11,8 @@ class ReceivePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
-
-    return ReceiveView(
+    return ReceiveScaffold(
       walletId: walletId,
-      wallets: wallets,
     );
   }
 }

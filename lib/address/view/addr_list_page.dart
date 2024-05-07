@@ -1,8 +1,6 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
-import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
-import 'package:bb_arch/address/bloc/addr_state.dart';
 import 'package:bb_arch/address/bloc/address_cubit.dart';
 import 'package:bb_arch/address/view/addr_list_view.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
@@ -12,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// context.read<AddressBloc>().add(LoadAddresses(wallet: wallet));
-//context.read<AddressBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet));
 class AddressListPage extends StatelessWidget {
   const AddressListPage({super.key, required this.walletId});
 
@@ -38,24 +34,7 @@ class AddressListPage extends StatelessWidget {
             builder: (context, state) {
               context.read<AddressBloc>().add(LoadAddresses(walletId: selectedWallet.id));
               context.read<AddressBloc>().add(SyncAddresss(txs: state.txs, oldAddresses: [], wallet: selectedWallet));
-              return AddressListView();
+              return const AddressListScaffold();
             }));
   }
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    final loading = context.select((AddressBloc cubit) => cubit.state.status == LoadStatus.loading);
-
-    if (loading) {
-      return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text('Address'),
-          ),
-          body: const Center(child: CircularProgressIndicator()));
-    }
-    return AddressListView();
-  }
-  */
 }

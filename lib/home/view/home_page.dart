@@ -16,9 +16,7 @@ class HomePage extends StatelessWidget {
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(FetchLatestTxsAcrossWallets(limit: 10))),
       ],
-      child: const HomeView(
-        title: 'Bull Bitcoin',
-      ),
+      child: const HomeScaffold(),
     );
   }
 }
