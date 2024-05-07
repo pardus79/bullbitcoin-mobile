@@ -27,66 +27,116 @@ class WalletRecoverView extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('Wallet Recover'),
         ),
-        body: Column(
-          children: [
-            TextButton(
-                onPressed: () async {
-                  const mnemonic = 'move decline opera album crisp nice ozone casual gate ozone cycle judge';
-                  const passphrase = 'Pass1234';
-                  const walletName = 'Pikachu';
-                  final walletType = WalletType.Bitcoin.name;
-
-                  navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
-                  print('Pikachu wallet');
-                },
-                child: const Text('Pikachu wallet')),
-            TextButton(
-                onPressed: () async {
-                  const mnemonic =
-                      'lumber tackle notice city expand cherry tonight people blue cactus forward scissors';
-                  const passphrase = '';
-                  const walletName = 'Naruto';
-                  final walletType = WalletType.Bitcoin.name;
-
-                  navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
-                  print('Naruto wallet');
-                },
-                child: const Text('Naruto wallet')),
-            TextButton(
-                onPressed: () async {
-                  const mnemonic = 'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial';
-                  const passphrase = '';
-                  const walletName = 'Vegeta';
-                  final walletType = WalletType.Bitcoin.name;
-
-                  navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
-                  print('Vegeta wallet');
-                },
-                child: const Text('Vegeta wallet')),
-            TextButton(
-                onPressed: () async {
-                  const mnemonic =
-                      'cave arrest spot bleak song diesel wire bleak wolf stand enhance guess coach below next smoke power school edit crowd photo ordinary pottery train';
-                  const passphrase = '';
-                  const walletName = 'First24';
-                  final walletType = WalletType.Bitcoin.name;
-
-                  navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
-                  print('First24 wallet');
-                },
-                child: const Text('First24 wallet')),
-            TextButton(
-                onPressed: () async {
-                  const mnemonic = 'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial';
-                  const passphrase = '';
-                  const walletName = 'L-Vegeta';
-                  final walletType = WalletType.Liquid.name;
-
-                  navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
-                  print('Vegeta Liquid wallet');
-                },
-                child: const Text('Vegeta liquid wallet')),
-          ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextButton(
+                    onPressed: () async {
+                      const mnemonic = 'move decline opera album crisp nice ozone casual gate ozone cycle judge';
+                      const passphrase = 'Pass1234';
+                      const walletName = 'Pikachu';
+                      final walletType = WalletType.Bitcoin.name;
+            
+                      navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
+                      print('Pikachu wallet');
+                    },
+                    child: const Text('Pikachu wallet')),
+                TextButton(
+                    onPressed: () async {
+                      const mnemonic =
+                          'lumber tackle notice city expand cherry tonight people blue cactus forward scissors';
+                      const passphrase = '';
+                      const walletName = 'Naruto';
+                      final walletType = WalletType.Bitcoin.name;
+            
+                      navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
+                      print('Naruto wallet');
+                    },
+                    child: const Text('Naruto wallet')),
+                TextButton(
+                    onPressed: () async {
+                      const mnemonic = 'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial';
+                      const passphrase = '';
+                      const walletName = 'Vegeta';
+                      final walletType = WalletType.Bitcoin.name;
+            
+                      navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
+                      print('Vegeta wallet');
+                    },
+                    child: const Text('Vegeta wallet')),
+                TextButton(
+                    onPressed: () async {
+                      const mnemonic =
+                          'cave arrest spot bleak song diesel wire bleak wolf stand enhance guess coach below next smoke power school edit crowd photo ordinary pottery train';
+                      const passphrase = '';
+                      const walletName = 'First24';
+                      final walletType = WalletType.Bitcoin.name;
+            
+                      navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
+                      print('First24 wallet');
+                    },
+                    child: const Text('First24 wallet')),
+                TextButton(
+                    onPressed: () async {
+                      const mnemonic = 'fossil install fever ticket wisdom outer broken aspect lucky still flavor dial';
+                      const passphrase = '';
+                      const walletName = 'L-Vegeta';
+                      final walletType = WalletType.Liquid.name;
+            
+                      navigateToWalletTypePage(context, mnemonic, passphrase, walletName, walletType);
+                      print('Vegeta Liquid wallet');
+                    },
+                    child: const Text('Vegeta liquid wallet')),
+              
+                const SizedBox(height: 20,),
+                
+                const Text('Seed phrase'),
+                const SizedBox(height: 10,),
+                const TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: 4,
+                ),
+          
+                const SizedBox(height: 20,),
+          
+                const Text('Passphrase'),
+                const SizedBox(height: 10,),
+                const TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+          
+                const SizedBox(height: 20,),
+          
+                const Text('Wallet name'),
+                const SizedBox(height: 10,),
+                const TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+          
+                const SizedBox(height: 20,),
+          
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      print("Wallet recover :: Recover btn clicked");
+                    },
+                    child: const Text("Recover"),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ));
   }
 }

@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/receive/view/receive_page.dart';
+import 'package:bb_arch/send/view/send_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_setup_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsView extends StatelessWidget {
@@ -74,13 +75,29 @@ class SettingsView extends StatelessWidget {
                       print('SettingsView: Change PIN');
                     },
                   );
+                case 7:
+                  return ListTile(
+                    title: const Text('Send'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      GoRouter.of(context).push(SendPage.route);
+                    },
+                  );
+                case 8:
+                  return ListTile(
+                    title: const Text('Receive'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      GoRouter.of(context).push(ReceivePage.route);
+                    },
+                  );
                 default:
                   return const ListTile(
                     title: Text('Hanled index'),
                   );
               }
             },
-            itemCount: 7),
+            itemCount: 9),
       ),
     );
   }

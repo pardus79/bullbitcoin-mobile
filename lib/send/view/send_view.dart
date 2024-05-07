@@ -15,25 +15,66 @@ class SendView extends StatelessWidget {
         title: const Text('Send'),
       ),
       body: SingleChildScrollView(
-        child: ListView.builder(
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              switch (index) {
-                case 0:
-                  return ListTile(
-                    title: Text('Send from $walletId'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      print('Send from $walletId');
-                    },
-                  );
-                default:
-                  return const ListTile(
-                    title: Text('Hanled index'),
-                  );
-              }
-            },
-            itemCount: 1),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  switch (index) {
+                    case 0:
+                      return ListTile(
+                        title: Text('Send from $walletId'),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          print('Send from $walletId');
+                        },
+                      );
+                    default:
+                      return const ListTile(
+                        title: Text('Hanled index'),
+                      );
+                  }
+                },
+                itemCount: 1,
+              ),
+
+              const SizedBox(height: 20,),
+          
+              const Text('Address'),
+              const SizedBox(height: 10,),
+              const TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              const SizedBox(height: 20,),
+          
+              const Text('Amount'),
+              const SizedBox(height: 10,),
+              const TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+
+              const SizedBox(height: 20,),
+          
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    print("Send :: Send btn clicked");
+                  },
+                  child: const Text("Send"),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
