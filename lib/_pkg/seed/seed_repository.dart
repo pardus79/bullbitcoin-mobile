@@ -62,6 +62,7 @@ class SeedRepository {
 
   Future<String?> validateSeedPhrase(String seedphrase) async {
     try {
+      // TODO: Added delay for testing
       await Future.delayed(const Duration(seconds: 1));
       final _ = await bdk.Mnemonic.fromString(seedphrase);
       return null;

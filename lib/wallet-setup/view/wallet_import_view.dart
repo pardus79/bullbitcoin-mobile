@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_ui/atoms/under_construction.dart';
 import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class WalletImportView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const UnderConstruction(),
             const SizedBox(
               height: 20,
             ),

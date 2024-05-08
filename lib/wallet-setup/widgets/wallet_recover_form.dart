@@ -1,4 +1,5 @@
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/_ui/atoms/bb_button.dart';
 import 'package:flutter/material.dart';
 
 class WalletRecoverForm extends StatefulWidget {
@@ -28,19 +29,13 @@ class WalletRecoverFormState extends State<WalletRecoverForm> {
   String? _seedPhraseError;
   bool _isLoading = false;
 
-  @override
-  void dispose() {
-    _seedPhraseController.dispose();
-    _passphraseController.dispose();
-    _walletNameController.dispose();
-    super.dispose();
-  }
-
   void _handleSubmit(BuildContext context) async {
     setState(() {
       _isLoading = true;
+      _seedPhraseError = '';
     });
-    if (_formKey.currentState!.validate() && _validateSeedPhrase(_seedPhraseController.text)) {
+
+    if (_formKey.currentState!.validate() && _syncValidateSeedPhrase(_seedPhraseController.text)) {
       // print('Seed phrase: ${_seedPhraseController.text}');
       // print('Passphrase: ${_passphraseController.text}');
       // print('Wallet name: ${_walletNameController.text}');
@@ -57,15 +52,10 @@ class WalletRecoverFormState extends State<WalletRecoverForm> {
             _seedPhraseError = null;
           });
 
-          if (widget.onSubmit != null) {
-            widget.onSubmit!(
-              seedPhrase: _seedPhraseController.text,
-              passphrase: _passphraseController.text,
-              walletName: _walletNameController.text,
-              assetName: _selectedAsset,
-            );
-          }
+          callOnSubmit();
         }
+      } else {
+        callOnSubmit();
       }
     }
 
@@ -74,7 +64,18 @@ class WalletRecoverFormState extends State<WalletRecoverForm> {
     });
   }
 
-  bool _validateSeedPhrase(String? value) {
+  void callOnSubmit() {
+    if (widget.onSubmit != null) {
+      widget.onSubmit!(
+        seedPhrase: _seedPhraseController.text,
+        passphrase: _passphraseController.text,
+        walletName: _walletNameController.text,
+        assetName: _selectedAsset,
+      );
+    }
+  }
+
+  bool _syncValidateSeedPhrase(String? value) {
     if (value == null || value.isEmpty) {
       setState(() {
         _seedPhraseError = 'Please enter seed phrase';
@@ -89,6 +90,14 @@ class WalletRecoverFormState extends State<WalletRecoverForm> {
       return false;
     }
     return true;
+  }
+
+  @override
+  void dispose() {
+    _seedPhraseController.dispose();
+    _passphraseController.dispose();
+    _walletNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -191,26 +200,11 @@ class WalletRecoverFormState extends State<WalletRecoverForm> {
           const SizedBox(
             height: 10,
           ),
-          Center(
-            child: ElevatedButton(
-              onPressed: _isLoading
-                  ? null
-                  : () {
-                      _handleSubmit(context);
-                    },
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                if (_isLoading)
-                  const SizedBox(
-                      width: 15,
-                      height: 15,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 1.0,
-                      )),
-                if (_isLoading) const SizedBox(width: 15),
-                const Text('Recover')
-              ]),
-            ),
-          ),
+          BBButton(
+            label: 'Recover',
+            isLoading: _isLoading,
+            onSubmit: _handleSubmit,
+          )
         ],
       ),
     );
