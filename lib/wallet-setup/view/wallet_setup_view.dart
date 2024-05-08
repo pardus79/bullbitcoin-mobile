@@ -55,7 +55,7 @@ class WalletSetupView extends StatelessWidget {
                 );
               default:
                 return const ListTile(
-                  title: Text('Hanled index'),
+                  title: Text('Unhandled index'),
                 );
             }
           },

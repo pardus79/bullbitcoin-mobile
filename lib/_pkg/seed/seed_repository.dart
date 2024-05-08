@@ -1,7 +1,3 @@
-// ignore_for_file: avoid_print
-
-import 'dart:convert';
-
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/storage/hive.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
@@ -61,6 +57,20 @@ class SeedRepository {
       // return err;
     } catch (e) {
       return e;
+    }
+  }
+
+  Future<String?> validateSeedPhrase(String seedphrase) async {
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+      final _ = await bdk.Mnemonic.fromString(seedphrase);
+      return null;
+    } catch (e) {
+      if (e is bdk.GenericException) {
+        return e.message;
+      } else {
+        return e.toString();
+      }
     }
   }
 }
