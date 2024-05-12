@@ -53,40 +53,45 @@ const AddressSchema = CollectionSchema(
       name: r'receiveTxIds',
       type: IsarType.stringList,
     ),
-    r'sendTxIds': PropertySchema(
+    r'regularAddress': PropertySchema(
       id: 7,
+      name: r'regularAddress',
+      type: IsarType.string,
+    ),
+    r'sendTxIds': PropertySchema(
+      id: 8,
       name: r'sendTxIds',
       type: IsarType.stringList,
     ),
     r'spendable': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'spendable',
       type: IsarType.bool,
     ),
     r'status': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'status',
       type: IsarType.byte,
       enumMap: _AddressstatusEnumValueMap,
     ),
     r'txCount': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'txCount',
       type: IsarType.long,
     ),
     r'txIds': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'txIds',
       type: IsarType.stringList,
     ),
     r'type': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'type',
       type: IsarType.byte,
       enumMap: _AddresstypeEnumValueMap,
     ),
     r'walletId': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'walletId',
       type: IsarType.string,
     )
@@ -210,6 +215,12 @@ int _addressEstimateSize(
       bytesCount += value.length * 3;
     }
   }
+  {
+    final value = object.regularAddress;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.sendTxIds.length * 3;
   {
     for (var i = 0; i < object.sendTxIds.length; i++) {
@@ -241,13 +252,14 @@ void _addressSerialize(
   writer.writeByte(offsets[4], object.kind.index);
   writer.writeStringList(offsets[5], object.labels);
   writer.writeStringList(offsets[6], object.receiveTxIds);
-  writer.writeStringList(offsets[7], object.sendTxIds);
-  writer.writeBool(offsets[8], object.spendable);
-  writer.writeByte(offsets[9], object.status.index);
-  writer.writeLong(offsets[10], object.txCount);
-  writer.writeStringList(offsets[11], object.txIds);
-  writer.writeByte(offsets[12], object.type.index);
-  writer.writeString(offsets[13], object.walletId);
+  writer.writeString(offsets[7], object.regularAddress);
+  writer.writeStringList(offsets[8], object.sendTxIds);
+  writer.writeBool(offsets[9], object.spendable);
+  writer.writeByte(offsets[10], object.status.index);
+  writer.writeLong(offsets[11], object.txCount);
+  writer.writeStringList(offsets[12], object.txIds);
+  writer.writeByte(offsets[13], object.type.index);
+  writer.writeString(offsets[14], object.walletId);
 }
 
 Address _addressDeserialize(
@@ -266,16 +278,17 @@ Address _addressDeserialize(
       AddressKind.deposit;
   object.labels = reader.readStringList(offsets[5]);
   object.receiveTxIds = reader.readStringList(offsets[6]) ?? [];
-  object.sendTxIds = reader.readStringList(offsets[7]) ?? [];
-  object.spendable = reader.readBool(offsets[8]);
+  object.regularAddress = reader.readStringOrNull(offsets[7]);
+  object.sendTxIds = reader.readStringList(offsets[8]) ?? [];
+  object.spendable = reader.readBool(offsets[9]);
   object.status =
-      _AddressstatusValueEnumMap[reader.readByteOrNull(offsets[9])] ??
+      _AddressstatusValueEnumMap[reader.readByteOrNull(offsets[10])] ??
           AddressStatus.unused;
-  object.txCount = reader.readLong(offsets[10]);
-  object.txIds = reader.readStringList(offsets[11]) ?? [];
-  object.type = _AddresstypeValueEnumMap[reader.readByteOrNull(offsets[12])] ??
+  object.txCount = reader.readLong(offsets[11]);
+  object.txIds = reader.readStringList(offsets[12]) ?? [];
+  object.type = _AddresstypeValueEnumMap[reader.readByteOrNull(offsets[13])] ??
       AddressType.Bitcoin;
-  object.walletId = reader.readString(offsets[13]);
+  object.walletId = reader.readString(offsets[14]);
   return object;
 }
 
@@ -302,20 +315,22 @@ P _addressDeserializeProp<P>(
     case 6:
       return (reader.readStringList(offset) ?? []) as P;
     case 7:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 9:
+      return (reader.readBool(offset)) as P;
+    case 10:
       return (_AddressstatusValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressStatus.unused) as P;
-    case 10:
-      return (reader.readLong(offset)) as P;
     case 11:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readLong(offset)) as P;
     case 12:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 13:
       return (_AddresstypeValueEnumMap[reader.readByteOrNull(offset)] ??
           AddressType.Bitcoin) as P;
-    case 13:
+    case 14:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1691,6 +1706,157 @@ extension AddressQueryFilter
     });
   }
 
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'regularAddress',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      regularAddressIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'regularAddress',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      regularAddressGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'regularAddress',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      regularAddressStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'regularAddress',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition> regularAddressMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'regularAddress',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      regularAddressIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'regularAddress',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterFilterCondition>
+      regularAddressIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'regularAddress',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Address, Address, QAfterFilterCondition> sendTxIdsElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -2493,6 +2659,18 @@ extension AddressQuerySortBy on QueryBuilder<Address, Address, QSortBy> {
     });
   }
 
+  QueryBuilder<Address, Address, QAfterSortBy> sortByRegularAddress() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regularAddress', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterSortBy> sortByRegularAddressDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regularAddress', Sort.desc);
+    });
+  }
+
   QueryBuilder<Address, Address, QAfterSortBy> sortBySpendable() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'spendable', Sort.asc);
@@ -2628,6 +2806,18 @@ extension AddressQuerySortThenBy
     });
   }
 
+  QueryBuilder<Address, Address, QAfterSortBy> thenByRegularAddress() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regularAddress', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Address, Address, QAfterSortBy> thenByRegularAddressDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'regularAddress', Sort.desc);
+    });
+  }
+
   QueryBuilder<Address, Address, QAfterSortBy> thenBySpendable() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'spendable', Sort.asc);
@@ -2734,6 +2924,14 @@ extension AddressQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Address, Address, QDistinct> distinctByRegularAddress(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'regularAddress',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Address, Address, QDistinct> distinctBySendTxIds() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sendTxIds');
@@ -2825,6 +3023,12 @@ extension AddressQueryProperty
   QueryBuilder<Address, List<String>, QQueryOperations> receiveTxIdsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'receiveTxIds');
+    });
+  }
+
+  QueryBuilder<Address, String?, QQueryOperations> regularAddressProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'regularAddress');
     });
   }
 

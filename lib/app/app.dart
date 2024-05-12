@@ -41,7 +41,11 @@ class App extends StatelessWidget {
       ],
       child: MultiBlocProvider(providers: [
         BlocProvider(
-            create: (_) => WalletBloc(walletRepository: walletRepository, seedRepository: seedRepository)
+            create: (_) => WalletBloc(
+                walletRepository: walletRepository,
+                seedRepository: seedRepository,
+                txRepository: txRepository,
+                addressRepository: addressRepository)
               ..add(LoadAllWallets())
               ..add(SyncAllWallets())),
         BlocProvider(

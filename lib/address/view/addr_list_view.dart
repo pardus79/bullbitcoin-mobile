@@ -45,12 +45,6 @@ class AddressListScaffold extends StatelessWidget {
         print('AddressListScaffold: txCount: ${state.txs.length}');
         return BBScaffold(
             title: 'Address list',
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                context.read<AddressBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet!));
-              },
-              child: const Text('Sync'),
-            ),
             loadStatus: loadStatus,
             child: loadStatus == LoadStatus.success
                 ? AddressListView(

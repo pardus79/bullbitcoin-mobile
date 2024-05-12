@@ -7,12 +7,12 @@ class LoadAddresses extends AddressEvent {
   LoadAddresses({required this.walletId});
 }
 
-class SyncAddresss extends AddressEvent {
-  final List<Tx> txs;
-  final List<Address> oldAddresses;
-  final Wallet wallet;
-  SyncAddresss({required this.txs, required this.oldAddresses, required this.wallet});
-}
+// class SyncAddresss extends AddressEvent {
+//   final List<Tx> txs;
+//   final List<Address> oldAddresses;
+//   final Wallet wallet;
+//   SyncAddresss({required this.txs, required this.oldAddresses, required this.wallet});
+// }
 
 class SelectAddress extends AddressEvent {
   final Address address;

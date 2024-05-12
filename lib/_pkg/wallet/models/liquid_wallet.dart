@@ -1,14 +1,10 @@
 // ignore_for_file: avoid_print, invalid_annotation_target
 
 import 'package:bb_arch/_pkg/address/models/address.dart';
-import 'package:bb_arch/_pkg/constants.dart';
-import 'package:bb_arch/_pkg/seed/models/seed.dart';
-import 'package:bb_arch/_pkg/tx/models/liquid_tx.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lwk_dart/lwk_dart.dart' as lwk;
-import 'package:path_provider/path_provider.dart';
 import 'wallet.dart';
 
 part 'liquid_wallet.freezed.dart';

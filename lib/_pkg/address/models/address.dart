@@ -16,6 +16,9 @@ class Address {
 
   @Index()
   String address = '';
+
+  String? regularAddress = '';
+
   @Index()
   int index = 0;
 
@@ -58,6 +61,7 @@ class Address {
     return {
       'isarId': isarId,
       'address': address,
+      'regularAddress': regularAddress ?? '',
       'index': index,
       'kind': kind.toString().split('.').last,
       'status': status.toString().split('.').last,

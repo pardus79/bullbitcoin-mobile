@@ -17,7 +17,7 @@ class TxBloc extends Bloc<TxEvent, TxState> {
   TxBloc({required this.txRepository}) : super(const TxState()) {
     on<FetchLatestTxsAcrossWallets>(_onFetchLatestTxsAcrossWallets);
     on<LoadTxs>(_onLoadTxs);
-    on<SyncTxs>(_onSyncTxs);
+    // on<SyncTxs>(_onSyncTxs);
     on<SelectTx>(_onSelectTx);
     on<LoadTx>(_onLoadTx);
   }
@@ -48,6 +48,7 @@ class TxBloc extends Bloc<TxEvent, TxState> {
     emit(state.copyWith(txs: txs!, status: LoadStatus.success));
   }
 
+  /*
   void _onSyncTxs(SyncTxs event, Emitter<TxState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
 
@@ -61,6 +62,7 @@ class TxBloc extends Bloc<TxEvent, TxState> {
     await txRepository.persistTxs(event.wallet, txs!);
     emit(state.copyWith(txs: txs, status: LoadStatus.success));
   }
+  */
 
   void _onSelectTx(SelectTx event, Emitter<TxState> emit) async {
     emit(state.copyWith(selectedTx: event.tx));

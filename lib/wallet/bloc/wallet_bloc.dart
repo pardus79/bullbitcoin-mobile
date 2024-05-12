@@ -2,10 +2,13 @@
 
 import 'dart:async';
 
+import 'package:bb_arch/_pkg/address/address_repository.dart';
+import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/constants.dart';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
+import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/_pkg/wallet/bitcoin_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/liquid_wallet_helper.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
@@ -19,10 +22,17 @@ part 'wallet_event.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final WalletRepository walletRepository;
+  final TxRepository txRepository;
+  final AddressRepository addressRepository;
   final SeedRepository seedRepository;
   Timer? _loadWalletsTimer;
 
-  WalletBloc({required this.walletRepository, required this.seedRepository}) : super(WalletState.initial()) {
+  WalletBloc(
+      {required this.walletRepository,
+      required this.seedRepository,
+      required this.txRepository,
+      required this.addressRepository})
+      : super(WalletState.initial()) {
     on<LoadAllWallets>(_onLoadAllWallets);
     on<SyncAllWallets>(_onSyncAllWallets);
     on<SyncWallet>(_onSyncWallet);
@@ -77,7 +87,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       } else if (w is LiquidWallet) {
         LiquidWallet lw = w;
         if (lw.lwkWallet == null) {
-          final (seed, _) = await seedRepository.loadSeed(seedId);
+          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
           newWallet = await LiquidWalletHelper.loadNativeSdk(lw, seed!);
         }
       }
@@ -86,8 +96,38 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
     emit(state.copyWith(wallets: loadedWallets));
 
-    List<Future<Wallet>> syncedFutures = state.wallets.map((w) {
-      return Wallet.syncWallet(w);
+    List<Future<Wallet>> syncedFutures = state.wallets.map((w) async {
+      print('Sync :: init :: w.id');
+      final syncedWallet = await Wallet.syncWallet(w);
+
+      print('Sync :: processTxs :: w.id');
+      final (txs, err) = await txRepository.syncTxs(syncedWallet);
+      if (err != null) {
+        emit(state.copyWith(status: LoadStatus.failure, error: err.toString()));
+        return syncedWallet;
+      }
+      await txRepository.persistTxs(syncedWallet, txs!);
+
+      print('Sync :: processAddress :: w.id');
+      // TODO: Pass old address
+      final (depositAddresses, depositErr) =
+          await addressRepository.syncAddresses(txs, [], AddressKind.deposit, syncedWallet);
+      if (depositErr != null) {
+        emit(state.copyWith(status: LoadStatus.failure, error: depositErr.toString()));
+        return syncedWallet;
+      }
+      await addressRepository.persistAddresses(syncedWallet, depositAddresses!);
+
+      // TODO: Pass old address
+      final (changeAddresses, changeErr) =
+          await addressRepository.syncAddresses(txs, [], AddressKind.change, syncedWallet);
+      if (changeErr != null) {
+        emit(state.copyWith(status: LoadStatus.failure, error: changeErr.toString()));
+        return syncedWallet;
+      }
+      await addressRepository.persistAddresses(syncedWallet, changeAddresses!);
+
+      return syncedWallet;
     }).toList();
 
     var completer = Completer();

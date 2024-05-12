@@ -12,10 +12,10 @@ class LoadTxs extends TxEvent {
   LoadTxs({required this.wallet});
 }
 
-class SyncTxs extends TxEvent {
-  final Wallet wallet;
-  SyncTxs({required this.wallet});
-}
+// class SyncTxs extends TxEvent {
+//   final Wallet wallet;
+//   SyncTxs({required this.wallet});
+// }
 
 class SelectTx extends TxEvent {
   final Tx tx;

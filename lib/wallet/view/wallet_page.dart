@@ -17,10 +17,7 @@ class WalletPage extends StatelessWidget {
     final txRepository = context.read<TxRepository>();
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-            create: (_) => TxBloc(txRepository: txRepository)
-              ..add(LoadTxs(wallet: wallet))
-              ..add(SyncTxs(wallet: wallet))),
+        BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(LoadTxs(wallet: wallet))),
         BlocProvider(create: (_) => WalletPageCubit()),
       ],
       child: WalletScaffold(id: id),

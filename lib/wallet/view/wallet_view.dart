@@ -32,7 +32,7 @@ class WalletScaffold extends StatelessWidget {
                 children: [
                   FloatingActionButton(
                     onPressed: () {
-                      context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
+                      // context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
                     },
                     tooltip: 'Load Tx',
                     heroTag: 'loadTag',
@@ -41,7 +41,7 @@ class WalletScaffold extends StatelessWidget {
                   const SizedBox(height: 10),
                   FloatingActionButton(
                     onPressed: () {
-                      context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
+                      // context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
                     },
                     tooltip: 'Sync',
                     heroTag: 'syncTag',

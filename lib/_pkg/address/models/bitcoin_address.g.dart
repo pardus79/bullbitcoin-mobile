@@ -33,12 +33,15 @@ _$BitcoinAddressImpl _$$BitcoinAddressImplFromJson(Map<String, dynamic> json) =>
           const [],
       frozen: json['frozen'] as bool? ?? false,
       walletId: json['walletId'] as String,
-    )..isarId = json['isarId'] as int;
+    )
+      ..isarId = json['isarId'] as int
+      ..regularAddress = json['regularAddress'] as String?;
 
 Map<String, dynamic> _$$BitcoinAddressImplToJson(
         _$BitcoinAddressImpl instance) =>
     <String, dynamic>{
       'isarId': instance.isarId,
+      'regularAddress': instance.regularAddress,
       'address': instance.address,
       'index': instance.index,
       'kind': _$AddressKindEnumMap[instance.kind]!,

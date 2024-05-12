@@ -18,7 +18,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
   AddressBloc({required this.addrRepository}) : super(const AddressState()) {
     on<LoadAddresses>(_onLoadAddresses);
-    on<SyncAddresss>(_onSyncAddresses);
+    // on<SyncAddresss>(_onSyncAddresses);
     on<SelectAddress>(_onSelectAddress);
     on<LoadAddress>(_onLoadAddress);
     on<ChangeSelectedAddressKind>(_changeSelectedAddressKind);
@@ -44,6 +44,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     emit(state.copyWith(depositAddresses: deposit, changeAddresses: change, status: LoadStatus.success));
   }
 
+  /*
   void _onSyncAddresses(SyncAddresss event, Emitter<AddressState> emit) async {
     emit(state.copyWith(status: LoadStatus.loading));
 
@@ -68,6 +69,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     emit(state.copyWith(
         depositAddresses: depositAddresses, changeAddresses: changeAddresses, status: LoadStatus.success));
   }
+  */
 
   void _onSelectAddress(SelectAddress event, Emitter<AddressState> emit) async {
     emit(state.copyWith(selectedAddress: event.address));

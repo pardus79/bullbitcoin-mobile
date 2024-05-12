@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_pkg/seed/seed_repository.dart';
-import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';

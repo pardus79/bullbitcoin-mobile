@@ -57,7 +57,7 @@ class LiquidAddress extends Address with _$LiquidAddress {
         index: addr.index,
         kind: AddressKind.deposit,
         status: AddressStatus.unused,
-        type: AddressType.Bitcoin,
+        type: AddressType.Liquid,
         walletId: wallet.id);
   }
 
