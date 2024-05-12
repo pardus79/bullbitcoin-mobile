@@ -1,6 +1,7 @@
 import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/tx/models/tx.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
+import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
 import 'package:bb_arch/tx/bloc/tx_state.dart';
@@ -22,28 +23,34 @@ class TxPage extends StatelessWidget {
     final addressRepository = context.read<AddressRepository>();
 
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => TxPageCubit()),
-          BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(LoadTx(walletId: walletId, txid: id))),
-          BlocProvider(
-              create: (_) => AddressBloc(addrRepository: addressRepository)
-                ..add(LoadAddresses(
-                    walletId:
-                        walletId))), // TODO: Remove this after cleanup. Added this now for `isMyAddress` to work in TxView
-        ],
-        child: BlocBuilder<TxBloc, TxState>(
-          builder: (context, state) {
-            Widget txScaffold;
-            Tx? tx = state.selectedTx;
-            if (tx?.type == TxType.Bitcoin) {
-              txScaffold = const BitcoinTxScaffold();
-            } else if (tx?.type == TxType.Liquid) {
-              txScaffold = const LiquidTxScaffold();
-            } else {
-              txScaffold = const Text('Unsupported Tx type');
-            }
-            return txScaffold;
-          },
-        ));
+      providers: [
+        BlocProvider(create: (_) => TxPageCubit()),
+        BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(LoadTx(walletId: walletId, txid: id))),
+        BlocProvider(
+            create: (_) => AddressBloc(addrRepository: addressRepository)
+              ..add(LoadAddresses(
+                  walletId:
+                      walletId))), // TODO: Remove this after cleanup. Added this now for `isMyAddress` to work in TxView
+      ],
+      child: const TxScaffold(),
+    );
+  }
+}
+
+class TxScaffold extends StatelessWidget {
+  const TxScaffold({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final loadstatus = context.select((TxBloc cubit) => cubit.state.status);
+    final tx = context.select((TxBloc cubit) => cubit.state.selectedTx);
+
+    Widget? txView;
+    if (tx != null && tx.type == TxType.Bitcoin) {
+      txView = BitcoinTxView(tx: tx);
+    } else if (tx != null && tx.type == TxType.Liquid) {
+      txView = LiquidTxView(tx: tx);
+    }
+    return BBScaffold(title: 'Tx', loadStatus: loadstatus, child: tx != null ? txView : null);
   }
 }

@@ -70,6 +70,7 @@ class TxBloc extends Bloc<TxEvent, TxState> {
     emit(state.copyWith(status: LoadStatus.loading));
 
     print('_onLoadTx: ${event.txid}');
+    // await Future.delayed(const Duration(seconds: 1));
 
     final tx = await txRepository.loadTx(event.walletId, event.txid);
     //if (err != null) {

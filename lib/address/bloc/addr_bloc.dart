@@ -78,6 +78,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
     print('_onLoadAddress: ${event.address}');
 
+    // await Future.delayed(const Duration(seconds: 2));
+
     final address = await addrRepository.loadAddress(event.walletId, event.address);
     emit(state.copyWith(selectedAddress: address, status: LoadStatus.success));
   }

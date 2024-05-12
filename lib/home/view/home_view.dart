@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:bb_arch/_pkg/misc.dart';
+import 'package:bb_arch/_pkg/tx/models/tx.dart';
+import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:bb_arch/settings/view/settings_page.dart';
 import 'package:bb_arch/tx/bloc/tx_bloc.dart';
@@ -17,6 +19,10 @@ class HomeScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loadStatus = context.select((WalletBloc cubit) => cubit.state.status);
+    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
+    final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
+    final txsStatus = context.select((TxBloc cubit) => cubit.state.status);
+    final txs = context.select((TxBloc cubit) => cubit.state.txs);
 
     print('HomeView.build: $loadStatus');
 
@@ -53,7 +59,12 @@ class HomeScaffold extends StatelessWidget {
           ),
         ],
       ),
-      child: const HomeView(),
+      child: HomeView(
+        wallets: wallets,
+        syncStatus: syncStatus,
+        txsStatus: txsStatus,
+        txs: txs,
+      ),
     );
   }
 }
@@ -61,15 +72,19 @@ class HomeScaffold extends StatelessWidget {
 class HomeView extends StatelessWidget {
   const HomeView({
     super.key,
+    required this.wallets,
+    required this.syncStatus,
+    required this.txsStatus,
+    required this.txs,
   });
+
+  final List<Wallet> wallets;
+  final List<LoadStatus> syncStatus;
+  final LoadStatus txsStatus;
+  final List<Tx> txs;
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
-    final syncStatus = context.select((WalletBloc cubit) => cubit.state.syncWalletStatus);
-    final txsStatus = context.select((TxBloc cubit) => cubit.state.status);
-    final txs = context.select((TxBloc cubit) => cubit.state.txs);
-
     return Column(
       children: [
         Padding(

@@ -71,7 +71,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
       String seedId = '${w.seedFingerprint}_${w.type.name}_${w.network.name}';
       if (w is BitcoinWallet) {
         if (w.bdkWallet == null) {
-          final (seed, _) = await seedRepository.loadSeed(seedId);
+          final (seed, _) = await seedRepository.loadSeed(w.seedFingerprint);
           newWallet = await BitcoinWalletHelper.loadNativeSdk(w, seed!);
         }
       } else if (w is LiquidWallet) {
@@ -132,9 +132,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   }
 
   void _onPersistWallet(PersistWallet event, Emitter<WalletState> emit) async {
-    emit(state.copyWith(wallets: [...state.wallets, event.wallet]));
+    emit(state.copyWith(
+        wallets: [...state.wallets, event.wallet], syncWalletStatus: [...state.syncWalletStatus, LoadStatus.initial]));
     await walletRepository.persistWallet(event.wallet);
     // await Future.delayed(const Duration(milliseconds: 10000));
-    add(LoadAllWallets());
+    // add(LoadAllWallets());
   }
 }

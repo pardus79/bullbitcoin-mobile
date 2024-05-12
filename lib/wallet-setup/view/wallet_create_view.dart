@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/seed/models/seed.dart';
 import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:bb_arch/wallet-setup/view/wallet_type_selection_page.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
@@ -12,25 +13,33 @@ class WalletCreateScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BBScaffold(title: 'Wallet Create', child: WalletCreateView());
+    final seed = context.select((WalletSensitiveBloc cubit) => cubit.state.seed);
+    final walletName = context.select(
+        (WalletSensitiveBloc cubit) => cubit.state.seed?.mnemonic.split(' ').getRange(0, 2).join('-') ?? 'wallet-name');
+    return BBScaffold(
+        title: 'Wallet Create',
+        child: WalletCreateView(
+          seed: seed!,
+          walletName: walletName,
+        ));
   }
 }
 
 class WalletCreateView extends StatelessWidget {
-  const WalletCreateView({super.key});
+  const WalletCreateView({super.key, required this.seed, required this.walletName});
+
+  final Seed seed;
+  final String walletName;
 
   @override
   Widget build(BuildContext context) {
-    final seed = context.select((WalletSensitiveBloc cubit) => cubit.state.seed);
-    final walletName = context.select(
-        (WalletSensitiveBloc cubit) => cubit.state.seed?.mnemonic.split(' ').getRange(0, 2).join('-') ?? 'wallet-name');
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Mnemonic:'),
-          Text(seed?.mnemonic ?? 'Loading...'),
+          Text(seed.mnemonic),
           const SizedBox(height: 8),
           const Text('Wallet name:'),
           Text(walletName),
@@ -38,7 +47,7 @@ class WalletCreateView extends StatelessWidget {
           TextButton(
               onPressed: () async {
                 print('Create clicked');
-                final (seedFingerprint, _) = await seed!.getBdkFingerprint();
+                final (seedFingerprint, _) = await seed.getBdkFingerprint();
                 final newSeed = seed.copyWith(fingerprint: seedFingerprint ?? '');
                 context
                     .read<WalletSensitiveBloc>()

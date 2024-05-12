@@ -1,37 +1,76 @@
 // ignore_for_file: avoid_print
 
+import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/seed/models/seed.dart';
-import 'package:bb_arch/_pkg/tx/models/bitcoin_tx.dart';
+import 'package:bb_arch/_pkg/seed/seed_repository.dart';
 import 'package:bb_arch/_pkg/wallet/models/bitcoin_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/liquid_wallet.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
+import 'package:bb_arch/_pkg/wallet/wallet_repository.dart';
 import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:bb_arch/wallet/bloc/walletsensitive_bloc.dart';
+import 'package:bb_arch/wallet/bloc/walletsensitive_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+// TODO: This is messy. Cleanup
 class WalletTypeSelectionScaffold extends StatelessWidget {
-  const WalletTypeSelectionScaffold({super.key, required this.seed});
+  const WalletTypeSelectionScaffold({super.key, required this.seed, required this.walletName});
 
   final Seed seed;
+  final String walletName;
 
   @override
   Widget build(BuildContext context) {
-    return BBScaffold(title: 'Type selection', child: WalletTypeSelectionView(seed: seed));
+    final walletRepository = RepositoryProvider.of<WalletRepository>(context);
+    final seedRepository = RepositoryProvider.of<SeedRepository>(context);
+
+    return FutureBuilder<(String?, dynamic)>(
+        future: seed.getBdkFingerprint(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data?.$2 == null) {
+            final newSeed = seed.copyWith(fingerprint: snapshot.data?.$1 ?? '');
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                    create: (_) =>
+                        WalletSensitiveBloc(walletRepository: walletRepository, seedRepository: seedRepository)
+                          ..add(DeriveWalletFromStoredSeed(seed: newSeed, walletName: walletName))),
+              ],
+              child: BlocBuilder<WalletSensitiveBloc, WalletSensitiveState>(builder: (context, status) {
+                final wallets = context.select((WalletSensitiveBloc cubit) => cubit.state.derivedWallets);
+                final syncStatuses = context.select((WalletSensitiveBloc cubit) => cubit.state.syncDerivedWalletStatus);
+                return BBScaffold(
+                    title: 'Type selection',
+                    child: WalletTypeSelectionView(
+                      seed: newSeed,
+                      wallets: wallets,
+                      syncStatuses: syncStatuses,
+                    ));
+              }),
+            );
+          } else {
+            return const BBScaffold(
+              title: 'Type selection',
+              loadStatus: LoadStatus.loading,
+              child: null,
+            );
+          }
+        });
   }
 }
 
 class WalletTypeSelectionView extends StatelessWidget {
-  const WalletTypeSelectionView({super.key, required this.seed});
+  const WalletTypeSelectionView({super.key, required this.seed, required this.wallets, required this.syncStatuses});
 
   final Seed seed;
+  final List<Wallet> wallets;
+  final List<LoadStatus> syncStatuses;
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((WalletSensitiveBloc cubit) => cubit.state.derivedWallets);
-    final syncStatuses = context.select((WalletSensitiveBloc cubit) => cubit.state.syncDerivedWalletStatus);
     print('WalletTypeSelectionView');
     print(wallets.length);
 

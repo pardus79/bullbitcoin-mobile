@@ -12,9 +12,9 @@ class SeedRepository {
 
   late Seed? seed;
 
-  Future<(Seed?, dynamic)> loadSeed(String id) async {
+  Future<(Seed?, dynamic)> loadSeed(String fingerprint) async {
     try {
-      final seed = await isar.seeds.where().idEqualTo(id).findAll();
+      final seed = await isar.seeds.where().fingerprintEqualTo(fingerprint).findAll();
       //final (seedsStr, _) = await storage.getValue('seed.$fingerprint');
       //Seed seed = Seed.fromJson(jsonDecode(seedsStr!));
       return (seed.first, null);

@@ -38,24 +38,30 @@ class WalletTypeSelectionPage extends StatelessWidget {
         network: NetworkType.Testnet);
 
     // TODO: How to handle errors here
-    return FutureBuilder<(String?, dynamic)>(
-        future: seed.getBdkFingerprint(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data?.$2 == null) {
-            seed = seed.copyWith(fingerprint: snapshot.data?.$1 ?? '');
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                    create: (_) =>
-                        WalletSensitiveBloc(walletRepository: walletRepository, seedRepository: seedRepository)
-                          ..add(DeriveWalletFromStoredSeed(seed: seed, walletName: walletName))),
-              ],
-              child: WalletTypeSelectionScaffold(seed: seed),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
-    // return const WalletTypeSelectionView();
+    // return FutureBuilder<(String?, dynamic)>(
+    //     future: seed.getBdkFingerprint(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData && snapshot.data?.$2 == null) {
+    //         seed = seed.copyWith(fingerprint: snapshot.data?.$1 ?? '');
+    //         return MultiBlocProvider(
+    //           providers: [
+    //             BlocProvider(
+    //                 create: (_) =>
+    //                     WalletSensitiveBloc(walletRepository: walletRepository, seedRepository: seedRepository)
+    //                       ..add(DeriveWalletFromStoredSeed(seed: seed, walletName: walletName))),
+    //           ],
+    //           child: WalletTypeSelectionScaffold(
+    //             seed: seed,
+    //             walletName: walletName,
+    //           ),
+    //         );
+    //       } else {
+    //         return const Center(child: CircularProgressIndicator());
+    //       }
+    //     });
+    return WalletTypeSelectionScaffold(
+      seed: seed,
+      walletName: walletName,
+    );
   }
 }

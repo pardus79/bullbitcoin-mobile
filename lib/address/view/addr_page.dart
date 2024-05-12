@@ -24,19 +24,8 @@ class AddressPage extends StatelessWidget {
               create: (_) =>
                   AddressBloc(addrRepository: addressRepository)..add(LoadAddress(walletId: walletId, address: id))),
         ],
-        child: BlocBuilder<AddressBloc, AddressState>(
-          builder: (context, state) {
-            Widget addrView;
-            Address? addr = state.selectedAddress;
-            if (addr?.type == AddressType.Bitcoin) {
-              addrView = AddressScaffold(walletId: walletId);
-            } else if (addr?.type == AddressType.Liquid) {
-              addrView = AddressScaffold(walletId: walletId);
-            } else {
-              addrView = const Text('Unsupported Address type');
-            }
-            return addrView;
-          },
+        child: AddressScaffold(
+          walletId: walletId,
         ));
   }
 }

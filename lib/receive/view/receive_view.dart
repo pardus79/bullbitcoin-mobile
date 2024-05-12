@@ -16,9 +16,15 @@ class ReceiveScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loadStatus = context.select((WalletBloc cubit) => cubit.state.status);
+    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
     return BBScaffold(
       title: 'Receive',
-      child: ReceiveView(walletId: walletId),
+      loadStatus: loadStatus,
+      child: ReceiveView(
+        walletId: walletId,
+        wallets: wallets,
+      ),
     );
   }
 }
@@ -30,9 +36,10 @@ enum ReceiveMethod {
 }
 
 class ReceiveView extends StatefulWidget {
-  const ReceiveView({super.key, required this.walletId});
+  const ReceiveView({super.key, required this.walletId, required this.wallets});
 
   final String walletId;
+  final List<Wallet> wallets;
 
   @override
   State<ReceiveView> createState() => _ReceiveViewState();
@@ -41,11 +48,6 @@ class ReceiveView extends StatefulWidget {
 class _ReceiveViewState extends State<ReceiveView> {
   ReceiveMethod selectedReceiveMethod = ReceiveMethod.BITCOIN;
   Wallet? selectedWallet;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Widget buildReceiveWidget(ReceiveMethod selectedReceiveMethod) {
     Widget receiveWidget;
@@ -73,8 +75,6 @@ class _ReceiveViewState extends State<ReceiveView> {
 
   @override
   Widget build(BuildContext context) {
-    final wallets = context.select((WalletBloc cubit) => cubit.state.wallets);
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -84,7 +84,7 @@ class _ReceiveViewState extends State<ReceiveView> {
             Center(
               child: DropdownButton<String>(
                 hint: const Text('Choose wallet'),
-                items: wallets.map((Wallet wallet) {
+                items: widget.wallets.map((Wallet wallet) {
                   return DropdownMenuItem<String>(
                     value: wallet.id,
                     child: Text(wallet.name),
@@ -92,7 +92,7 @@ class _ReceiveViewState extends State<ReceiveView> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    selectedWallet = wallets.where((wallet) => wallet.id == value).first;
+                    selectedWallet = widget.wallets.where((wallet) => wallet.id == value).first;
                   });
                 },
                 value: selectedWallet?.id,
