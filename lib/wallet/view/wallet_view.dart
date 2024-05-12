@@ -17,48 +17,58 @@ class WalletScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loadStatus = context.select((TxBloc cubit) => cubit.state.status);
-    final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet!);
+    final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet);
+    final txs = context.select((TxBloc cubit) => cubit.state.txs);
+
     return BBScaffold(
-        title: wallet.name,
+        title: wallet?.name ?? '',
+        loadStatus: loadStatus,
         actions: [
           loadStatus == LoadStatus.loading ? const CircularProgressIndicator() : const SizedBox.shrink(),
         ],
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: () {
-                context.read<TxBloc>().add(SyncTxs(wallet: wallet));
-              },
-              tooltip: 'Load Tx',
-              heroTag: 'loadTag',
-              child: const Icon(Icons.sync),
-            ),
-            const SizedBox(height: 10),
-            FloatingActionButton(
-              onPressed: () {
-                context.read<TxBloc>().add(SyncTxs(wallet: wallet));
-              },
-              tooltip: 'Sync',
-              heroTag: 'syncTag',
-              child: const Icon(Icons.cloud_sync),
-            ),
-          ],
-        ),
-        child: WalletView(id: id));
+        floatingActionButton: loadStatus == LoadStatus.success
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
+                    },
+                    tooltip: 'Load Tx',
+                    heroTag: 'loadTag',
+                    child: const Icon(Icons.sync),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    onPressed: () {
+                      context.read<TxBloc>().add(SyncTxs(wallet: wallet!));
+                    },
+                    tooltip: 'Sync',
+                    heroTag: 'syncTag',
+                    child: const Icon(Icons.cloud_sync),
+                  ),
+                ],
+              )
+            : null,
+        child: loadStatus == LoadStatus.success
+            ? WalletView(
+                id: id,
+                wallet: wallet!,
+                txs: txs,
+              )
+            : null);
   }
 }
 
 class WalletView extends StatelessWidget {
-  const WalletView({super.key, required this.id});
+  const WalletView({super.key, required this.id, required this.wallet, required this.txs});
 
   final String id;
+  final Wallet wallet;
+  final List<Tx> txs;
 
   @override
   Widget build(BuildContext context) {
-    final wallet = context.select((WalletBloc cubit) => cubit.state.selectedWallet!);
-    final txs = context.select((TxBloc cubit) => cubit.state.txs);
-
     return Column(
       children: [
         WalletHeader(wallet: wallet, txs: txs),

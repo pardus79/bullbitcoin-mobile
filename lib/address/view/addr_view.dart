@@ -12,23 +12,29 @@ class AddressScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loadStatus = context.select((AddressBloc cubit) => cubit.state.status);
+    final address = context.select((AddressBloc cubit) => cubit.state.selectedAddress);
     return BBScaffold(
-        title: 'Address',
-        child: AddressView(
-          walletId: walletId,
-        ));
+      title: 'Address',
+      loadStatus: loadStatus,
+      child: address != null
+          ? AddressView(
+              walletId: walletId,
+              address: address,
+            )
+          : const Text('Loading'),
+    );
   }
 }
 
 class AddressView extends StatelessWidget {
-  const AddressView({super.key, required this.walletId});
+  const AddressView({super.key, required this.walletId, required this.address});
 
   final String walletId;
+  final Address address;
 
   @override
   Widget build(BuildContext context) {
-    final address = context.select((AddressBloc cubit) => cubit.state.selectedAddress);
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),

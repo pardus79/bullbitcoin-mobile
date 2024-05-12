@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:bb_arch/_pkg/address/address_repository.dart';
 import 'package:bb_arch/_pkg/tx/tx_repository.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
@@ -23,18 +25,20 @@ class AddressListPage extends StatelessWidget {
         context.select((WalletBloc cubit) => cubit.state.wallets.firstWhere((w) => w.id == walletId));
     // final txs = context.select((TxBloc cubit) => cubit.state.txs);
 
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => AddressCubit()),
-          BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(LoadTxs(wallet: selectedWallet))),
-          BlocProvider(create: (_) => AddressBloc(addrRepository: addressRepository)),
-        ],
-        child: BlocBuilder<TxBloc, TxState>(
-            buildWhen: (previous, current) => current.txs.isNotEmpty, // TODO: Update this later
-            builder: (context, state) {
-              context.read<AddressBloc>().add(LoadAddresses(walletId: selectedWallet.id));
-              context.read<AddressBloc>().add(SyncAddresss(txs: state.txs, oldAddresses: [], wallet: selectedWallet));
-              return const AddressListScaffold();
-            }));
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (_) => AddressCubit()),
+      BlocProvider(create: (_) => TxBloc(txRepository: txRepository)..add(LoadTxs(wallet: selectedWallet))),
+      BlocProvider(
+          create: (_) =>
+              AddressBloc(addrRepository: addressRepository)..add(LoadAddresses(walletId: selectedWallet.id))),
+    ], child: const AddressListScaffold());
+    // child: BlocBuilder<TxBloc, TxState>(
+    //     buildWhen: (previous, current) => current.txs.isNotEmpty, // TODO: Update this later
+    //     builder: (context, state) {
+    //       print('Address List Page: ${state.txs.length}');
+    //       context.read<AddressBloc>().add(LoadAddresses(walletId: selectedWallet.id));
+    //       // context.read<AddressBloc>().add(SyncAddresss(txs: state.txs, oldAddresses: [], wallet: selectedWallet));
+    //       return const AddressListScaffold();
+    //     }));
   }
 }

@@ -3,11 +3,14 @@
 import 'package:bb_arch/_pkg/address/models/address.dart';
 import 'package:bb_arch/_pkg/address/models/bitcoin_address.dart';
 import 'package:bb_arch/_pkg/address/models/liquid_address.dart';
+import 'package:bb_arch/_pkg/misc.dart';
 import 'package:bb_arch/_pkg/wallet/models/wallet.dart';
 import 'package:bb_arch/_ui/bb_page.dart';
 import 'package:bb_arch/address/bloc/addr_bloc.dart';
 import 'package:bb_arch/address/widgets/bitcoin_address_list.dart';
 import 'package:bb_arch/address/widgets/liquid_address_list.dart';
+import 'package:bb_arch/tx/bloc/tx_bloc.dart';
+import 'package:bb_arch/tx/bloc/tx_state.dart';
 import 'package:bb_arch/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,12 +20,57 @@ class AddressListScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BBScaffold(title: 'Address list', child: AddressListView());
+    final addressLoadStatus = context.select((AddressBloc bloc) => bloc.state.status);
+    final txLoadStatus = context.select((TxBloc bloc) => bloc.state.status);
+
+    final wallet = context.select((WalletBloc bloc) => bloc.state.selectedWallet);
+    final txs = context.select((TxBloc cubit) => cubit.state.txs);
+    final depositAddresses = context.select((AddressBloc bloc) => bloc.state.depositAddresses);
+    final changeAddresses = context.select((AddressBloc bloc) => bloc.state.changeAddresses);
+
+    LoadStatus loadStatus;
+
+    if (addressLoadStatus == LoadStatus.success && txLoadStatus == LoadStatus.success) {
+      loadStatus = LoadStatus.success;
+    } else if (addressLoadStatus == LoadStatus.failure || txLoadStatus == LoadStatus.failure) {
+      loadStatus = LoadStatus.failure;
+    } else {
+      loadStatus = LoadStatus.loading;
+    }
+
+    print('AddressListScaffold: $loadStatus $addressLoadStatus $txLoadStatus');
+
+    return BlocBuilder<TxBloc, TxState>(
+      builder: (context, state) {
+        print('AddressListScaffold: txCount: ${state.txs.length}');
+        return BBScaffold(
+            title: 'Address list',
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                context.read<AddressBloc>().add(SyncAddresss(txs: txs, oldAddresses: [], wallet: wallet!));
+              },
+              child: const Text('Sync'),
+            ),
+            loadStatus: loadStatus,
+            child: loadStatus == LoadStatus.success
+                ? AddressListView(
+                    wallet: wallet!,
+                    depositAddresses: depositAddresses,
+                    changeAddresses: changeAddresses,
+                  )
+                : null);
+      },
+    );
   }
 }
 
 class AddressListView extends StatefulWidget {
-  const AddressListView({super.key});
+  const AddressListView(
+      {super.key, required this.wallet, required this.depositAddresses, required this.changeAddresses});
+
+  final Wallet wallet;
+  final List<Address> depositAddresses;
+  final List<Address> changeAddresses;
 
   @override
   State<AddressListView> createState() => _AddressListView();
@@ -30,30 +78,34 @@ class AddressListView extends StatefulWidget {
 
 class _AddressListView extends State<AddressListView> {
   AddressKind selectedKind = AddressKind.deposit;
+  Widget? bitcoinDepositAddressListView;
+  Widget? bitcoinChangeAddressListView;
+  Widget? liquidAddressListView;
 
   @override
   Widget build(BuildContext context) {
-    final wallet = context.select((WalletBloc bloc) => bloc.state.selectedWallet);
-    final depositAddresses = context.select((AddressBloc bloc) => bloc.state.depositAddresses);
-    final changeAddresses = context.select((AddressBloc bloc) => bloc.state.changeAddresses);
-
     print('selectedKind: $selectedKind');
 
+    // TODO: Optimize: This switch takes time for loading.
     Widget listView;
-    if (wallet?.type == WalletType.Bitcoin) {
+    if (widget.wallet.type == WalletType.Bitcoin) {
       if (selectedKind == AddressKind.deposit) {
         print('loading with deposit addr');
-        listView =
-            BitcoinAddressList(walletId: wallet?.id ?? '', addresses: List<BitcoinAddress>.from(depositAddresses));
+        bitcoinDepositAddressListView ??= BitcoinAddressList(
+            walletId: widget.wallet.id, addresses: List<BitcoinAddress>.from(widget.depositAddresses));
+        listView = bitcoinDepositAddressListView!;
       } else if (selectedKind == AddressKind.change) {
         print('loading with change addr');
-        listView =
-            BitcoinAddressList(walletId: wallet?.id ?? '', addresses: List<BitcoinAddress>.from(changeAddresses));
+        bitcoinChangeAddressListView ??= BitcoinAddressList(
+            walletId: widget.wallet.id, addresses: List<BitcoinAddress>.from(widget.changeAddresses));
+        listView = bitcoinChangeAddressListView!;
       } else {
         listView = const Text('Unsupported address kind');
       }
-    } else if (wallet?.type == WalletType.Liquid) {
-      listView = LiquidAddressList(walletId: wallet?.id ?? '', addresses: List<LiquidAddress>.from(depositAddresses));
+    } else if (widget.wallet.type == WalletType.Liquid) {
+      liquidAddressListView ??=
+          LiquidAddressList(walletId: widget.wallet.id, addresses: List<LiquidAddress>.from(widget.depositAddresses));
+      listView = liquidAddressListView!;
     } else {
       listView = const Text('Unsupported wallet type');
     }

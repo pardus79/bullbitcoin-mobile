@@ -34,7 +34,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       emit(state.copyWith(depositAddresses: [], status: LoadStatus.failure, error: err.toString()));
       return;
     }
-    emit(state.copyWith(depositAddresses: ads ?? [], status: LoadStatus.success));
+
+    // TODO: Optimize
+    final deposit = ads!.where((a) => a.kind == AddressKind.deposit).toList();
+    final change = ads.where((a) => a.kind == AddressKind.change).toList();
+
+    // await Future.delayed(const Duration(seconds: 10));
+
+    emit(state.copyWith(depositAddresses: deposit, changeAddresses: change, status: LoadStatus.success));
   }
 
   void _onSyncAddresses(SyncAddresss event, Emitter<AddressState> emit) async {
