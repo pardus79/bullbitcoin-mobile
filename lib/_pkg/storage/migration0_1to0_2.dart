@@ -57,15 +57,15 @@ Future<void> doMigration0_1to0_2(
     // Change 4: Update change address Index
     walletObj = await updateChangeAddressIndex(walletObj);
 
-    // print('Save wallet as:');
+    print('Save wallet as:');
     // print(jsonEncode(walletObj));
 
-    final _ = await hiveStorage.saveValue(
-      key: walletId,
-      value: jsonEncode(
-        walletObj,
-      ),
-    );
+    // final _ = await hiveStorage.saveValue(
+    //   key: walletId,
+    //   value: jsonEncode(
+    //     walletObj,
+    //   ),
+    // );
   }
 
   // Change 4: create a new Liquid wallet, based on the Bitcoin wallet
@@ -160,38 +160,48 @@ Future<Map<String, dynamic>> updateChangeAddressIndex(
   final (bdkWallet, _) = await bdkCreate.loadPublicBdkWallet(w);
 
   final myAddressBook = w.myAddressBook.toList();
+  final toAdd = [];
 
   int depositCounter = 0;
   int changeCounter = 0;
   for (int i = 0; i < myAddressBook.length; i++) {
     bdk.AddressInfo nativeAddr;
+    String nativeAddrStr;
 
     if (myAddressBook[i].kind == AddressKind.deposit) {
       nativeAddr = await bdkWallet!.getAddress(
         addressIndex: bdk.AddressIndex.peek(index: depositCounter),
       );
+      nativeAddrStr = await nativeAddr.address.asString();
       print(
-        'myAddressbook.depost index $i: ${myAddressBook[i].index} : $depositCounter',
+        'myAddressbook.depost index $i : $depositCounter : ${myAddressBook[i].index} ${nativeAddr.index} (${myAddressBook[i].address.substring(0, 8)}, ${nativeAddrStr.substring(0, 8)})',
       );
       depositCounter++;
     } else {
       nativeAddr = await bdkWallet!.getInternalAddress(
         addressIndex: bdk.AddressIndex.peek(index: changeCounter),
       );
+      nativeAddrStr = await nativeAddr.address.asString();
       print(
-        'myAddressbook.change index $i: ${myAddressBook[i].index} : $changeCounter',
+        'myAddressbook.change index $i : $changeCounter : ${myAddressBook[i].index} ${nativeAddr.index} (${myAddressBook[i].address.substring(0, 8)}, ${nativeAddrStr.substring(0, 8)})',
       );
       changeCounter++;
     }
 
-    myAddressBook[i] = myAddressBook[i].copyWith(index: nativeAddr.index);
-    // final nativeAddrStr = await nativeAddr.address.asString();
-    // final matchIndex =
-    //     myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
-    // if (matchIndex != -1) {
-    //   myAddressBook[matchIndex] =
-    //       myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
-    // }
+    final matchIndex =
+        myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
+    print('matchIndex $matchIndex');
+    if (matchIndex != -1) {
+      myAddressBook[matchIndex] =
+          myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
+    }
+  }
+
+  print('After patch:');
+  for (int i = 0; i < myAddressBook.length; i++) {
+    print(
+      'myAddressbook[$i] : ${myAddressBook[i].index} ${myAddressBook[i].kind} : (${myAddressBook[i].address.substring(0, 8)})',
+    );
   }
 
   return w.copyWith(myAddressBook: myAddressBook).toJson();
