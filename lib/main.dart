@@ -38,24 +38,10 @@ Future main({bool fromTest = false}) async {
     // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     await setupLocator(fromTest: fromTest);
 
-<<<<<<< HEAD
-  LwkCore.init();
-  BoltzCore.init();
-
-  await setupLocator(fromTest: fromTest);
-  final delegate = await Localise.getDelegate();
-  runApp(
-    LocalizedApp(
-      delegate,
-      const BullBitcoinWalletApp(),
-    ),
-  );
-=======
     runApp(const BullBitcoinWalletApp());
   }, (error, stack) {
     log('\n\nError: $error \nStack: $stack\n\n');
   });
->>>>>>> main
 }
 
 class BullBitcoinWalletApp extends StatelessWidget {

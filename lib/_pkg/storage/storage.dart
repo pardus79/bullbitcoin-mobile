@@ -60,7 +60,8 @@ Future<(SecureStorage, HiveStorage)> setupStorage() async {
     // await secureStorage.saveValue(key: StorageKeys.version, value: bbVersion);
   }
 
-  final (password, err) = await secureStorage.getValue(StorageKeys.hiveEncryption);
+  final (password, err) =
+      await secureStorage.getValue(StorageKeys.hiveEncryption);
   if (err != null) {
     print('::::new encryption key generated');
     final password = Hive.generateSecureKey();
@@ -74,7 +75,7 @@ Future<(SecureStorage, HiveStorage)> setupStorage() async {
 
   if (version != bbVersion) {
     await doMigration(version!, bbVersion, secureStorage, hiveStorage);
-    await secureStorage.saveValue(key: StorageKeys.version, value: bbVersion);
+    // await secureStorage.saveValue(key: StorageKeys.version, value: bbVersion);
   }
   // if (errr == null && version != bbVersion) await hiveStorage.deleteAll();
 

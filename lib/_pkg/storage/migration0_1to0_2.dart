@@ -4,8 +4,8 @@
 //  Change 4: Update change address Index
 // Change 5: create a new Liquid wallet, based on the Bitcoin wallet
 import 'dart:convert';
-import 'dart:developer';
 
+import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/seed.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
@@ -30,7 +30,8 @@ Future<void> doMigration0_1to0_2(
 ) async {
   print('Migration: 0.1 to 0.2');
 
-  final (walletIds, walletIdsErr) = await hiveStorage.getValue(StorageKeys.wallets);
+  final (walletIds, walletIdsErr) =
+      await hiveStorage.getValue(StorageKeys.wallets);
   if (walletIdsErr != null) throw walletIdsErr;
 
   final walletIdsJson = jsonDecode(walletIds!)['wallets'] as List<dynamic>;
@@ -39,6 +40,7 @@ Future<void> doMigration0_1to0_2(
       WalletSensitiveStorageRepository(secureStorage: secureStorage);
 
   for (final walletId in walletIdsJson) {
+    print('walletId: $walletId');
     final (jsn, err) = await hiveStorage.getValue(walletId as String);
     if (err != null) throw err;
 
@@ -46,7 +48,8 @@ Future<void> doMigration0_1to0_2(
 
     // Change 1: for each wallet with type as newSeed, change it to secure
     // Change 2: add BaseWalletType as Bitcoin
-    walletObj = await updateWalletObj(walletObj, walletSensitiveStorageRepository);
+    walletObj =
+        await updateWalletObj(walletObj, walletSensitiveStorageRepository);
 
     // Change 3: add isLiquid to all Txns, Addresses
     walletObj = await addIsLiquid(walletObj);
@@ -57,19 +60,19 @@ Future<void> doMigration0_1to0_2(
     // print('Save wallet as:');
     // print(jsonEncode(walletObj));
 
-    // final _ = await hiveStorage.saveValue(
-    //   key: walletId,
-    //   value: jsonEncode(
-    //     walletObj,
-    //   ),
-    // );
+    final _ = await hiveStorage.saveValue(
+      key: walletId,
+      value: jsonEncode(
+        walletObj,
+      ),
+    );
   }
 
   // Change 4: create a new Liquid wallet, based on the Bitcoin wallet
-  await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
+  // await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
 
   // Finally update version number to next version
-  await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
+  // await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
 }
 
 Future<Map<String, dynamic>> updateWalletObj(
@@ -87,7 +90,8 @@ Future<Map<String, dynamic>> updateWalletObj(
     if (walletObj['network'] == 'Mainnet') {
       if (mainWalletIndex == 0) {
         walletObj['type'] = 'secure';
-        walletObj['name'] = 'Secure Bitcoin Wallet / ' + (walletObj['name'] as String);
+        walletObj['name'] =
+            'Secure Bitcoin Wallet / ' + (walletObj['name'] as String);
         walletObj['mainWallet'] = true;
         mainWalletIndex++;
 
@@ -104,7 +108,8 @@ Future<Map<String, dynamic>> updateWalletObj(
     } else if (walletObj['network'] == 'Testnet') {
       if (testWalletIndex == 0) {
         walletObj['type'] = 'secure';
-        walletObj['name'] = 'Secure Bitcoin Wallet / ' + (walletObj['name'] as String);
+        walletObj['name'] =
+            'Secure Bitcoin Wallet / ' + (walletObj['name'] as String);
         walletObj['mainWallet'] = true;
         testWalletIndex++;
 
@@ -127,30 +132,69 @@ Future<Map<String, dynamic>> updateWalletObj(
 Future<Map<String, dynamic>> updateChangeAddressIndex(
   Map<String, dynamic> walletObj,
 ) async {
-  int changeAddressCount = 0;
-  if (walletObj['myAddressBook'] != null) {
-    walletObj['myAddressBook'] =
-        walletObj['myAddressBook'].map((addr) => addr as Map<String, dynamic>).map((addr) {
-      if (addr['kind'] == 'change') {
-        changeAddressCount++;
-      }
-      return addr;
-    }).toList();
-  }
+  // int changeAddressCount = 0;
+  // int depositAddressCount = 0;
+  // int ivar = 0;
+  // if (walletObj['myAddressBook'] != null) {
+  //   walletObj['myAddressBook'] = walletObj['myAddressBook']
+  //       .map((addr) => addr as Map<String, dynamic>)
+  //       .map((addr) {
+  //     ivar++;
+  //     if (addr['index'] == null) {
+  //       print(
+  //         'change address: ${addr['address']} : ${addr['index']} : ${addr['kind']} $ivar',
+  //       );
+  //     }
+  //     if (addr['kind'] == 'change') {
+  //       changeAddressCount++;
+  //     } else if (addr['kind'] == 'change') {
+  //       depositAddressCount++;
+  //     }
+  //     return addr;
+  //   }).toList();
+  // }
 
   final Wallet w = Wallet.fromJson(walletObj);
   final WalletsRepository walletRepo = WalletsRepository();
   final bdkCreate = BDKCreate(walletsRepository: walletRepo);
   final (bdkWallet, _) = await bdkCreate.loadPublicBdkWallet(w);
 
-  for (int i = 0; i < changeAddressCount; i++) {
-    final nativeAddr = await bdkWallet!.getAddress(addressIndex: bdk.AddressIndex.peek(index: i));
-    final nativeAddrStr = await nativeAddr.address.asString();
-    final matchIndex = w.myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
-    w.myAddressBook[matchIndex] = w.myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
+  final myAddressBook = w.myAddressBook.toList();
+
+  int depositCounter = 0;
+  int changeCounter = 0;
+  for (int i = 0; i < myAddressBook.length; i++) {
+    bdk.AddressInfo nativeAddr;
+
+    if (myAddressBook[i].kind == AddressKind.deposit) {
+      nativeAddr = await bdkWallet!.getAddress(
+        addressIndex: bdk.AddressIndex.peek(index: depositCounter),
+      );
+      print(
+        'myAddressbook.depost index $i: ${myAddressBook[i].index} : $depositCounter',
+      );
+      depositCounter++;
+    } else {
+      nativeAddr = await bdkWallet!.getInternalAddress(
+        addressIndex: bdk.AddressIndex.peek(index: changeCounter),
+      );
+      print(
+        'myAddressbook.change index $i: ${myAddressBook[i].index} : $changeCounter',
+      );
+      changeCounter++;
+    }
+
+    myAddressBook[i] = myAddressBook[i].copyWith(index: nativeAddr.index);
+    // final nativeAddrStr = await nativeAddr.address.asString();
+    // final matchIndex =
+    //     myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
+    // if (matchIndex != -1) {
+    //   myAddressBook[matchIndex] =
+    //       myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
+    // }
   }
 
-  return w.toJson();
+  return w.copyWith(myAddressBook: myAddressBook).toJson();
 }
 
 Future<Map<String, dynamic>> addIsLiquid(
@@ -168,7 +212,7 @@ Future<Map<String, dynamic>> addIsLiquid(
         .toList();
   }
 
-  log(jsonEncode(walletObj['myAddressBook']));
+  // log(jsonEncode(walletObj['myAddressBook']));
 
   if (walletObj['externalAddressBook'] != null) {
     walletObj['externalAddressBook'] = walletObj['externalAddressBook']
@@ -214,7 +258,8 @@ Future<void> createLiquidWallet(
       network: BBNetwork.Mainnet,
       walletCreate: walletCreate,
     );
-    final liquidWallet = lw?.copyWith(name: lw.creationName(), mainWallet: true);
+    final liquidWallet =
+        lw?.copyWith(name: lw.creationName(), mainWallet: true);
     // print(liquidWallet?.id);
     await walletsStorageRepository.newWallet(liquidWallet!);
   }
@@ -230,7 +275,8 @@ Future<void> createLiquidWallet(
       network: BBNetwork.Testnet,
       walletCreate: walletCreate,
     );
-    final liquidWallet = lw?.copyWith(name: lw.creationName(), mainWallet: true);
+    final liquidWallet =
+        lw?.copyWith(name: lw.creationName(), mainWallet: true);
     // print(liquidWallet?.id);
     await walletsStorageRepository.newWallet(liquidWallet!);
   }
