@@ -11,8 +11,10 @@ class AmountCurrencyDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = context.select((CurrencyCubit cubit) => cubit.state.currency);
-    final currencyList = context.select((CurrencyCubit cubit) => cubit.state.updatedCurrencyList());
+    final currency =
+        context.select((CurrencyCubit cubit) => cubit.state.currency);
+    final currencyList = context
+        .select((CurrencyCubit cubit) => cubit.state.updatedCurrencyList());
 
     return DropdownButton<String>(
       value: currency?.name,
@@ -38,8 +40,10 @@ class SettingsCurrencyDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = context.select((CurrencyCubit x) => x.state.defaultFiatCurrency);
-    final currencies = context.select((CurrencyCubit x) => x.state.currencyList ?? []);
+    final currency =
+        context.select((CurrencyCubit x) => x.state.defaultFiatCurrency);
+    final currencies =
+        context.select((CurrencyCubit x) => x.state.currencyList ?? []);
     if (currency == null) return const SizedBox.shrink();
 
     return Column(
@@ -48,10 +52,12 @@ class SettingsCurrencyDropDown extends StatelessWidget {
         const BBText.body(
           'Currency',
         ),
-        const Gap(4),
+        const Gap(16),
         BBDropDown<Currency>(
+          isCentered: false,
           items: {
-            for (final c in currencies) c: c.getFullName(),
+            for (final c in currencies)
+              c: (label: c.getFullName(), enabled: true),
           },
           onChanged: (value) {
             context.read<CurrencyCubit>().changeDefaultCurrency(value);

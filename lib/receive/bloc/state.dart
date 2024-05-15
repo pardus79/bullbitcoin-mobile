@@ -1,12 +1,11 @@
 import 'package:bb_mobile/_model/address.dart';
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_model/wallet.dart';
+import 'package:bb_mobile/_pkg/consts/configs.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'state.freezed.dart';
-
-enum ReceivePaymentNetwork { bitcoin, liquid, lightning }
 
 @freezed
 class ReceiveState with _$ReceiveState {
@@ -25,17 +24,39 @@ class ReceiveState with _$ReceiveState {
     @Default(true) bool creatingInvoice,
     @Default('') String errCreatingInvoice,
     WalletBloc? walletBloc,
-    @Default(ReceivePaymentNetwork.bitcoin) ReceivePaymentNetwork paymentNetwork,
+    @Default(PaymentNetwork.bitcoin) PaymentNetwork paymentNetwork,
     int? updateAddressGap,
     @Default(false) bool switchToSecure,
     @Default(false) bool switchToInstant,
+    @Default(false) bool receiveFormSubmitted,
 
     // required SwapCubit swapBloc,
   }) = _ReceiveState;
   const ReceiveState._();
 
+  String getAddressWithAmountAndLabel(double amount, bool isLiquid, {SwapTx? swapTx, bool isTestnet = false}) {
+    final String address = getQRStr(swapTx: swapTx);
+
+    String finalAddress = '';
+    if (paymentNetwork == PaymentNetwork.lightning || (amount == 0 && description.isEmpty)) {
+      finalAddress = address;
+    } else {
+      if (isLiquid) {
+        // Refer spec: https://github.com/ElementsProject/elements/issues/805
+        final lqAssetId = isTestnet ? liquidTestnetAssetId : liquidMainnetAssetId;
+        final liquidProtocol = isTestnet ? 'liquidtestnet' : 'liquidnetwork';
+        finalAddress =
+            '$liquidProtocol:$address?amount=${amount.toStringAsFixed(8)}${description.isNotEmpty ? '&label=$description' : ''}&assetid=$lqAssetId';
+      } else {
+        finalAddress =
+            'bitcoin:$address?amount=${amount.toStringAsFixed(8)}${description.isNotEmpty ? '&label=$description' : ''}';
+      }
+    }
+    return finalAddress;
+  }
+
   String getQRStr({SwapTx? swapTx}) {
-    if (paymentNetwork == ReceivePaymentNetwork.lightning) {
+    if (paymentNetwork == PaymentNetwork.lightning) {
       if (swapTx == null) return '';
       return swapTx.invoice;
       // if (swapBloc.state.swapTx == null) return '';
@@ -51,31 +72,28 @@ class ReceiveState with _$ReceiveState {
       return invoice;
     }
 
-    if (paymentNetwork == ReceivePaymentNetwork.bitcoin)
+    if (paymentNetwork == PaymentNetwork.bitcoin)
       return defaultAddress?.address ?? '';
-    else if (paymentNetwork == ReceivePaymentNetwork.liquid)
+    else if (paymentNetwork == PaymentNetwork.liquid)
       return defaultLiquidAddress?.address ?? '';
     else
       return defaultAddress?.address ?? '';
   }
 
-  bool showNewRequestButton() => savedDescription.isEmpty && savedInvoiceAmount == 0;
-
   bool isSupported() {
-    if (paymentNetwork == ReceivePaymentNetwork.bitcoin &&
-        walletBloc!.state.wallet?.baseWalletType == BaseWalletType.Liquid) return false;
-    if (paymentNetwork == ReceivePaymentNetwork.liquid &&
-        walletBloc!.state.wallet?.baseWalletType == BaseWalletType.Bitcoin) return false;
+    if (paymentNetwork == PaymentNetwork.bitcoin && walletBloc!.state.wallet?.baseWalletType == BaseWalletType.Liquid)
+      return false;
+    if (paymentNetwork == PaymentNetwork.liquid && walletBloc!.state.wallet?.baseWalletType == BaseWalletType.Bitcoin)
+      return false;
     return true;
   }
 
   bool showQR(SwapTx? swapTx) {
-    return (swapTx != null && paymentNetwork == ReceivePaymentNetwork.lightning) ||
-        (paymentNetwork == ReceivePaymentNetwork.bitcoin ||
-            paymentNetwork == ReceivePaymentNetwork.liquid);
+    return (swapTx != null && paymentNetwork == PaymentNetwork.lightning) ||
+        (paymentNetwork == PaymentNetwork.bitcoin || paymentNetwork == PaymentNetwork.liquid);
   }
 
-  bool isLn() => paymentNetwork == ReceivePaymentNetwork.lightning;
+  bool isLn() => paymentNetwork == PaymentNetwork.lightning;
 
   bool checkIfMainWalletSelected() => walletBloc?.state.wallet?.mainWallet ?? false;
 

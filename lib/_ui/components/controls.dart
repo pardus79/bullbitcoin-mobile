@@ -17,7 +17,7 @@ class BBSwitcher<T> extends StatelessWidget {
   final void Function(T) onChanged;
   final T value;
 
-  Widget _buildItem(String title) {
+  Widget _buildItem(String title, {bool darkMode = false}) {
     return SizedBox(
       height: 40,
       width: 120,
@@ -25,31 +25,50 @@ class BBSwitcher<T> extends StatelessWidget {
         child: BBText.bodySmall(
           title,
           isBold: true,
+          onSurface: darkMode,
           fontSize: 14,
         ),
       ),
     );
   }
 
-  Map<T, Widget> _buildItems() {
+  Map<T, Widget> _buildItems(bool darkMode) {
     final map = <T, Widget>{};
     for (final key in items.keys) {
-      map[key] = _buildItem(items[key]!);
+      map[key] = _buildItem(items[key]!, darkMode: darkMode);
     }
     return map;
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoSlidingSegmentedControl(
-      groupValue: value,
-      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
-      children: _buildItems(),
-      backgroundColor: context.colour.surface,
-      onValueChanged: (v) {
-        if (v == null) return;
-        onChanged.call(v);
-      },
+    final darkMode = context.select(
+      (Lighting x) => x.state.currentTheme(context) == ThemeMode.dark,
+    );
+
+    final colour =
+        darkMode ? context.colour.background : context.colour.surface;
+
+    final borderColour =
+        darkMode ? context.colour.onBackground : context.colour.onSurface;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(8.0),
+        ),
+        border: Border.all(color: borderColour),
+      ),
+      child: CupertinoSlidingSegmentedControl(
+        groupValue: value,
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
+        children: _buildItems(darkMode),
+        backgroundColor: colour,
+        onValueChanged: (v) {
+          if (v == null) return;
+          onChanged.call(v);
+        },
+      ),
     );
   }
 }
@@ -60,80 +79,96 @@ class BBDropDown<T> extends StatelessWidget {
     required this.items,
     required this.onChanged,
     required this.value,
+    this.isCentered = true,
   });
 
-  final Map<T, String> items;
+  final Map<T, ({String label, bool enabled})> items;
   final void Function(T) onChanged;
   final T value;
+  final bool isCentered;
 
   @override
   Widget build(BuildContext context) {
-    final darkMode =
-        context.select((Lighting x) => x.state.currentTheme(context) == ThemeMode.dark);
+    final darkMode = context.select(
+      (Lighting x) => x.state.currentTheme(context) == ThemeMode.dark,
+    );
 
-    final bgColour = darkMode ? context.colour.background : NewColours.offWhite;
+    final bgColour =
+        darkMode ? context.colour.onBackground : NewColours.offWhite;
 
-    return Center(
-      child: SizedBox(
-        width: 225,
-        height: 45,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(8.0),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    final widget = SizedBox(
+      width: 225,
+      height: 45,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
+            Radius.circular(8.0),
           ),
-          child: DropdownButtonFormField<T>(
-            padding: EdgeInsets.zero,
-            elevation: 4,
-            borderRadius: BorderRadius.circular(8),
-            isExpanded: true,
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: bgColour,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: bgColour,
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              filled: true,
-              fillColor: bgColour,
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: bgColour),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-            value: value,
-            onChanged: (value) {
-              if (value == null) return;
-              onChanged.call(value);
-            },
-            items: [
-              for (final key in items.keys)
-                DropdownMenuItem<T>(
-                  value: key,
-                  child: Center(
-                    child: BBText.body(items[key]!),
-                  ),
-                ),
-            ],
+          ],
+        ),
+        child: DropdownButtonFormField<T>(
+          padding: EdgeInsets.zero,
+          elevation: 4,
+          borderRadius: BorderRadius.circular(8),
+          isExpanded: true,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: bgColour,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: bgColour,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            filled: true,
+            fillColor: context.colour.background,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: bgColour),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           ),
+          value: value,
+          onChanged: (value) {
+            if (value == null) return;
+            onChanged.call(value);
+          },
+          items: [
+            for (final key in items.keys)
+              DropdownMenuItem<T>(
+                value: key,
+                enabled: items[key]!.enabled,
+                child: Opacity(
+                  opacity: items[key]!.enabled ? 1 : 0.3,
+                  child: isCentered
+                      ? Center(
+                          child: BBText.body(items[key]!.label),
+                        )
+                      : BBText.body(items[key]!.label),
+                ),
+              ),
+          ],
         ),
       ),
     );
+
+    if (isCentered) {
+      return Center(
+        child: widget,
+      );
+    } else {
+      return widget;
+    }
   }
 }
 

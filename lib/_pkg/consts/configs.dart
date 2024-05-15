@@ -1,4 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:lwk_dart/lwk_dart.dart' as lwk;
 
 void setupConfigs() {}
 
@@ -12,8 +13,17 @@ const openelectrum = 'electrum.blockstream.info';
 const liquidElectrumUrl = 'blockstream.info:995';
 const liquidElectrumTestUrl = 'blockstream.info:465';
 
-const boltzTestnet = 'https://api.testnet.boltz.exchange';
-const boltzMainnet = 'https://api.boltz.exchange';
+const boltzTestnet = 'api.testnet.boltz.exchange';
+const boltzMainnet = 'api.boltz.exchange';
+
+const boltzTestnetV2 = 'api.testnet.boltz.exchange/v2';
+const boltzMainnetV2 = 'api.boltz.exchange/v2';
 
 final exchangeapi = bbexchangeapi;
 final mempoolapi = bbmempoolapi;
+
+const liquidMempool = 'https://liquid.network';
+const liquidMempoolTestnet = 'https://liquid.network/testnet';
+
+const liquidMainnetAssetId = lwk.lBtcAssetId;
+const liquidTestnetAssetId = lwk.lTestAssetId;

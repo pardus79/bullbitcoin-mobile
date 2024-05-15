@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'state.dart';
+part of 'send_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -17,15 +17,22 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SendState {
   String get address => throw _privateConstructorUsedError;
-  String get note => throw _privateConstructorUsedError;
-  bool get scanningAddress => throw _privateConstructorUsedError;
-  String get errScanningAddress => throw _privateConstructorUsedError;
+  List<String> get enabledWallets => throw _privateConstructorUsedError;
+  AddressNetwork? get paymentNetwork => throw _privateConstructorUsedError;
+  WalletBloc? get selectedWalletBloc => throw _privateConstructorUsedError;
+  Invoice? get invoice => throw _privateConstructorUsedError;
   bool get showSendButton => throw _privateConstructorUsedError;
+  String get note => throw _privateConstructorUsedError;
+  int? get tempAmt => throw _privateConstructorUsedError;
+  bool get scanningAddress => throw _privateConstructorUsedError;
+  String get errScanningAddress =>
+      throw _privateConstructorUsedError; // @Default(false) bool showDropdown,
   bool get sending => throw _privateConstructorUsedError;
   String get errSending => throw _privateConstructorUsedError;
   bool get sent => throw _privateConstructorUsedError;
   String get psbt => throw _privateConstructorUsedError;
   Transaction? get tx => throw _privateConstructorUsedError;
+  bool get txSettled => throw _privateConstructorUsedError;
   bool get downloadingFile => throw _privateConstructorUsedError;
   String get errDownloadingFile => throw _privateConstructorUsedError;
   bool get downloaded => throw _privateConstructorUsedError;
@@ -36,8 +43,6 @@ mixin _$SendState {
   bool get signed => throw _privateConstructorUsedError;
   String? get psbtSigned => throw _privateConstructorUsedError;
   int? get psbtSignedFeeAmount => throw _privateConstructorUsedError;
-  WalletBloc? get selectedWalletBloc => throw _privateConstructorUsedError;
-  SwapCubit get swapCubit => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SendStateCopyWith<SendState> get copyWith =>
@@ -51,15 +56,21 @@ abstract class $SendStateCopyWith<$Res> {
   @useResult
   $Res call(
       {String address,
+      List<String> enabledWallets,
+      AddressNetwork? paymentNetwork,
+      WalletBloc? selectedWalletBloc,
+      Invoice? invoice,
+      bool showSendButton,
       String note,
+      int? tempAmt,
       bool scanningAddress,
       String errScanningAddress,
-      bool showSendButton,
       bool sending,
       String errSending,
       bool sent,
       String psbt,
       Transaction? tx,
+      bool txSettled,
       bool downloadingFile,
       String errDownloadingFile,
       bool downloaded,
@@ -69,10 +80,9 @@ abstract class $SendStateCopyWith<$Res> {
       String errAddresses,
       bool signed,
       String? psbtSigned,
-      int? psbtSignedFeeAmount,
-      WalletBloc? selectedWalletBloc,
-      SwapCubit swapCubit});
+      int? psbtSignedFeeAmount});
 
+  $InvoiceCopyWith<$Res>? get invoice;
   $TransactionCopyWith<$Res>? get tx;
 }
 
@@ -90,15 +100,21 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
   @override
   $Res call({
     Object? address = null,
+    Object? enabledWallets = null,
+    Object? paymentNetwork = freezed,
+    Object? selectedWalletBloc = freezed,
+    Object? invoice = freezed,
+    Object? showSendButton = null,
     Object? note = null,
+    Object? tempAmt = freezed,
     Object? scanningAddress = null,
     Object? errScanningAddress = null,
-    Object? showSendButton = null,
     Object? sending = null,
     Object? errSending = null,
     Object? sent = null,
     Object? psbt = null,
     Object? tx = freezed,
+    Object? txSettled = null,
     Object? downloadingFile = null,
     Object? errDownloadingFile = null,
     Object? downloaded = null,
@@ -109,18 +125,40 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
     Object? signed = null,
     Object? psbtSigned = freezed,
     Object? psbtSignedFeeAmount = freezed,
-    Object? selectedWalletBloc = freezed,
-    Object? swapCubit = null,
   }) {
     return _then(_value.copyWith(
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String,
+      enabledWallets: null == enabledWallets
+          ? _value.enabledWallets
+          : enabledWallets // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      paymentNetwork: freezed == paymentNetwork
+          ? _value.paymentNetwork
+          : paymentNetwork // ignore: cast_nullable_to_non_nullable
+              as AddressNetwork?,
+      selectedWalletBloc: freezed == selectedWalletBloc
+          ? _value.selectedWalletBloc
+          : selectedWalletBloc // ignore: cast_nullable_to_non_nullable
+              as WalletBloc?,
+      invoice: freezed == invoice
+          ? _value.invoice
+          : invoice // ignore: cast_nullable_to_non_nullable
+              as Invoice?,
+      showSendButton: null == showSendButton
+          ? _value.showSendButton
+          : showSendButton // ignore: cast_nullable_to_non_nullable
+              as bool,
       note: null == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
               as String,
+      tempAmt: freezed == tempAmt
+          ? _value.tempAmt
+          : tempAmt // ignore: cast_nullable_to_non_nullable
+              as int?,
       scanningAddress: null == scanningAddress
           ? _value.scanningAddress
           : scanningAddress // ignore: cast_nullable_to_non_nullable
@@ -129,10 +167,6 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
           ? _value.errScanningAddress
           : errScanningAddress // ignore: cast_nullable_to_non_nullable
               as String,
-      showSendButton: null == showSendButton
-          ? _value.showSendButton
-          : showSendButton // ignore: cast_nullable_to_non_nullable
-              as bool,
       sending: null == sending
           ? _value.sending
           : sending // ignore: cast_nullable_to_non_nullable
@@ -153,6 +187,10 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
           ? _value.tx
           : tx // ignore: cast_nullable_to_non_nullable
               as Transaction?,
+      txSettled: null == txSettled
+          ? _value.txSettled
+          : txSettled // ignore: cast_nullable_to_non_nullable
+              as bool,
       downloadingFile: null == downloadingFile
           ? _value.downloadingFile
           : downloadingFile // ignore: cast_nullable_to_non_nullable
@@ -193,15 +231,19 @@ class _$SendStateCopyWithImpl<$Res, $Val extends SendState>
           ? _value.psbtSignedFeeAmount
           : psbtSignedFeeAmount // ignore: cast_nullable_to_non_nullable
               as int?,
-      selectedWalletBloc: freezed == selectedWalletBloc
-          ? _value.selectedWalletBloc
-          : selectedWalletBloc // ignore: cast_nullable_to_non_nullable
-              as WalletBloc?,
-      swapCubit: null == swapCubit
-          ? _value.swapCubit
-          : swapCubit // ignore: cast_nullable_to_non_nullable
-              as SwapCubit,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $InvoiceCopyWith<$Res>? get invoice {
+    if (_value.invoice == null) {
+      return null;
+    }
+
+    return $InvoiceCopyWith<$Res>(_value.invoice!, (value) {
+      return _then(_value.copyWith(invoice: value) as $Val);
+    });
   }
 
   @override
@@ -227,15 +269,21 @@ abstract class _$$SendStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {String address,
+      List<String> enabledWallets,
+      AddressNetwork? paymentNetwork,
+      WalletBloc? selectedWalletBloc,
+      Invoice? invoice,
+      bool showSendButton,
       String note,
+      int? tempAmt,
       bool scanningAddress,
       String errScanningAddress,
-      bool showSendButton,
       bool sending,
       String errSending,
       bool sent,
       String psbt,
       Transaction? tx,
+      bool txSettled,
       bool downloadingFile,
       String errDownloadingFile,
       bool downloaded,
@@ -245,10 +293,10 @@ abstract class _$$SendStateImplCopyWith<$Res>
       String errAddresses,
       bool signed,
       String? psbtSigned,
-      int? psbtSignedFeeAmount,
-      WalletBloc? selectedWalletBloc,
-      SwapCubit swapCubit});
+      int? psbtSignedFeeAmount});
 
+  @override
+  $InvoiceCopyWith<$Res>? get invoice;
   @override
   $TransactionCopyWith<$Res>? get tx;
 }
@@ -265,15 +313,21 @@ class __$$SendStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? address = null,
+    Object? enabledWallets = null,
+    Object? paymentNetwork = freezed,
+    Object? selectedWalletBloc = freezed,
+    Object? invoice = freezed,
+    Object? showSendButton = null,
     Object? note = null,
+    Object? tempAmt = freezed,
     Object? scanningAddress = null,
     Object? errScanningAddress = null,
-    Object? showSendButton = null,
     Object? sending = null,
     Object? errSending = null,
     Object? sent = null,
     Object? psbt = null,
     Object? tx = freezed,
+    Object? txSettled = null,
     Object? downloadingFile = null,
     Object? errDownloadingFile = null,
     Object? downloaded = null,
@@ -284,18 +338,40 @@ class __$$SendStateImplCopyWithImpl<$Res>
     Object? signed = null,
     Object? psbtSigned = freezed,
     Object? psbtSignedFeeAmount = freezed,
-    Object? selectedWalletBloc = freezed,
-    Object? swapCubit = null,
   }) {
     return _then(_$SendStateImpl(
       address: null == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String,
+      enabledWallets: null == enabledWallets
+          ? _value._enabledWallets
+          : enabledWallets // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      paymentNetwork: freezed == paymentNetwork
+          ? _value.paymentNetwork
+          : paymentNetwork // ignore: cast_nullable_to_non_nullable
+              as AddressNetwork?,
+      selectedWalletBloc: freezed == selectedWalletBloc
+          ? _value.selectedWalletBloc
+          : selectedWalletBloc // ignore: cast_nullable_to_non_nullable
+              as WalletBloc?,
+      invoice: freezed == invoice
+          ? _value.invoice
+          : invoice // ignore: cast_nullable_to_non_nullable
+              as Invoice?,
+      showSendButton: null == showSendButton
+          ? _value.showSendButton
+          : showSendButton // ignore: cast_nullable_to_non_nullable
+              as bool,
       note: null == note
           ? _value.note
           : note // ignore: cast_nullable_to_non_nullable
               as String,
+      tempAmt: freezed == tempAmt
+          ? _value.tempAmt
+          : tempAmt // ignore: cast_nullable_to_non_nullable
+              as int?,
       scanningAddress: null == scanningAddress
           ? _value.scanningAddress
           : scanningAddress // ignore: cast_nullable_to_non_nullable
@@ -304,10 +380,6 @@ class __$$SendStateImplCopyWithImpl<$Res>
           ? _value.errScanningAddress
           : errScanningAddress // ignore: cast_nullable_to_non_nullable
               as String,
-      showSendButton: null == showSendButton
-          ? _value.showSendButton
-          : showSendButton // ignore: cast_nullable_to_non_nullable
-              as bool,
       sending: null == sending
           ? _value.sending
           : sending // ignore: cast_nullable_to_non_nullable
@@ -328,6 +400,10 @@ class __$$SendStateImplCopyWithImpl<$Res>
           ? _value.tx
           : tx // ignore: cast_nullable_to_non_nullable
               as Transaction?,
+      txSettled: null == txSettled
+          ? _value.txSettled
+          : txSettled // ignore: cast_nullable_to_non_nullable
+              as bool,
       downloadingFile: null == downloadingFile
           ? _value.downloadingFile
           : downloadingFile // ignore: cast_nullable_to_non_nullable
@@ -368,14 +444,6 @@ class __$$SendStateImplCopyWithImpl<$Res>
           ? _value.psbtSignedFeeAmount
           : psbtSignedFeeAmount // ignore: cast_nullable_to_non_nullable
               as int?,
-      selectedWalletBloc: freezed == selectedWalletBloc
-          ? _value.selectedWalletBloc
-          : selectedWalletBloc // ignore: cast_nullable_to_non_nullable
-              as WalletBloc?,
-      swapCubit: null == swapCubit
-          ? _value.swapCubit
-          : swapCubit // ignore: cast_nullable_to_non_nullable
-              as SwapCubit,
     ));
   }
 }
@@ -385,15 +453,21 @@ class __$$SendStateImplCopyWithImpl<$Res>
 class _$SendStateImpl extends _SendState {
   const _$SendStateImpl(
       {this.address = '',
+      final List<String> enabledWallets = const [],
+      this.paymentNetwork,
+      this.selectedWalletBloc,
+      this.invoice,
+      this.showSendButton = false,
       this.note = '',
+      this.tempAmt,
       this.scanningAddress = false,
       this.errScanningAddress = '',
-      this.showSendButton = false,
       this.sending = false,
       this.errSending = '',
       this.sent = false,
       this.psbt = '',
       this.tx,
+      this.txSettled = false,
       this.downloadingFile = false,
       this.errDownloadingFile = '',
       this.downloaded = false,
@@ -403,27 +477,44 @@ class _$SendStateImpl extends _SendState {
       this.errAddresses = '',
       this.signed = false,
       this.psbtSigned,
-      this.psbtSignedFeeAmount,
-      this.selectedWalletBloc,
-      required this.swapCubit})
-      : _selectedUtxos = selectedUtxos,
+      this.psbtSignedFeeAmount})
+      : _enabledWallets = enabledWallets,
+        _selectedUtxos = selectedUtxos,
         super._();
 
   @override
   @JsonKey()
   final String address;
+  final List<String> _enabledWallets;
+  @override
+  @JsonKey()
+  List<String> get enabledWallets {
+    if (_enabledWallets is EqualUnmodifiableListView) return _enabledWallets;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_enabledWallets);
+  }
+
+  @override
+  final AddressNetwork? paymentNetwork;
+  @override
+  final WalletBloc? selectedWalletBloc;
+  @override
+  final Invoice? invoice;
+  @override
+  @JsonKey()
+  final bool showSendButton;
   @override
   @JsonKey()
   final String note;
+  @override
+  final int? tempAmt;
   @override
   @JsonKey()
   final bool scanningAddress;
   @override
   @JsonKey()
   final String errScanningAddress;
-  @override
-  @JsonKey()
-  final bool showSendButton;
+// @Default(false) bool showDropdown,
   @override
   @JsonKey()
   final bool sending;
@@ -438,6 +529,9 @@ class _$SendStateImpl extends _SendState {
   final String psbt;
   @override
   final Transaction? tx;
+  @override
+  @JsonKey()
+  final bool txSettled;
   @override
   @JsonKey()
   final bool downloadingFile;
@@ -472,14 +566,10 @@ class _$SendStateImpl extends _SendState {
   final String? psbtSigned;
   @override
   final int? psbtSignedFeeAmount;
-  @override
-  final WalletBloc? selectedWalletBloc;
-  @override
-  final SwapCubit swapCubit;
 
   @override
   String toString() {
-    return 'SendState(address: $address, note: $note, scanningAddress: $scanningAddress, errScanningAddress: $errScanningAddress, showSendButton: $showSendButton, sending: $sending, errSending: $errSending, sent: $sent, psbt: $psbt, tx: $tx, downloadingFile: $downloadingFile, errDownloadingFile: $errDownloadingFile, downloaded: $downloaded, disableRBF: $disableRBF, sendAllCoin: $sendAllCoin, selectedUtxos: $selectedUtxos, errAddresses: $errAddresses, signed: $signed, psbtSigned: $psbtSigned, psbtSignedFeeAmount: $psbtSignedFeeAmount, selectedWalletBloc: $selectedWalletBloc, swapCubit: $swapCubit)';
+    return 'SendState(address: $address, enabledWallets: $enabledWallets, paymentNetwork: $paymentNetwork, selectedWalletBloc: $selectedWalletBloc, invoice: $invoice, showSendButton: $showSendButton, note: $note, tempAmt: $tempAmt, scanningAddress: $scanningAddress, errScanningAddress: $errScanningAddress, sending: $sending, errSending: $errSending, sent: $sent, psbt: $psbt, tx: $tx, txSettled: $txSettled, downloadingFile: $downloadingFile, errDownloadingFile: $errDownloadingFile, downloaded: $downloaded, disableRBF: $disableRBF, sendAllCoin: $sendAllCoin, selectedUtxos: $selectedUtxos, errAddresses: $errAddresses, signed: $signed, psbtSigned: $psbtSigned, psbtSignedFeeAmount: $psbtSignedFeeAmount)';
   }
 
   @override
@@ -488,19 +578,29 @@ class _$SendStateImpl extends _SendState {
         (other.runtimeType == runtimeType &&
             other is _$SendStateImpl &&
             (identical(other.address, address) || other.address == address) &&
+            const DeepCollectionEquality()
+                .equals(other._enabledWallets, _enabledWallets) &&
+            (identical(other.paymentNetwork, paymentNetwork) ||
+                other.paymentNetwork == paymentNetwork) &&
+            (identical(other.selectedWalletBloc, selectedWalletBloc) ||
+                other.selectedWalletBloc == selectedWalletBloc) &&
+            (identical(other.invoice, invoice) || other.invoice == invoice) &&
+            (identical(other.showSendButton, showSendButton) ||
+                other.showSendButton == showSendButton) &&
             (identical(other.note, note) || other.note == note) &&
+            (identical(other.tempAmt, tempAmt) || other.tempAmt == tempAmt) &&
             (identical(other.scanningAddress, scanningAddress) ||
                 other.scanningAddress == scanningAddress) &&
             (identical(other.errScanningAddress, errScanningAddress) ||
                 other.errScanningAddress == errScanningAddress) &&
-            (identical(other.showSendButton, showSendButton) ||
-                other.showSendButton == showSendButton) &&
             (identical(other.sending, sending) || other.sending == sending) &&
             (identical(other.errSending, errSending) ||
                 other.errSending == errSending) &&
             (identical(other.sent, sent) || other.sent == sent) &&
             (identical(other.psbt, psbt) || other.psbt == psbt) &&
             (identical(other.tx, tx) || other.tx == tx) &&
+            (identical(other.txSettled, txSettled) ||
+                other.txSettled == txSettled) &&
             (identical(other.downloadingFile, downloadingFile) ||
                 other.downloadingFile == downloadingFile) &&
             (identical(other.errDownloadingFile, errDownloadingFile) ||
@@ -519,26 +619,28 @@ class _$SendStateImpl extends _SendState {
             (identical(other.psbtSigned, psbtSigned) ||
                 other.psbtSigned == psbtSigned) &&
             (identical(other.psbtSignedFeeAmount, psbtSignedFeeAmount) ||
-                other.psbtSignedFeeAmount == psbtSignedFeeAmount) &&
-            (identical(other.selectedWalletBloc, selectedWalletBloc) ||
-                other.selectedWalletBloc == selectedWalletBloc) &&
-            (identical(other.swapCubit, swapCubit) ||
-                other.swapCubit == swapCubit));
+                other.psbtSignedFeeAmount == psbtSignedFeeAmount));
   }
 
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
         address,
+        const DeepCollectionEquality().hash(_enabledWallets),
+        paymentNetwork,
+        selectedWalletBloc,
+        invoice,
+        showSendButton,
         note,
+        tempAmt,
         scanningAddress,
         errScanningAddress,
-        showSendButton,
         sending,
         errSending,
         sent,
         psbt,
         tx,
+        txSettled,
         downloadingFile,
         errDownloadingFile,
         downloaded,
@@ -548,9 +650,7 @@ class _$SendStateImpl extends _SendState {
         errAddresses,
         signed,
         psbtSigned,
-        psbtSignedFeeAmount,
-        selectedWalletBloc,
-        swapCubit
+        psbtSignedFeeAmount
       ]);
 
   @JsonKey(ignore: true)
@@ -563,15 +663,21 @@ class _$SendStateImpl extends _SendState {
 abstract class _SendState extends SendState {
   const factory _SendState(
       {final String address,
+      final List<String> enabledWallets,
+      final AddressNetwork? paymentNetwork,
+      final WalletBloc? selectedWalletBloc,
+      final Invoice? invoice,
+      final bool showSendButton,
       final String note,
+      final int? tempAmt,
       final bool scanningAddress,
       final String errScanningAddress,
-      final bool showSendButton,
       final bool sending,
       final String errSending,
       final bool sent,
       final String psbt,
       final Transaction? tx,
+      final bool txSettled,
       final bool downloadingFile,
       final String errDownloadingFile,
       final bool downloaded,
@@ -581,22 +687,30 @@ abstract class _SendState extends SendState {
       final String errAddresses,
       final bool signed,
       final String? psbtSigned,
-      final int? psbtSignedFeeAmount,
-      final WalletBloc? selectedWalletBloc,
-      required final SwapCubit swapCubit}) = _$SendStateImpl;
+      final int? psbtSignedFeeAmount}) = _$SendStateImpl;
   const _SendState._() : super._();
 
   @override
   String get address;
   @override
+  List<String> get enabledWallets;
+  @override
+  AddressNetwork? get paymentNetwork;
+  @override
+  WalletBloc? get selectedWalletBloc;
+  @override
+  Invoice? get invoice;
+  @override
+  bool get showSendButton;
+  @override
   String get note;
+  @override
+  int? get tempAmt;
   @override
   bool get scanningAddress;
   @override
   String get errScanningAddress;
-  @override
-  bool get showSendButton;
-  @override
+  @override // @Default(false) bool showDropdown,
   bool get sending;
   @override
   String get errSending;
@@ -606,6 +720,8 @@ abstract class _SendState extends SendState {
   String get psbt;
   @override
   Transaction? get tx;
+  @override
+  bool get txSettled;
   @override
   bool get downloadingFile;
   @override
@@ -626,10 +742,6 @@ abstract class _SendState extends SendState {
   String? get psbtSigned;
   @override
   int? get psbtSignedFeeAmount;
-  @override
-  WalletBloc? get selectedWalletBloc;
-  @override
-  SwapCubit get swapCubit;
   @override
   @JsonKey(ignore: true)
   _$$SendStateImplCopyWith<_$SendStateImpl> get copyWith =>

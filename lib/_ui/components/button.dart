@@ -28,6 +28,7 @@ class BBButton extends StatelessWidget {
     this.loadingText,
     this.fillWidth = false,
     this.leftSvgAsset,
+    this.center = false,
   })  : type = _ButtonType.big,
         isBlue = null,
         isRed = null,
@@ -48,6 +49,7 @@ class BBButton extends StatelessWidget {
     this.buttonKey,
     this.onSurface = false,
     this.fontSize,
+    this.center = false,
   })  : type = _ButtonType.text,
         filled = false,
         statusText = null,
@@ -62,6 +64,7 @@ class BBButton extends StatelessWidget {
     this.loading = false,
     this.loadingText,
     this.buttonKey,
+    this.center = false,
   })  : type = _ButtonType.textWithRightArrow,
         filled = false,
         isBlue = null,
@@ -81,6 +84,7 @@ class BBButton extends StatelessWidget {
     this.loading = false,
     this.loadingText,
     this.buttonKey,
+    this.center = false,
   })  : type = _ButtonType.textWithLeftArrow,
         filled = false,
         isBlue = null,
@@ -103,6 +107,7 @@ class BBButton extends StatelessWidget {
     this.isRed = false,
     this.statusText,
     this.buttonKey,
+    this.center = false,
   })  : type = _ButtonType.textWithStatusAndRightArrow,
         filled = false,
         centered = null,
@@ -126,6 +131,7 @@ class BBButton extends StatelessWidget {
   final bool fillWidth;
   final double? fontSize;
   final bool? onSurface;
+  final bool center;
 
   final bool loading;
   final String? loadingText;
@@ -199,13 +205,13 @@ class BBButton extends StatelessWidget {
                   width: 16,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(context.colour.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(context.colour.surface),
                   ),
                 ),
                 const Gap(8),
                 BBText.title(
                   loadingText ?? label,
-                  isRed: !filled,
+                  // isRed: !filled,
                   onSurface: filled,
                 ),
               ],
@@ -327,6 +333,8 @@ class BBButton extends StatelessWidget {
           ),
         );
     }
+
+    if (center) widget = Center(child: widget);
 
     return IgnorePointer(
       ignoring: disabled,

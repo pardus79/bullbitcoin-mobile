@@ -1,16 +1,25 @@
 import 'package:bb_mobile/_model/transaction.dart';
+import 'package:bb_mobile/_ui/app_bar.dart';
 import 'package:bb_mobile/_ui/bottom_sheet.dart';
 import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/_ui/headers.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
+import 'package:bb_mobile/home/bloc/home_cubit.dart';
 import 'package:bb_mobile/receive/bloc/receive_cubit.dart';
 import 'package:bb_mobile/receive/receive_page.dart';
+import 'package:bb_mobile/styles.dart';
 import 'package:bb_mobile/swap/bloc/swap_cubit.dart';
+import 'package:bb_mobile/swap/bloc/watchtxs_bloc.dart';
+import 'package:bb_mobile/swap/bloc/watchtxs_state.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 class SwapHistoryButton extends StatelessWidget {
   const SwapHistoryButton({super.key});
@@ -61,7 +70,10 @@ class SwapTxList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const BBHeader.popUpCenteredText(text: 'Lightning Invoices', isLeft: true),
+          const BBHeader.popUpCenteredText(
+            text: 'Lightning Invoices',
+            isLeft: true,
+          ),
           const Gap(16),
           for (final tx in txs.reversed.toList()) SwapTxItem(tx: tx),
           // ListView.builder(
@@ -131,9 +143,17 @@ class _InvoiceQRPopup extends StatelessWidget {
   const _InvoiceQRPopup({required this.tx});
 
   static Future openPopUp(BuildContext context, SwapTx tx) {
+    final receive = context.read<ReceiveCubit>();
+    final swap = context.read<SwapCubit>();
     return showBBBottomSheet(
       context: context,
-      child: _InvoiceQRPopup(tx: tx),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: receive),
+          BlocProvider.value(value: swap),
+        ],
+        child: _InvoiceQRPopup(tx: tx),
+      ),
     );
   }
 
@@ -147,8 +167,10 @@ class _InvoiceQRPopup extends StatelessWidget {
     final idx = tx.keyIndex?.toString() ?? '0';
     final status = swapTx.status?.toString() ?? '';
     final totalFees = swapTx.totalFees() ?? 0;
-    final fees =
-        context.select((CurrencyCubit x) => x.state.getAmountInUnits(totalFees, removeText: true));
+    final fees = context.select(
+      (CurrencyCubit x) =>
+          x.state.getAmountInUnits(totalFees, removeText: true),
+    );
     final units = context.select(
       (CurrencyCubit cubit) => cubit.state.getUnitString(),
     );
@@ -181,7 +203,12 @@ class _InvoiceQRPopup extends StatelessWidget {
             ],
           ),
           const Gap(24),
-          Center(child: SizedBox(width: 250, child: ReceiveQRDisplay(address: swapTx.invoice))),
+          Center(
+            child: SizedBox(
+              width: 250,
+              child: ReceiveQRDisplay(address: swapTx.invoice),
+            ),
+          ),
           const Gap(16),
           ReceiveDisplayAddress(addressQr: swapTx.invoice, fontSize: 9),
           const Gap(24),
@@ -217,5 +244,191 @@ class ClaimScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
+  }
+}
+
+class AlertUI extends StatelessWidget {
+  const AlertUI({required this.text, this.onTap});
+
+  final String text;
+  final Function? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(16),
+      color: Colors.green,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(FontAwesomeIcons.circleCheck),
+          const Gap(8),
+          BBText.body(text),
+          const Spacer(),
+          if (onTap != null)
+            BBButton.text(
+              label: 'View',
+              onPressed: onTap!,
+            ),
+          const Gap(8),
+        ],
+      ),
+    );
+  }
+}
+
+class ReceivingSwapPage extends StatefulWidget {
+  const ReceivingSwapPage({super.key, required this.tx});
+
+  final SwapTx tx;
+
+  @override
+  State<ReceivingSwapPage> createState() => _ReceivingSwapPageState();
+}
+
+class _ReceivingSwapPageState extends State<ReceivingSwapPage> {
+  bool received = false;
+  Transaction? tx;
+
+  @override
+  Widget build(BuildContext context) {
+    var amt = widget.tx.recievableAmount() ?? 0;
+
+    // final tx = context.select(
+    //   (HomeCubit cubit) => cubit.state.getTxFromSwap(widget.tx),
+    // );
+
+    if (tx != null) amt = tx!.getAmount();
+
+    final amtStr =
+        context.select((CurrencyCubit _) => _.state.getAmountInUnits(amt));
+
+    return BlocListener<WatchTxsBloc, WatchTxsState>(
+      listenWhen: (previous, current) => previous.txPaid != current.txPaid,
+      listener: (context, state) async {
+        final swapTx = state.txPaid;
+        print('----> receiving 1');
+        if (swapTx == null) return;
+        print('----> receiving 2');
+        if (swapTx.id != widget.tx.id) return;
+        print('----> receiving 3');
+        if (swapTx.settledReverse()) {
+          print('----> receiving 4');
+
+          setState(() {
+            received = true;
+          });
+          print('----> receiving 5');
+
+          await Future.delayed(100.ms);
+          print('----> receiving 6');
+
+          tx = context.read<HomeCubit>().state.getTxFromSwap(widget.tx);
+          print('----> receiving 7');
+
+          setState(() {});
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: BBAppBar(
+            text: 'Payment Status',
+            onBack: () {
+              if (received)
+                context.go('/home');
+              else
+                context.pop();
+            },
+          ),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (!received)
+              const BBText.body('Receiving payment')
+            else
+              const BBText.body('Payment received'),
+            const Gap(16),
+            ReceivedTick(received: received),
+            const Gap(16),
+            BBText.body(amtStr),
+            if (!received) ...[
+              const Gap(24),
+              _OnChainWarning(swapTx: widget.tx),
+            ],
+            const Gap(40),
+            if (tx != null)
+              BBButton.big(
+                label: 'View Transaction',
+                onPressed: () {
+                  context.push('/tx', extra: tx);
+                },
+              ).animate().fadeIn(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OnChainWarning extends StatelessWidget {
+  const _OnChainWarning({required this.swapTx});
+
+  final SwapTx swapTx;
+
+  @override
+  Widget build(BuildContext context) {
+    if (swapTx.isLiquid()) return const SizedBox.shrink();
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          FontAwesomeIcons.triangleExclamation,
+          color: context.colour.primary,
+          size: 10,
+        ),
+        const Gap(4),
+        const BBText.bodySmall(
+          'On-chain payments can take a while to confirm',
+          isRed: true,
+          fontSize: 8,
+        ),
+      ],
+    );
+  }
+}
+
+class ReceivedTick extends StatelessWidget {
+  const ReceivedTick({super.key, required this.received});
+
+  final bool received;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      height: 300,
+      width: double.infinity,
+      duration: const Duration(milliseconds: 100),
+      child: received
+          ? Center(
+              child: LottieBuilder.asset(
+                'assets/loaderanimation.json',
+                repeat: false,
+              ),
+            )
+          : const Center(
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: CircularProgressIndicator(
+                  color: Colors.lightGreen,
+                  strokeWidth: 10,
+                ),
+              ),
+            ),
+    );
   }
 }

@@ -31,22 +31,31 @@ class WalletSync implements IWalletSync {
         case BaseWalletType.Bitcoin:
           final (blockchain, errNetwork) = _networkRepository.bdkBlockchain;
           if (errNetwork != null) throw errNetwork;
-          final (bdkWallet, errWallet) = _walletsRepository.getBdkWallet(wallet);
+          final (bdkWallet, errWallet) =
+              _walletsRepository.getBdkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
-          final (updatedBdkWallet, errSyncing) =
-              await _bdkSync.syncWallet(bdkWallet: bdkWallet!, blockChain: blockchain!);
+          final (updatedBdkWallet, errSyncing) = await _bdkSync.syncWalletOld(
+            bdkWallet: bdkWallet!,
+            blockChain: blockchain!,
+          );
           if (errSyncing != null) throw errSyncing;
-          final err = _walletsRepository.replaceBdkWallet(wallet, updatedBdkWallet!);
+          final err =
+              _walletsRepository.updateBdkWallet(wallet, updatedBdkWallet!);
           if (err != null) throw err;
         case BaseWalletType.Liquid:
           final (blockchain, errNetwork) = _networkRepository.liquidUrl;
           if (errNetwork != null) throw errNetwork;
-          final (liqWallet, errWallet) = _walletsRepository.getLwkWallet(wallet);
+          final (liqWallet, errWallet) =
+              _walletsRepository.getLwkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
           final (updatedLiqWallet, errSyncing) =
-              await _lwkSync.syncWallet(lwkWallet: liqWallet!, blockChain: blockchain!);
+              await _lwkSync.syncLiquidWalletOld(
+            lwkWallet: liqWallet!,
+            blockChain: blockchain!,
+          );
           if (errSyncing != null) throw errSyncing;
-          final err = _walletsRepository.replaceLwkWallet(wallet, updatedLiqWallet!);
+          final err =
+              _walletsRepository.updateLwkWallet(wallet, updatedLiqWallet!);
           if (err != null) throw err;
       }
     } catch (e) {

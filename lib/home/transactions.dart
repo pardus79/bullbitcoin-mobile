@@ -1,5 +1,6 @@
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_ui/app_bar.dart';
+import 'package:bb_mobile/_ui/components/button.dart';
 import 'package:bb_mobile/_ui/components/text.dart';
 import 'package:bb_mobile/currency/bloc/currency_cubit.dart';
 import 'package:bb_mobile/home/bloc/home_cubit.dart';
@@ -8,7 +9,6 @@ import 'package:bb_mobile/locator.dart';
 import 'package:bb_mobile/network/bloc/network_cubit.dart';
 import 'package:bb_mobile/settings/bloc/lighting_cubit.dart';
 import 'package:bb_mobile/styles.dart';
-import 'package:bb_mobile/transaction/bloc/state.dart';
 import 'package:bb_mobile/wallet/bloc/event.dart';
 import 'package:bb_mobile/wallet/bloc/state.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
@@ -31,9 +31,12 @@ class HomeTransactions extends StatefulWidget {
 class _HomeTransactionsState extends State<HomeTransactions> {
   @override
   Widget build(BuildContext context) {
+    final _ = context.select((HomeCubit x) => x.state.updated);
+
     final walletBlocs = context.select((HomeCubit _) => _.state.walletBlocs);
     final network = context.select((NetworkCubit x) => x.state.getBBNetwork());
-    final txs = context.select((HomeCubit cubit) => cubit.state.getAllTxs(network));
+    final txs =
+        context.select((HomeCubit cubit) => cubit.state.getAllTxs(network));
 
     return MultiBlocListener(
       listeners: [
@@ -51,7 +54,8 @@ class _HomeTransactionsState extends State<HomeTransactions> {
       child: RefreshIndicator(
         onRefresh: () async {
           final network = context.read<NetworkCubit>().state.getBBNetwork();
-          final wallets = context.read<HomeCubit>().state.walletBlocsFromNetwork(network);
+          final wallets =
+              context.read<HomeCubit>().state.walletBlocsFromNetwork(network);
           for (final wallet in wallets) wallet.add(SyncWallet());
         },
         child: Column(
@@ -62,7 +66,8 @@ class _HomeTransactionsState extends State<HomeTransactions> {
             else ...[
               const HomeLoadingTxsIndicator(),
               Padding(
-                padding: const EdgeInsets.only(left: 32.0, bottom: 8, right: 32),
+                padding:
+                    const EdgeInsets.only(left: 32.0, bottom: 8, right: 32),
                 child: Row(
                   children: [
                     const BBText.titleLarge(
@@ -97,6 +102,7 @@ class _HomeTransactionsState extends State<HomeTransactions> {
               Expanded(
                 child: ListView.builder(
                   itemCount: txs.length,
+                  cacheExtent: 50,
                   itemBuilder: (context, index) {
                     return HomeTxItem2(tx: txs[index]);
                   },
@@ -126,7 +132,22 @@ class NoTxs extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const BBText.titleLarge('No Transactions yet').animate(delay: 300.ms).fadeIn(),
+            const BBText.titleLarge('No Transactions yet')
+                .animate(delay: 300.ms)
+                .fadeIn(),
+            BBButton.text(
+              label: 'Sync transactions',
+              fontSize: 11,
+              onPressed: () {
+                final network =
+                    context.read<NetworkCubit>().state.getBBNetwork();
+                final wallets = context
+                    .read<HomeCubit>()
+                    .state
+                    .walletBlocsFromNetwork(network);
+                for (final wallet in wallets) wallet.add(SyncWallet());
+              },
+            ),
             const Gap(16),
             const HomeLoadingTxsIndicator(),
           ],
@@ -181,7 +202,26 @@ class _TxList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 48.0,
           ),
-          child: const BBText.titleLarge('No Transactions yet').animate(delay: 300.ms).fadeIn(),
+          child: Column(
+            children: [
+              const BBText.titleLarge('No Transactions yet')
+                  .animate(delay: 300.ms)
+                  .fadeIn(),
+              BBButton.text(
+                label: 'Sync transactions',
+                fontSize: 11,
+                onPressed: () {
+                  final network =
+                      context.read<NetworkCubit>().state.getBBNetwork();
+                  final wallets = context
+                      .read<HomeCubit>()
+                      .state
+                      .walletBlocsFromNetwork(network);
+                  for (final wallet in wallets) wallet.add(SyncWallet());
+                },
+              ),
+            ],
+          ),
         ),
       );
 
@@ -201,30 +241,39 @@ class HomeTxItem2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showOnlySwap = tx.pageLayout == TxLayout.onlySwapTx;
-    if (showOnlySwap) return _SwapTxHomeListItem(transaction: tx);
+    // final showOnlySwap = tx.pageLayout == TxLayout.onlySwapTx;
+    // if (showOnlySwap) return _SwapTxHomeListItem(transaction: tx);
 
     final label = tx.label ?? '';
 
     final amount = context.select(
-      (CurrencyCubit x) =>
-          x.state.getAmountInUnits(tx.getAmount(sentAsTotal: true), removeText: true),
+      (CurrencyCubit x) => x.state
+          .getAmountInUnits(tx.getAmount(sentAsTotal: true), removeText: true),
     );
 
     final units = context.select(
-      (CurrencyCubit x) => x.state.getUnitString(isLiquid: tx.wallet?.isLiquid() ?? false),
+      (CurrencyCubit x) =>
+          x.state.getUnitString(isLiquid: tx.wallet?.isLiquid() ?? false),
     );
 
-    final darkMode =
-        context.select((Lighting x) => x.state.currentTheme(context) == ThemeMode.dark);
+    final darkMode = context.select(
+      (Lighting x) => x.state.currentTheme(context) == ThemeMode.dark,
+    );
 
-    final img = darkMode ? 'assets/arrow_down_white.png' : 'assets/arrow_down.png';
+    final img =
+        darkMode ? 'assets/arrow_down_white.png' : 'assets/arrow_down.png';
+
+    // final swapstatus =
+
+    final statusImg = (tx.height == null || tx.height == 0)
+        ? 'assets/tx_status_pending.png'
+        : 'assets/tx_status_complete.png';
 
     final isReceive = tx.isReceived();
 
     final amt = '${isReceive ? '' : ''}${amount.replaceAll("-", "")}';
 
-    final wallet = tx.wallet!;
+    // final wallet = tx.wallet!;
 
     return InkWell(
       onTap: () {
@@ -279,19 +328,30 @@ class HomeTxItem2 extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 ...[
-                  WalletTag(wallet: wallet, tx: tx),
+                  WalletTag(tx: tx),
                   const Gap(2),
                 ],
                 if (tx.getBroadcastDateTime() != null)
-                  BBText.bodySmall(
-                    timeago.format(tx.getBroadcastDateTime()!),
-                    removeColourOpacity: true,
+                  Row(
+                    children: [
+                      BBText.bodySmall(
+                        timeago.format(tx.getBroadcastDateTime()!),
+                        removeColourOpacity: true,
+                      ),
+                      Image.asset(statusImg),
+                    ],
                   )
                 else
-                  BBText.bodySmall(
-                    (tx.timestamp == 0) ? 'Pending' : tx.getDateTimeStr(),
-                    // : timeago.format(tx.getDateTime()),
-                    removeColourOpacity: true,
+                  Row(
+                    children: [
+                      BBText.bodySmall(
+                        (tx.timestamp == 0) ? 'Pending' : tx.getDateTimeStr(),
+                        // : timeago.format(tx.getDateTime()),
+                        removeColourOpacity: true,
+                      ),
+                      const Gap(2),
+                      Image.asset(statusImg),
+                    ],
                   ),
               ],
             ),

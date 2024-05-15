@@ -1,10 +1,18 @@
 import 'package:bb_mobile/_model/transaction.dart';
-import 'package:bb_mobile/_model/wallet.dart';
-import 'package:boltz_dart/boltz_dart.dart';
 
 class WatchTxsEvent {}
 
-class InitializeSwapWatcher extends WatchTxsEvent {}
+// class InitializeSwapWatcher extends WatchTxsEvent {
+//   InitializeSwapWatcher();
+// }
+
+class WatchWallets extends WatchTxsEvent {
+  WatchWallets({required this.isTestnet});
+
+  final bool isTestnet;
+}
+
+class ClearAlerts extends WatchTxsEvent {}
 
 class ProcessSwapTx extends WatchTxsEvent {
   ProcessSwapTx({required this.walletId, required this.swapTx});
@@ -13,33 +21,25 @@ class ProcessSwapTx extends WatchTxsEvent {
   final String walletId;
 }
 
-class WatchSwapStatus extends WatchTxsEvent {
-  WatchSwapStatus({
-    required this.walletId,
-    required this.swapTxs,
-  });
+// class WatchSwapStatus extends WatchTxsEvent {
+//   WatchSwapStatus({
+//     required this.walletId,
+//     required this.swapTxs,
+//   });
 
-  final String walletId;
-  final List<String> swapTxs;
-}
+//   final String walletId;
+//   final List<String> swapTxs;
+// }
 
-class WatchWalletTxs extends WatchTxsEvent {
-  WatchWalletTxs({required this.wallet});
+// class SwapStatusUpdate extends WatchTxsEvent {
+//   SwapStatusUpdate(this.swapId, this.status, this.walletId);
+//   final String swapId;
+//   final SwapStatusResponse status;
+//   final String walletId;
+// }
 
-  final Wallet wallet;
-}
+// class DeleteSensitiveSwapData extends WatchTxsEvent {
+//   DeleteSensitiveSwapData(this.swapId);
 
-class SwapStatusUpdate extends WatchTxsEvent {
-  SwapStatusUpdate(this.swapId, this.status, this.walletId);
-  final String swapId;
-  final SwapStatusResponse status;
-  final String walletId;
-}
-
-class DeleteSensitiveSwapData extends WatchTxsEvent {
-  DeleteSensitiveSwapData(this.swapId);
-
-  final String swapId;
-}
-
-class ClearAlerts extends WatchTxsEvent {}
+//   final String swapId;
+// }

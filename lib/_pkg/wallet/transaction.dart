@@ -59,19 +59,23 @@ class WalletTx implements IWalletTransactions {
     try {
       switch (wallet.baseWalletType) {
         case BaseWalletType.Bitcoin:
-          final (bdkWallet, errWallet) = _walletsRepository.getBdkWallet(wallet);
+          final (bdkWallet, errWallet) =
+              _walletsRepository.getBdkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
-          final (walletWithDepositAddresses, errAddr1) = await _bdkAddress.loadAddresses(
+          final (walletWithDepositAddresses, errAddr1) =
+              await _bdkAddress.loadAddresses(
             wallet: wallet,
             bdkWallet: bdkWallet!,
           );
           if (errAddr1 != null) throw errAddr1;
-          final (walletWithChangeAddresses, errAddr2) = await _bdkAddress.loadChangeAddresses(
+          final (walletWithChangeAddresses, errAddr2) =
+              await _bdkAddress.loadChangeAddresses(
             wallet: walletWithDepositAddresses!,
             bdkWallet: bdkWallet,
           );
           if (errAddr2 != null) throw errAddr2;
-          final (walletWithTxs, errTxs) = await _bdkTransactions.getTransactions(
+          final (walletWithTxs, errTxs) =
+              await _bdkTransactions.getTransactions(
             bdkWallet: bdkWallet,
             wallet: walletWithChangeAddresses!,
             walletAddress: _walletAddress,
@@ -80,8 +84,10 @@ class WalletTx implements IWalletTransactions {
           final (walletWithTxAndAddresses, errUpdate) =
               await _walletUpdate.updateAddressesFromTxs(walletWithTxs!);
           if (errUpdate != null) throw errUpdate;
-          final (walletwithUtxos, errUtxos) =
-              await _bdkUtxo.loadUtxos(wallet: walletWithTxAndAddresses!, bdkWallet: bdkWallet);
+          final (walletwithUtxos, errUtxos) = await _bdkUtxo.loadUtxos(
+            wallet: walletWithTxAndAddresses!,
+            bdkWallet: bdkWallet,
+          );
           if (errUtxos != null) throw errUtxos;
           final (walletUpdatedAddressesAndUtxos, errAddr3) =
               await _bdkAddress.updateUtxoAddresses(walletwithUtxos!);
@@ -89,14 +95,17 @@ class WalletTx implements IWalletTransactions {
           return (walletUpdatedAddressesAndUtxos, null);
 
         case BaseWalletType.Liquid:
-          final (liqWallet, errWallet) = _walletsRepository.getLwkWallet(wallet);
+          final (liqWallet, errWallet) =
+              _walletsRepository.getLwkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
-          final (walletWithDepositAddresses, errAddr) = await _lwkAddress.loadLiquidAddresses(
+          final (walletWithDepositAddresses, errAddr) =
+              await _lwkAddress.loadLiquidAddresses(
             wallet: wallet,
             lwkWallet: liqWallet!,
           );
           if (errAddr != null) throw errAddr;
-          final (walletWithTxs, errTxs) = await _lwkTransactions.getLiquidTransactions(
+          final (walletWithTxs, errTxs) =
+              await _lwkTransactions.getLiquidTransactions(
             lwkWallet: liqWallet,
             wallet: walletWithDepositAddresses!,
           );
@@ -130,7 +139,8 @@ class WalletTx implements IWalletTransactions {
     try {
       switch (wallet.baseWalletType) {
         case BaseWalletType.Bitcoin:
-          final (bdkWallet, errWallet) = _walletsRepository.getBdkWallet(wallet);
+          final (bdkWallet, errWallet) =
+              _walletsRepository.getBdkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
           final (buildResp, err) = await _bdkTransactions.buildTx(
             wallet: wallet,
@@ -146,8 +156,10 @@ class WalletTx implements IWalletTransactions {
           );
           if (err != null) throw err;
           final (tx, feeAmt, psbt) = buildResp!;
-          if (wallet.type == BBWalletType.secure || wallet.type == BBWalletType.words) {
-            final (seed, errSeed) = await _walletSensitiveStorageRepository.readSeed(
+          if (wallet.type == BBWalletType.secure ||
+              wallet.type == BBWalletType.words) {
+            final (seed, errSeed) =
+                await _walletSensitiveStorageRepository.readSeed(
               fingerprintIndex: wallet.getRelatedSeedStorageString(),
             );
             if (errSeed != null) throw errSeed;
@@ -164,12 +176,14 @@ class WalletTx implements IWalletTransactions {
 
           final txs = wallet.transactions.toList();
           txs.add(tx!);
-          final (w, errAdd) = await addUnsignedTxToWallet(transaction: tx, wallet: wallet);
+          final (w, errAdd) =
+              await addUnsignedTxToWallet(transaction: tx, wallet: wallet);
           if (errAdd != null) throw errAdd;
           return ((w, tx, feeAmt), null);
 
         case BaseWalletType.Liquid:
-          final (liqWallet, errWallet) = _walletsRepository.getLwkWallet(wallet);
+          final (liqWallet, errWallet) =
+              _walletsRepository.getLwkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
           final (buildResp, errBuild) = await _lwkTransactions.buildLiquidTx(
             wallet: wallet,
@@ -181,7 +195,8 @@ class WalletTx implements IWalletTransactions {
           );
           if (errBuild != null) throw errBuild;
           final (tx, feeAmt, pset) = buildResp!;
-          final (seed, errSeed) = await _walletSensitiveStorageRepository.readSeed(
+          final (seed, errSeed) =
+              await _walletSensitiveStorageRepository.readSeed(
             fingerprintIndex: wallet.getRelatedSeedStorageString(),
           );
           if (errSeed != null) throw errSeed;
@@ -290,7 +305,8 @@ class WalletTx implements IWalletTransactions {
         case BaseWalletType.Bitcoin:
           final (blockchain, errNetwork) = _networkRepository.bdkBlockchain;
           if (errNetwork != null) throw errNetwork;
-          final (walletAndTxid, errBroadcast) = await _bdkTransactions.broadcastTxWithWallet(
+          final (walletAndTxid, errBroadcast) =
+              await _bdkTransactions.broadcastTxWithWallet(
             psbt: transaction.psbt!,
             blockchain: blockchain!,
             wallet: wallet,
@@ -302,11 +318,13 @@ class WalletTx implements IWalletTransactions {
           txid = walletAndTxid.$2;
 
         case BaseWalletType.Liquid:
-          final (liqWallet, errWallet) = _walletsRepository.getLwkWallet(wallet);
+          final (liqWallet, errWallet) =
+              _walletsRepository.getLwkWallet(wallet.id);
           if (errWallet != null) throw errWallet;
-          final (walletAndTxid, errBroadcast) = await _lwkTransactions.broadcastLiquidTxWithWallet(
+
+          final (walletAndTxid, errBroadcast) =
+              await _lwkTransactions.broadcastLiquidTxWithWallet(
             lwkWallet: liqWallet!,
-            txBytes: transaction.pset!,
             transaction: transaction,
             wallet: wallet,
           );
@@ -346,6 +364,7 @@ class WalletTx implements IWalletTransactions {
   (({Wallet wallet})?, Err?) updateSwapTxs({
     required SwapTx swapTx,
     required Wallet wallet,
+    bool deleteIfFailed = false,
   }) {
     final swaps = wallet.swaps;
 
@@ -362,54 +381,121 @@ class WalletTx implements IWalletTransactions {
       keyIndex: storedSwap.keyIndex,
     );
     swapTxs[idx] = updatedSwapTx;
+    final txs = wallet.transactions.toList();
+    final isRevSub = !swapTx.isSubmarine;
 
-    final swapsToDelete = <SwapTx>[
-      for (final s in swapTxs)
-        if (s.paidSubmarine() || s.settledReverse() || s.settledSubmarine() || s.expiredReverse())
-          s,
-    ];
+    if (swapTx.txid != null) {
+      final idx = txs.indexWhere((_) => _.txid == swapTx.txid);
+      final idx2 = txs.indexWhere((_) => _.txid == swapTx.id);
 
-    for (final s in swapsToDelete)
-      if (swapsToDelete.any((_) => _.id == s.id)) swapTxs.removeWhere((_) => _.id == s.id);
+      if (idx == -1 && idx2 == -1) {
+        final newTx = Transaction(
+          txid: swapTx.txid!,
+          timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          swapTx: updatedSwapTx,
+          sent: isRevSub ? 0 : swapTx.outAmount - swapTx.totalFees()!,
+          isSwap: true,
+          received:
+              isRevSub ? (swapTx.outAmount - (swapTx.totalFees() ?? 0)) : 0,
+          fee: swapTx.claimFees,
+          isLiquid: swapTx.isLiquid(),
+        );
+        txs.add(newTx);
+      } else if (idx != -1) {
+        final updatedTx = txs[idx].copyWith(
+          swapTx: updatedSwapTx,
+          isSwap: true,
+        );
+        txs[idx] = updatedTx;
+      } else if (idx2 != -1) {
+        final updatedTx = txs[idx2].copyWith(
+          swapTx: updatedSwapTx,
+          isSwap: true,
+          txid: swapTx.txid!,
+          timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        );
+        txs[idx2] = updatedTx;
+      }
+    }
 
-    final updatedWallet = wallet.copyWith(swaps: swapTxs);
+    if (swapTx.txid == null && swapTx.paidReverse()) {
+      final idx = txs.indexWhere((_) => _.txid == swapTx.id);
+      if (idx == -1) {
+        final newTx = Transaction(
+          txid: swapTx.id,
+          timestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          swapTx: updatedSwapTx,
+          sent: isRevSub ? 0 : swapTx.outAmount - swapTx.totalFees()!,
+          isSwap: true,
+          received:
+              isRevSub ? (swapTx.outAmount - (swapTx.totalFees() ?? 0)) : 0,
+          fee: swapTx.claimFees,
+          isLiquid: swapTx.isLiquid(),
+        );
+        txs.add(newTx);
+      } else {
+        final updatedTx = txs[idx].copyWith(
+          swapTx: updatedSwapTx,
+          isSwap: true,
+        );
+        txs[idx] = updatedTx;
+      }
+    }
+
+    final settled = swapTx.isSubmarine
+        ? swapTx.settledSubmarine()
+        : swapTx.settledReverse();
+
+    if (settled) swapTxs.removeWhere((_) => _.id == swapTx.id);
+
+    if (deleteIfFailed) {
+      final swapsToDelete = <SwapTx>[
+        for (final s in swapTxs)
+          if (s.failed()) s,
+      ];
+
+      for (final s in swapsToDelete)
+        if (swapsToDelete.any((_) => _.id == s.id))
+          swapTxs.removeWhere((_) => _.id == s.id);
+    }
+
+    final updatedWallet = wallet.copyWith(swaps: swapTxs, transactions: txs);
 
     return ((wallet: updatedWallet), null);
   }
 
-  Future<(({Wallet wallet, SwapTx swapsToDelete})?, Err?)> mergeSwapTxIntoTx({
-    required Wallet wallet,
-    required SwapTx swapTx,
-  }) async {
-    try {
-      final txs = wallet.transactions.toList();
-      final swaps = wallet.swaps;
-      final updatedSwaps = swaps.toList();
-      // final swapsToDelete = <SwapTx>[];
+  // Future<(({Wallet wallet, SwapTx swapsToDelete})?, Err?)> mergeSwapTxIntoTx({
+  //   required Wallet wallet,
+  //   required SwapTx swapTx,
+  // }) async {
+  //   try {
+  //     // final txs = wallet.transactions.toList();
+  //     final swaps = wallet.swaps;
+  //     final updatedSwaps = swaps.toList();
+  //     // final swapsToDelete = <SwapTx>[];
 
-      final idx = txs.indexWhere((_) => _.txid == swapTx.txid);
-      if (idx == -1) return (null, Err('No new matching tx'));
+  //     // final idx = txs.indexWhere((_) => _.txid == swapTx.txid);
+  //     // if (idx == -1) return (null, Err('No new matching tx'));
 
-      final newTx = txs[idx].copyWith(
-        swapTx: swapTx,
-        isSwap: true,
-      );
-      txs[idx] = newTx;
+  //     // final newTx = txs[idx].copyWith(
+  //     // swapTx: swapTx,
+  //     // );
+  //     // txs[idx] = newTx;
 
-      final swapToDelete = swaps.firstWhere((_) => _.id == swapTx.id);
-      // swapsToDelete.add(swapToDelete);
-      updatedSwaps.removeWhere((_) => _.id == swapTx.id);
+  //     final swapToDelete = swaps.firstWhere((_) => _.id == swapTx.id);
+  //     // swapsToDelete.add(swapToDelete);
+  //     updatedSwaps.removeWhere((_) => _.id == swapTx.id);
 
-      final updatedWallet = wallet.copyWith(
-        transactions: txs,
-        swaps: updatedSwaps,
-      );
+  //     final updatedWallet = wallet.copyWith(
+  //       // transactions: txs,
+  //       swaps: updatedSwaps,
+  //     );
 
-      return ((wallet: updatedWallet, swapsToDelete: swapToDelete), null);
-    } catch (e) {
-      return (null, Err(e.toString()));
-    }
-  }
+  //     return ((wallet: updatedWallet, swapsToDelete: swapToDelete), null);
+  //   } catch (e) {
+  //     return (null, Err(e.toString()));
+  //   }
+  // }
 
   // Future<Err?> extractTx({
   //   required String tx,

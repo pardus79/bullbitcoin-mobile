@@ -4,6 +4,7 @@ import 'package:bb_mobile/_pkg/bull_bitcoin_api.dart';
 import 'package:bb_mobile/_pkg/clipboard.dart';
 import 'package:bb_mobile/_pkg/file_storage.dart';
 import 'package:bb_mobile/_pkg/launcher.dart';
+import 'package:bb_mobile/_pkg/mempool_api.dart';
 import 'package:bb_mobile/_pkg/storage/hive.dart';
 import 'package:bb_mobile/_pkg/wallet/repository/sensitive_storage.dart';
 import 'package:bb_mobile/_pkg/wallet/transaction.dart';
@@ -21,11 +22,13 @@ import 'package:bb_mobile/network_fees/bloc/networkfees_cubit.dart';
 import 'package:bb_mobile/network_fees/popup.dart';
 import 'package:bb_mobile/send/advanced.dart';
 import 'package:bb_mobile/send/bloc/send_cubit.dart';
-import 'package:bb_mobile/send/bloc/state.dart';
+import 'package:bb_mobile/send/bloc/send_state.dart';
+import 'package:bb_mobile/send/listeners.dart';
 import 'package:bb_mobile/send/psbt.dart';
 import 'package:bb_mobile/settings/bloc/settings_cubit.dart';
 import 'package:bb_mobile/styles.dart';
 import 'package:bb_mobile/swap/bloc/swap_cubit.dart';
+import 'package:bb_mobile/swap/send.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,82 +39,83 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class SendPage extends StatefulWidget {
-  const SendPage({super.key, this.openScanner = false});
+  const SendPage({super.key, this.openScanner = false, this.walletId});
 
   final bool openScanner;
+  final String? walletId;
   @override
   State<SendPage> createState() => _SendPageState();
 }
 
 class _SendPageState extends State<SendPage> {
   late SendCubit send;
-  late HomeCubit home;
+  late NetworkFeesCubit networkFees;
+
+  late SwapCubit swap;
+  late CurrencyCubit currency;
 
   @override
   void initState() {
-    final swapBloc = SwapCubit(
+    swap = SwapCubit(
       walletSensitiveRepository: locator<WalletSensitiveStorageRepository>(),
-      // networkCubit: locator<NetworkCubit>(),
       swapBoltz: locator<SwapBoltz>(),
       walletTx: locator<WalletTx>(),
-      // watchTxsBloc: locator<WatchTxsBloc>(),
-      // homeCubit: locator<HomeCubit>(),
+    )..fetchFees(context.read<NetworkCubit>().state.testnet);
+
+    networkFees = NetworkFeesCubit(
+      networkCubit: locator<NetworkCubit>(),
+      hiveStorage: locator<HiveStorage>(),
+      mempoolAPI: locator<MempoolAPI>(),
+      defaultNetworkFeesCubit: context.read<NetworkFeesCubit>(),
     );
+
+    currency = CurrencyCubit(
+      hiveStorage: locator<HiveStorage>(),
+      bbAPI: locator<BullBitcoinAPI>(),
+      defaultCurrencyCubit: context.read<CurrencyCubit>(),
+    );
+
+    WalletBloc? walletBloc;
+
+    if (widget.walletId != null)
+      walletBloc =
+          context.read<HomeCubit>().state.getWalletBlocById(widget.walletId!);
 
     send = SendCubit(
       walletTx: locator<WalletTx>(),
       barcode: locator<Barcode>(),
       defaultRBF: locator<SettingsCubit>().state.defaultRBF,
-      // settingsCubit: locator<SettingsCubit>(),
       fileStorage: locator<FileStorage>(),
       networkCubit: locator<NetworkCubit>(),
       homeCubit: locator<HomeCubit>(),
-      // networkFeesCubit: NetworkFeesCubit(
-      //   hiveStorage: locator<HiveStorage>(),
-      //   mempoolAPI: locator<MempoolAPI>(),
-      //   networkCubit: locator<NetworkCubit>(),
-      //   defaultNetworkFeesCubit: context.read<NetworkFeesCubit>(),
-      // ),
-      currencyCubit: CurrencyCubit(
-        hiveStorage: locator<HiveStorage>(),
-        bbAPI: locator<BullBitcoinAPI>(),
-        defaultCurrencyCubit: context.read<CurrencyCubit>(),
-      ),
-      swapCubit: swapBloc,
+      swapBoltz: locator<SwapBoltz>(),
+      currencyCubit: currency,
       openScanner: widget.openScanner,
+      walletBloc: walletBloc,
     );
-
-    home = locator<HomeCubit>();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final network = context.select((NetworkCubit _) => _.state.getBBNetwork());
-    final walletBlocs = home.state.walletBlocsFromNetwork(network);
-
-    WalletBloc? walletBloc;
-    if (walletBlocs.isNotEmpty) {
-      walletBloc = walletBlocs.first;
-      send.updateWalletBloc(walletBloc);
-    }
-
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: send),
-        BlocProvider.value(value: send.currencyCubit),
-        // BlocProvider.value(value: send.networkFeesCubit),
-        BlocProvider.value(value: send.state.swapCubit),
-        BlocProvider.value(value: home),
-        if (walletBloc != null) BlocProvider.value(value: walletBloc),
+        BlocProvider.value(value: currency),
+        BlocProvider.value(value: swap),
+        BlocProvider.value(value: networkFees),
       ],
       child: Scaffold(
         appBar: AppBar(
           flexibleSpace: const _SendAppBar(),
           automaticallyImplyLeading: false,
         ),
-        body: const _WalletProvider(child: _Screen()),
+        body: const SendListeners(
+          child: _WalletProvider(
+            child: _Screen(),
+          ),
+        ),
       ),
     );
   }
@@ -139,7 +143,11 @@ class _Screen extends StatelessWidget {
     final signed = context.select((SendCubit cubit) => cubit.state.signed);
     final sent = context.select((SendCubit cubit) => cubit.state.sent);
     final isLn = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
+    // final showSend =
+    //     context.select((SendCubit cubit) => cubit.state.showSendButton);
+
+    if (sent && isLn) return const SendingLnTx();
+
     return ColoredBox(
       color: sent ? Colors.green : context.colour.background,
       child: SingleChildScrollView(
@@ -148,7 +156,7 @@ class _Screen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (signed) ...[
+              if (signed && !isLn) ...[
                 if (!sent) const TxDetailsScreen() else const TxSuccess(),
               ] else ...[
                 const Gap(32),
@@ -159,19 +167,14 @@ class _Screen extends StatelessWidget {
                 const AddressField(),
                 const Gap(24),
                 const AmountField(),
-                if (showSend) ...[
-                  if (!isLn) ...[
-                    const Gap(24),
-                    const NetworkFees(),
-                  ],
-                  const Gap(8),
-                  const AdvancedOptions(),
-                  const Gap(48),
+                if (!isLn) ...[
+                  const Gap(24),
+                  const NetworkFees(),
                 ],
+                const Gap(8),
+                const AdvancedOptions(),
               ],
-              if (!sent && showSend) ...[
-                const _SendButton(),
-              ],
+              const _SendButton(),
               const SendErrDisplay(),
               const Gap(80),
             ],
@@ -187,28 +190,38 @@ class WalletSelectionDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
+    final enableDropdown = context
+        .select((SendCubit cubit) => cubit.state.enabledWallets.isNotEmpty);
 
     final network = context.select((NetworkCubit _) => _.state.getBBNetwork());
-    final walletBlocs = context.select((HomeCubit _) => _.state.walletBlocsFromNetwork(network));
-    final selectedWalletBloc = context.select((SendCubit _) => _.state.selectedWalletBloc);
+    final walletBlocs = context
+        .select((HomeCubit _) => _.state.walletBlocsFromNetwork(network));
+    final selectedWalletBloc =
+        context.select((SendCubit _) => _.state.selectedWalletBloc);
 
     final walletBloc = selectedWalletBloc ?? walletBlocs.first;
 
     return GestureDetector(
       onTap: () {
-        if (!showSend) context.read<SendCubit>().disabledDropdownClicked();
-        print(':::::::yo');
+        if (!enableDropdown)
+          context.read<SendCubit>().disabledDropdownClicked();
       },
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
-        opacity: showSend ? 1 : 0.3,
+        opacity: enableDropdown ? 1 : 0.3,
         child: AbsorbPointer(
-          absorbing: !showSend,
+          absorbing: !enableDropdown,
           child: BBDropDown<WalletBloc>(
             items: {
               for (final wallet in walletBlocs)
-                wallet: wallet.state.wallet!.name ?? wallet.state.wallet!.sourceFingerprint,
+                wallet: (
+                  label: wallet.state.wallet!.name ??
+                      wallet.state.wallet!.sourceFingerprint,
+                  enabled: context
+                      .read<SendCubit>()
+                      .state
+                      .walletEnabled(wallet.state.wallet!.id),
+                ),
             },
             value: walletBloc,
             onChanged: (bloc) {
@@ -226,7 +239,8 @@ class _Balance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
+    final showSend =
+        context.select((SendCubit cubit) => cubit.state.showSendButton);
     if (!showSend) return const SizedBox(height: 24);
 
     return const Center(child: SendWalletBalance()).animate().fadeIn();
@@ -269,6 +283,7 @@ class _AddressFieldState extends State<AddressField> {
                   if (!locator.isRegistered<Clippboard>()) return;
                   final data = await locator<Clippboard>().paste();
                   if (data == null) return;
+                  context.read<SwapCubit>().clearErrors();
                   context.read<SendCubit>().updateAddress(data);
                 },
                 iconSize: 16,
@@ -286,7 +301,10 @@ class _AddressFieldState extends State<AddressField> {
               ),
             ],
           ),
-          onChanged: context.read<SendCubit>().updateAddress,
+          onChanged: (value) {
+            context.read<SwapCubit>().clearErrors();
+            context.read<SendCubit>().updateAddress(value);
+          },
         ),
       ],
     );
@@ -305,10 +323,12 @@ class AmountField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sendAll = context.select((SendCubit cubit) => cubit.state.sendAllCoin);
-    final isLnInvoice = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
+    final sendAll =
+        context.select((SendCubit cubit) => cubit.state.sendAllCoin);
+    final isLnInvoice =
+        context.select((SendCubit cubit) => cubit.state.isLnInvoice());
 
-    if (isLnInvoice) return const InvAmtDisplay();
+    if (isLnInvoice) return const SendInvAmtDisplay();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -321,33 +341,18 @@ class AmountField extends StatelessWidget {
   }
 }
 
-class InvAmtDisplay extends StatelessWidget {
-  const InvAmtDisplay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final inv = context.select((SwapCubit _) => _.state.invoice);
-    if (inv == null) return const SizedBox.shrink();
-    final amtStr = context.select((CurrencyCubit _) => _.state.getAmountInUnits(inv.getAmount()));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const BBText.title('Amount to send'),
-        const Gap(4),
-        BBText.body(amtStr, isBold: true),
-      ],
-    );
-  }
-}
-
 class NetworkFees extends StatelessWidget {
   const NetworkFees({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
-    if (!showSend) return const SizedBox(height: 55);
+    final showSend =
+        context.select((SendCubit cubit) => cubit.state.showSendButton);
+
+    final isLiquid =
+        context.select((SendCubit cubit) => cubit.state.isLiquidPayment());
+
+    if (!showSend || isLiquid) return const SizedBox.shrink();
 
     return const SelectFeesButton().animate().fadeIn();
   }
@@ -358,16 +363,25 @@ class AdvancedOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
-    if (!showSend) return const SizedBox(height: 55);
+    final showSend = context.select((SendCubit _) => _.state.showSendButton);
+    final isLn = context.select((SendCubit _) => _.state.isLnInvoice());
+    final isLiquid = context.select((SendCubit _) => _.state.isLiquidPayment());
 
-    final text = context.select((SendCubit cubit) => cubit.state.advancedOptionsButtonText());
-    return BBButton.text(
-      onPressed: () {
-        AdvancedOptionsPopUp.openPopup(context);
-      },
-      label: text,
-    ).animate().fadeIn();
+    if (!showSend || isLn || isLiquid) return const SizedBox.shrink();
+
+    final text =
+        context.select((SendCubit _) => _.state.advancedOptionsButtonText());
+    return Column(
+      children: [
+        BBButton.text(
+          onPressed: () {
+            AdvancedOptionsPopUp.openPopup(context);
+          },
+          label: text,
+        ).animate().fadeIn(),
+        const Gap(48),
+      ],
+    );
   }
 }
 
@@ -376,7 +390,10 @@ class SendErrDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final err = context.select((SendCubit cubit) => cubit.state.errWithSwap());
+    final errSend = context.select((SendCubit cubit) => cubit.state.errors());
+    final errSwap = context.select((SwapCubit cubit) => cubit.state.err());
+
+    final err = errSwap.isNotEmpty ? errSwap : errSend;
 
     if (err.isEmpty) return const SizedBox.shrink();
     return Padding(
@@ -391,50 +408,91 @@ class _SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSend = context.select((SendCubit cubit) => cubit.state.showButtons());
-    if (!showSend) return const SizedBox(height: 55);
-    final enableButton = context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final showSend =
+        context.select((SendCubit cubit) => cubit.state.showSendButton);
+    final sent = context.select((SendCubit cubit) => cubit.state.sent);
+    if (!showSend || sent) return const SizedBox.shrink();
 
-    final watchOnly = context.select((WalletBloc cubit) => cubit.state.wallet!.watchOnly());
+    final watchOnly =
+        context.select((WalletBloc cubit) => cubit.state.wallet!.watchOnly());
 
-    final generatingInv = context.select((SwapCubit cubit) => cubit.state.generatingSwapInv);
+    final generatingInv =
+        context.select((SwapCubit cubit) => cubit.state.generatingSwapInv);
     final sendingg = context.select((SendCubit cubit) => cubit.state.sending);
     final sending = generatingInv || sendingg;
 
     final signed = context.select((SendCubit cubit) => cubit.state.signed);
 
+    final label = watchOnly
+        ? 'Generate PSBT'
+        : signed
+            ? sending
+                ? 'Broadcasting'
+                : 'Confirm'
+            : sending
+                ? 'Building Tx'
+                : 'Send';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        const Gap(24),
         Center(
           child: BlocListener<SendCubit, SendState>(
             listenWhen: (previous, current) =>
-                previous.tx != current.tx && current.psbt.isNotEmpty && current.errSending.isEmpty,
+                previous.tx != current.tx &&
+                current.psbt.isNotEmpty &&
+                current.errSending.isEmpty,
             listener: (context, state) {
               PSBTPopUp.openPopUp(context);
             },
             child: BBButton.big(
-              disabled: !enableButton,
               loading: sending,
+              disabled: sending,
               leftIcon: Icons.send,
               onPressed: () async {
                 if (sending) return;
+                final isLn = context.read<SendCubit>().state.isLnInvoice();
+
                 if (!signed) {
-                  final isLn = context.read<SendCubit>().state.isLnInvoice();
-                  final fees = context.read<NetworkFeesCubit>().state.selectedOrFirst(isLn);
-                  context.read<SendCubit>().confirmClickedd(networkFees: fees);
-                } else
+                  if (!isLn) {
+                    final fees = context
+                        .read<NetworkFeesCubit>()
+                        .state
+                        .selectedOrFirst(false);
+                    context
+                        .read<SendCubit>()
+                        .confirmClickedd(networkFees: fees);
+                    return;
+                  }
+                  context.read<SendCubit>().sendSwapClicked();
+                  // final wallet = context.read<WalletBloc>().state.wallet!;
+                  // final isLiq = wallet.isLiquid();
+                  // final networkurl = !isLiq
+                  //     ? context.read<NetworkCubit>().state.getNetworkUrl()
+                  //     : context
+                  //         .read<NetworkCubit>()
+                  //         .state
+                  //         .getLiquidNetworkUrl();
+
+                  // context.read<SwapCubit>().createSubSwapForSend(
+                  //       wallet: wallet,
+                  //       invoice: context.read<SendCubit>().state.address,
+                  //       amount: context.read<CurrencyCubit>().state.amount,
+                  //       isTestnet: context.read<NetworkCubit>().state.testnet,
+                  //       networkUrl: networkurl,
+                  //     );
+                  return;
+                }
+
+                if (!isLn) {
                   context.read<SendCubit>().sendClicked();
+                  return;
+                }
+                // final swaptx = context.read<SwapCubit>().state.swapTx!;
+                // context.read<SendCubit>().sendClicked(swaptx: swaptx);
               },
-              label: watchOnly
-                  ? 'Generate PSBT'
-                  : signed
-                      ? sending
-                          ? 'Broadcasting'
-                          : 'Confirm'
-                      : sending
-                          ? 'Building Tx'
-                          : 'Send',
+              label: label,
             ),
           ),
         ),
@@ -471,22 +529,31 @@ class SendWalletBalance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalFrozen =
-        context.select((WalletBloc cubit) => cubit.state.wallet?.frozenUTXOTotal() ?? 0);
+    final totalFrozen = context.select(
+      (WalletBloc cubit) => cubit.state.wallet?.frozenUTXOTotal() ?? 0,
+    );
 
     if (totalFrozen == 0) {
-      final balance =
-          context.select((WalletBloc cubit) => cubit.state.wallet?.fullBalance?.total ?? 0);
+      final balance = context.select(
+        (WalletBloc cubit) => cubit.state.wallet?.fullBalance?.total ?? 0,
+      );
 
-      final balStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(balance));
+      final balStr = context.select(
+        (CurrencyCubit cubit) => cubit.state.getAmountInUnits(balance),
+      );
       return BBText.body(balStr, isBold: true);
     } else {
-      final balanceWithoutFrozenUTXOs = context
-          .select((WalletBloc cubit) => cubit.state.wallet?.balanceWithoutFrozenUTXOs() ?? 0);
-      final balStr = context
-          .select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(balanceWithoutFrozenUTXOs));
-      final frozenStr =
-          context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(totalFrozen));
+      final balanceWithoutFrozenUTXOs = context.select(
+        (WalletBloc cubit) =>
+            cubit.state.wallet?.balanceWithoutFrozenUTXOs() ?? 0,
+      );
+      final balStr = context.select(
+        (CurrencyCubit cubit) =>
+            cubit.state.getAmountInUnits(balanceWithoutFrozenUTXOs),
+      );
+      final frozenStr = context.select(
+        (CurrencyCubit cubit) => cubit.state.getAmountInUnits(totalFrozen),
+      );
 
       return Column(
         children: [
@@ -504,21 +571,33 @@ class TxDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLn = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
-    final address = context.select((SendCubit cubit) => cubit.state.address);
+    // final isLn = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
+
+    final addr = context.select((SendCubit cubit) => cubit.state.address);
+    // final swapAddress =
+    //     context.select((SwapCubit cubit) => cubit.state.swapTx?.scriptAddress);
+    // final address = swapAddress ?? addr;
+
     final amount = context.select((CurrencyCubit cubit) => cubit.state.amount);
-    final amtStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
-    final fee = context.select((SendCubit cubit) => cubit.state.psbtSignedFeeAmount ?? 0);
-    final feeStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(fee));
+    final amtStr = context
+        .select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
+    final fee = context
+        .select((SendCubit cubit) => cubit.state.psbtSignedFeeAmount ?? 0);
+    final feeStr = context
+        .select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(fee));
 
-    final currency = context.select((CurrencyCubit _) => _.state.defaultFiatCurrency);
-    final amtFiat =
-        context.select((NetworkCubit cubit) => cubit.state.calculatePrice(amount, currency));
-    final feeFiat =
-        context.select((NetworkCubit cubit) => cubit.state.calculatePrice(fee, currency));
+    final currency =
+        context.select((CurrencyCubit _) => _.state.defaultFiatCurrency);
+    final amtFiat = context.select(
+      (NetworkCubit cubit) => cubit.state.calculatePrice(amount, currency),
+    );
+    final feeFiat = context.select(
+      (NetworkCubit cubit) => cubit.state.calculatePrice(fee, currency),
+    );
 
-    final fiatCurrency =
-        context.select((CurrencyCubit cubit) => cubit.state.defaultFiatCurrency?.shortName ?? '');
+    final fiatCurrency = context.select(
+      (CurrencyCubit cubit) => cubit.state.defaultFiatCurrency?.shortName ?? '',
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -544,117 +623,127 @@ class TxDetailsScreen extends StatelessWidget {
           'Recipient Bitcoin Address',
         ),
         const Gap(4),
-        BBText.body(
-          address,
-        ),
+        BBText.body(addr),
         const Gap(24),
-        if (!isLn) ...[
-          const BBText.title(
-            'Network Fee',
-          ),
-          const Gap(4),
-          BBText.body(
-            feeStr,
-          ),
-          BBText.body(
-            '~ $feeFiat $fiatCurrency',
-          ),
-        ] else
-          const _LnFees(),
-        const Gap(32),
-      ],
-    );
-  }
-}
-
-class _LnFees extends StatelessWidget {
-  const _LnFees();
-
-  @override
-  Widget build(BuildContext context) {
-    final swapTx = context.select((SwapCubit cubit) => cubit.state.swapTx);
-    if (swapTx == null) return const SizedBox.shrink();
-
-    final networkFees = swapTx.lockupFees!;
-    final boltzFees = swapTx.boltzFees!;
-    final claimFees = swapTx.claimFees!;
-
-    final currency = context.select((CurrencyCubit _) => _.state.defaultFiatCurrency);
-
-    final networkFeesStr =
-        context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(networkFees));
-    final networkFeesFiat =
-        context.select((NetworkCubit cubit) => cubit.state.calculatePrice(networkFees, currency));
-
-    final boltzFeesStr =
-        context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(boltzFees));
-    final boltzFeesFiat =
-        context.select((NetworkCubit cubit) => cubit.state.calculatePrice(boltzFees, currency));
-
-    final claimFeesStr =
-        context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(claimFees));
-    final claimFeesFiat =
-        context.select((NetworkCubit cubit) => cubit.state.calculatePrice(claimFees, currency));
-
-    final fiatCurrency =
-        context.select((CurrencyCubit cubit) => cubit.state.defaultFiatCurrency?.shortName ?? '');
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
         const BBText.title(
           'Network Fee',
         ),
         const Gap(4),
         BBText.body(
-          networkFeesStr,
+          feeStr,
         ),
         BBText.body(
-          '~ $networkFeesFiat $fiatCurrency',
+          '~ $feeFiat $fiatCurrency',
         ),
         const Gap(32),
-        const BBText.title(
-          'Boltz Fee',
-        ),
-        const Gap(4),
-        BBText.body(
-          boltzFeesStr,
-        ),
-        BBText.body(
-          '~ $boltzFeesFiat $fiatCurrency',
-        ),
-        const Gap(16),
-        const BBText.title(
-          'Claim Fee',
-        ),
-        const Gap(4),
-        BBText.body(
-          claimFeesStr,
-        ),
-        BBText.body(
-          '~ $claimFeesFiat $fiatCurrency',
-        ),
-        const Gap(16),
-        const BBText.title(
-          'Fees Details',
-        ),
-        const Gap(4),
-        const BBText.body(
-          'Exchange Fees = Boltz Fees + Claim Fees',
-        ),
       ],
     );
   }
 }
+
+// class _LnFeesFromSwapTx extends StatelessWidget {
+//   const _LnFeesFromSwapTx();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final swapTx = context.select((SwapCubit cubit) => cubit.state.swapTx);
+//     if (swapTx == null) return const SizedBox.shrink();
+
+//     final networkFees = swapTx.lockupFees!;
+//     final boltzFees = swapTx.boltzFees!;
+//     final claimFees = swapTx.claimFees!;
+
+//     final currency =
+//         context.select((CurrencyCubit _) => _.state.defaultFiatCurrency);
+
+//     final networkFeesStr = context.select(
+//       (CurrencyCubit cubit) => cubit.state.getAmountInUnits(networkFees),
+//     );
+//     final networkFeesFiat = context.select(
+//       (NetworkCubit cubit) => cubit.state.calculatePrice(networkFees, currency),
+//     );
+
+//     final boltzFeesStr = context.select(
+//       (CurrencyCubit cubit) => cubit.state.getAmountInUnits(boltzFees),
+//     );
+//     final boltzFeesFiat = context.select(
+//       (NetworkCubit cubit) => cubit.state.calculatePrice(boltzFees, currency),
+//     );
+
+//     final claimFeesStr = context.select(
+//       (CurrencyCubit cubit) => cubit.state.getAmountInUnits(claimFees),
+//     );
+//     final claimFeesFiat = context.select(
+//       (NetworkCubit cubit) => cubit.state.calculatePrice(claimFees, currency),
+//     );
+
+//     final fiatCurrency = context.select(
+//       (CurrencyCubit cubit) => cubit.state.defaultFiatCurrency?.shortName ?? '',
+//     );
+
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.stretch,
+//       children: [
+//         const BBText.title(
+//           'Network Fee',
+//         ),
+//         const Gap(4),
+//         BBText.body(
+//           networkFeesStr,
+//         ),
+//         BBText.body(
+//           '~ $networkFeesFiat $fiatCurrency',
+//         ),
+//         const Gap(32),
+//         const BBText.title(
+//           'Boltz Fee',
+//         ),
+//         const Gap(4),
+//         BBText.body(
+//           boltzFeesStr,
+//         ),
+//         BBText.body(
+//           '~ $boltzFeesFiat $fiatCurrency',
+//         ),
+//         const Gap(16),
+//         const BBText.title(
+//           'Claim Fee',
+//         ),
+//         const Gap(4),
+//         BBText.body(
+//           claimFeesStr,
+//         ),
+//         BBText.body(
+//           '~ $claimFeesFiat $fiatCurrency',
+//         ),
+//         const Gap(16),
+//         const BBText.title(
+//           'Fees Details',
+//         ),
+//         const Gap(4),
+//         const BBText.body(
+//           'Exchange Fees = Boltz Fees + Claim Fees',
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class TxSuccess extends StatelessWidget {
   const TxSuccess({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isLn = context.select((SendCubit cubit) => cubit.state.isLnInvoice());
+    if (isLn) return const SendingLnTx();
+
     final amount = context.select((CurrencyCubit cubit) => cubit.state.amount);
-    final amtStr = context.select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
+    final amtStr = context
+        .select((CurrencyCubit cubit) => cubit.state.getAmountInUnits(amount));
+    // final tx = context.select((SendCubit cubit) => cubit.state.tx);
     final txid = context.select((SendCubit cubit) => cubit.state.tx!.txid);
+    final isLiquid =
+        context.select((SendCubit cubit) => cubit.state.tx!.isLiquid);
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.green),
       child: SizedBox(
@@ -679,7 +768,10 @@ class TxSuccess extends StatelessWidget {
             const Gap(15),
             InkWell(
               onTap: () {
-                final url = context.read<NetworkCubit>().state.explorerTxUrl(txid);
+                final url = context.read<NetworkCubit>().state.explorerTxUrl(
+                      txid,
+                      isLiquid: isLiquid,
+                    );
                 locator<Launcher>().launchApp(url);
               },
               child: const BBText.body(
@@ -707,52 +799,3 @@ class TxSuccess extends StatelessWidget {
     );
   }
 }
-
-// class HighFeeWarning extends StatelessWidget {
-//   const HighFeeWarning({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     const feesStr = '';
-//     const feeFiatStr = '';
-//     const amtStr = '';
-//     const amtFiatStr = '';
-//     const recAmtStr = '';
-//     const recAmtFiatStr = '';
-//     return WarningContainer(
-//       title: 'High Fee Warning',
-//       info: 'Ask the sender of the payment if he can pay you using the Lightning Network instead.',
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.stretch,
-//         children: [
-//           const BBText.body('Bitcoin Network fees are currently high.'),
-//           const BBText.body(
-//             'When receive a regular Bitcoin Network transaction in the Instant Payment Wallet, you must pay Bitcoin Netowkr fees and Swap fees',
-//           ),
-//           const Gap(8),
-//           const BBText.body('The current Network Fee is:'),
-//           const BBText.body(feesStr, isBold: true),
-//           const BBText.body('~ $feeFiatStr'),
-//           const Gap(8),
-//           const BBText.body('Amount you send:'),
-//           const BBText.body(amtStr, isBold: true),
-//           const BBText.body('~ $amtFiatStr'),
-//           const Gap(8),
-//           const BBText.body('Minimum recommended amount:'),
-//           const BBText.body(recAmtStr, isBold: true),
-//           const BBText.body('~ $recAmtFiatStr'),
-//           const Gap(32),
-//           BBButton.big(
-//             label: 'Continue anyways',
-//             leftIcon: Icons.send,
-//             onPressed: () {},
-//           ),
-//           BBButton.big(
-//             label: 'Use Secure Wallet',
-//             onPressed: () {},
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

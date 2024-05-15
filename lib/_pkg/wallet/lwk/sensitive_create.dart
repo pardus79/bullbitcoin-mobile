@@ -29,7 +29,7 @@ class LWKSensitiveCreate {
     // bool isImported,
   }) async {
     final lwkNetwork = network == BBNetwork.Mainnet ? lwk.Network.mainnet : lwk.Network.testnet;
-    final lwk.DescriptorBase descriptor = lwk.DescriptorBase(
+    final lwk.Descriptor descriptor = await lwk.Descriptor.newConfidential(
       network: lwkNetwork,
       mnemonic: seed.mnemonic,
     );
@@ -71,8 +71,10 @@ class LWKSensitiveCreate {
     );
     */
 
-    final descHashId =
-        createDescriptorHashId(descriptor.ctDescriptor.substring(0, 12), network: network);
+    final descHashId = createDescriptorHashId(
+      descriptor.ctDescriptor.substring(0, 12),
+      network: network,
+    );
     // final descHashId = createDescriptorHashId(await external.asString()).substring(0, 12);
     // final type = isImported ? BBWalletType.words : BBWalletType.newSeed;
 
@@ -105,6 +107,7 @@ class LWKSensitiveCreate {
         index: 0,
         kind: AddressKind.deposit,
         state: AddressStatus.unused,
+        isLiquid: true,
       ),
     );
     return (wallet, null);
@@ -115,18 +118,17 @@ class LWKSensitiveCreate {
     Seed seed,
   ) async {
     try {
-      final network =
-          wallet.network == BBNetwork.Mainnet ? lwk.Network.mainnet : lwk.Network.testnet;
+      final network = wallet.network == BBNetwork.Mainnet ? lwk.Network.mainnet : lwk.Network.testnet;
 
       final appDocDir = await getApplicationDocumentsDirectory();
       final String dbDir = '${appDocDir.path}/db';
 
-      final lwk.DescriptorBase descriptor = lwk.DescriptorBase(
+      final lwk.Descriptor descriptor = await lwk.Descriptor.newConfidential(
         network: network,
         mnemonic: seed.mnemonic,
       );
 
-      final w = lwk.Wallet(
+      final w = await lwk.Wallet.init(
         network: network,
         dbpath: dbDir,
         descriptor: descriptor,

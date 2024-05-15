@@ -6,24 +6,36 @@ import 'package:path_provider/path_provider.dart';
 class LWKCreate {
   Future<(lwk.Wallet?, Err?)> loadPublicLwkWallet(Wallet wallet) async {
     try {
-      final network =
-          wallet.network == BBNetwork.Mainnet ? lwk.Network.mainnet : lwk.Network.testnet;
+      // throw 'cool';
+
+      final network = wallet.network == BBNetwork.Mainnet
+          ? lwk.Network.mainnet
+          : lwk.Network.testnet;
 
       final appDocDir = await getApplicationDocumentsDirectory();
-      final String dbDir = '${appDocDir.path}/db';
-      final descriptor = lwk.DescriptorBase.raw(ctDescriptor: wallet.externalPublicDescriptor);
-      final w = lwk.Wallet(
+      final String dbDir =
+          appDocDir.path + '/${wallet.getWalletStorageString()}';
+
+      final descriptor = lwk.Descriptor(
+        ctDescriptor: wallet.externalPublicDescriptor,
+      );
+
+      // print('----load lwk wallet: ' + wallet.id);
+
+      final w = await lwk.Wallet.init(
         network: network,
         dbpath: dbDir,
         descriptor: descriptor,
       );
 
+      // print('----loaded lwk  wallet: ' + wallet.id);
+
       return (w, null);
-    } on Exception catch (e) {
+    } catch (e) {
       return (
         null,
         Err(
-          e.message,
+          e.toString(),
           title: 'Error occurred while creating wallet',
           solution: 'Please try again.',
         )

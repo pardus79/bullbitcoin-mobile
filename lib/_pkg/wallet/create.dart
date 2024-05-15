@@ -27,11 +27,13 @@ class WalletCreate implements IWalletCreate {
   Future<(Wallet?, Err?)> loadPublicWallet({
     required String saveDir,
     Wallet? wallet,
+    required BBNetwork network,
   }) async {
     try {
       Wallet w;
       if (wallet == null) {
-        final (walletFromStorage, err) = await _walletsStorageRepository.readWallet(
+        final (walletFromStorage, err) =
+            await _walletsStorageRepository.readWallet(
           walletHashId: saveDir,
         );
         if (err != null) return (null, err);
@@ -39,31 +41,38 @@ class WalletCreate implements IWalletCreate {
       } else
         w = wallet;
 
+      if (w.network != network) throw 'Network mismatch';
+
       switch (w.baseWalletType) {
         case BaseWalletType.Bitcoin:
-          final (_, errWallet) = _walletsRepository.getBdkWallet(w, errExpected: true);
+          final (_, errWallet) =
+              _walletsRepository.getBdkWallet(w.id, errExpected: true);
           if (errWallet == null) {
             return (w, null);
           }
-          final (bdkWallet, errLoading) = await _bdkCreate.loadPublicBdkWallet(w);
+          final (bdkWallet, errLoading) =
+              await _bdkCreate.loadPublicBdkWallet(w);
           if (errLoading != null) throw errLoading;
-          final errSave = _walletsRepository.setBdkWallet(w, bdkWallet!);
+          final errSave = _walletsRepository.setBdkWallet(w.id, bdkWallet!);
           if (errSave != null) {
             throw errSave;
           }
           return (w, null);
 
         case BaseWalletType.Liquid:
-          final (_, errWallet) = _walletsRepository.getLwkWallet(w, errExpected: true);
+          final (_, errWallet) =
+              _walletsRepository.getLwkWallet(w.id, errExpected: true);
           if (errWallet == null) return (w, null);
-          final (liqWallet, errLoading) = await _lwkCreate.loadPublicLwkWallet(w);
+          final (liqWallet, errLoading) =
+              await _lwkCreate.loadPublicLwkWallet(w);
           if (errLoading != null) throw errLoading;
-          final errSave = _walletsRepository.setLwkWallet(w, liqWallet!);
+          final errSave = _walletsRepository.setLwkWallet(w.id, liqWallet!);
           if (errSave != null) throw errSave;
 
           return (w, null);
       }
     } catch (e) {
+      // print('Error: $e');
       return (
         null,
         Err(

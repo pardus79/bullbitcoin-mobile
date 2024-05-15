@@ -1,4 +1,5 @@
 import 'package:bb_mobile/_model/address.dart';
+import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/wallet/address.dart';
 import 'package:bb_mobile/_pkg/wallet/repository/storage.dart';
@@ -32,16 +33,20 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       ),
     );
 
-    if (state.paymentNetwork == ReceivePaymentNetwork.lightning)
+    if (state.paymentNetwork == PaymentNetwork.lightning)
       emit(state.copyWith(defaultAddress: null));
 
-    final watchOnly = walletBloc.state.wallet!.watchOnly();
-    if (watchOnly) emit(state.copyWith(paymentNetwork: ReceivePaymentNetwork.bitcoin));
+    if (!walletBloc.state.wallet!.mainWallet)
+      emit(state.copyWith(paymentNetwork: PaymentNetwork.bitcoin));
+
+    // final watchOnly = walletBloc.state.wallet!.watchOnly();
+    // if (watchOnly)
+    //   emit(state.copyWith(paymentNetwork: ReceivePaymentNetwork.bitcoin));
     loadAddress();
   }
 
   void updateWalletType(
-    ReceivePaymentNetwork selectedPaymentNetwork,
+    PaymentNetwork selectedPaymentNetwork,
     bool isTestnet, {
     bool onStart = false,
   }) {
@@ -58,25 +63,25 @@ class ReceiveCubit extends Cubit<ReceiveState> {
 
     emit(state.copyWith(paymentNetwork: selectedPaymentNetwork));
 
-    if (selectedPaymentNetwork == ReceivePaymentNetwork.lightning)
+    if (selectedPaymentNetwork == PaymentNetwork.lightning)
       emit(state.copyWith(defaultAddress: null));
 
-    if (selectedPaymentNetwork != ReceivePaymentNetwork.bitcoin) loadAddress();
+    if (selectedPaymentNetwork != PaymentNetwork.bitcoin) loadAddress();
 
-    if (currentPayNetwork != ReceivePaymentNetwork.bitcoin &&
-        selectedPaymentNetwork == ReceivePaymentNetwork.bitcoin) {
+    if (currentPayNetwork != PaymentNetwork.bitcoin &&
+        selectedPaymentNetwork == PaymentNetwork.bitcoin) {
       emit(state.copyWith(switchToSecure: true));
       return;
     }
 
-    if (currentPayNetwork != ReceivePaymentNetwork.lightning &&
-        selectedPaymentNetwork == ReceivePaymentNetwork.lightning) {
+    if (currentPayNetwork != PaymentNetwork.lightning &&
+        selectedPaymentNetwork == PaymentNetwork.lightning) {
       emit(state.copyWith(switchToInstant: true));
       return;
     }
 
-    if (currentPayNetwork != ReceivePaymentNetwork.liquid &&
-        selectedPaymentNetwork == ReceivePaymentNetwork.liquid) {
+    if (currentPayNetwork != PaymentNetwork.liquid &&
+        selectedPaymentNetwork == PaymentNetwork.liquid) {
       emit(state.copyWith(switchToInstant: true));
       return;
     }
@@ -119,8 +124,8 @@ class ReceiveCubit extends Cubit<ReceiveState> {
 
     final Wallet wallet = state.walletBloc!.state.wallet!;
 
-    // If currently selected wallet is bitcoin wallet, then find and load the liquid wallet and get it's lastGeneratedAddress.
-    if (wallet.type != BBWalletType.instant) {
+    // If currently selected wallet is bitcoin? wallet, then find and load the liquid wallet and get it's lastGeneratedAddress.
+    if (wallet.baseWalletType == BaseWalletType.Liquid) {
       emit(
         state.copyWith(
           defaultAddress: wallet.lastGeneratedAddress,
@@ -151,8 +156,8 @@ class ReceiveCubit extends Cubit<ReceiveState> {
           defaultLiquidAddress: liquidWallet?.lastGeneratedAddress,
         ),
       );
-      // If currently selected wallet is liquid wallet, then find and load the bitcoin wallet and get it's lastGeneratedAddress.
-    } else if (wallet.type == BBWalletType.instant) {
+      // If currently selected wallet is liquid? wallet, then find and load the bitcoin wallet and get it's lastGeneratedAddress.
+    } else if (wallet.baseWalletType == BaseWalletType.Bitcoin) {
       emit(
         state.copyWith(
           defaultLiquidAddress: wallet.lastGeneratedAddress,
@@ -231,7 +236,7 @@ class ReceiveCubit extends Cubit<ReceiveState> {
   */
 
   void generateNewAddress() async {
-    if (state.paymentNetwork == ReceivePaymentNetwork.lightning) return;
+    if (state.paymentNetwork == PaymentNetwork.lightning) return;
 
     emit(
       state.copyWith(
@@ -254,7 +259,12 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       return;
     }
 
-    state.walletBloc!.add(UpdateWallet(updatedWallet!, updateTypes: [UpdateWalletTypes.addresses]));
+    state.walletBloc!.add(
+      UpdateWallet(
+        updatedWallet!,
+        updateTypes: [UpdateWalletTypes.addresses],
+      ),
+    );
 
     final addressGap = updatedWallet.addressGap();
     if (addressGap >= 5 && addressGap <= 20) {
@@ -328,7 +338,8 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       spendable: state.defaultAddress!.spendable,
     );
 
-    state.walletBloc!.add(UpdateWallet(w, updateTypes: [UpdateWalletTypes.addresses]));
+    state.walletBloc!
+        .add(UpdateWallet(w, updateTypes: [UpdateWalletTypes.addresses]));
 
     emit(
       state.copyWith(
@@ -367,7 +378,8 @@ class ReceiveCubit extends Cubit<ReceiveState> {
       kind: AddressKind.deposit,
     );
 
-    state.walletBloc!.add(UpdateWallet(w, updateTypes: [UpdateWalletTypes.addresses]));
+    state.walletBloc!
+        .add(UpdateWallet(w, updateTypes: [UpdateWalletTypes.addresses]));
 
     emit(
       state.copyWith(

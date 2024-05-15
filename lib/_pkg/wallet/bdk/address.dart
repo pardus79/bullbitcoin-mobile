@@ -10,7 +10,9 @@ class BDKAddress {
         addressIndex: bdk.AddressIndex.peek(index: idx),
       );
 
-      return (address.address.toString(), null);
+      final addr = await address.address.asString();
+
+      return (addr, null);
     } on Exception catch (e) {
       return (
         null,
@@ -38,16 +40,18 @@ class BDKAddress {
         final address = await bdkWallet.getAddress(
           addressIndex: bdk.AddressIndex.peek(index: i),
         );
+        final addressStr = await address.address.asString();
         final contain = wallet.myAddressBook.where(
-          (element) => element.address == address.address.toString(),
+          (element) => element.address == addressStr,
         );
         if (contain.isEmpty)
           addresses.add(
             Address(
-              address: address.address.toString(),
+              address: addressStr,
               index: address.index,
               kind: AddressKind.deposit,
               state: AddressStatus.unused,
+              isLiquid: wallet.baseWalletType == BaseWalletType.Liquid,
             ),
           );
       }
@@ -65,7 +69,7 @@ class BDKAddress {
         w = wallet.copyWith(
           myAddressBook: addresses,
           lastGeneratedAddress: Address(
-            address: addressLastUnused.address.toString(),
+            address: await addressLastUnused.address.asString(),
             index: addressLastUnused.index,
             kind: AddressKind.deposit,
             state: AddressStatus.unused,
@@ -103,23 +107,26 @@ class BDKAddress {
         final address = await bdkWallet.getInternalAddress(
           addressIndex: bdk.AddressIndex.peek(index: i),
         );
+        final addressStr = await address.address.asString();
         final contain = wallet.myAddressBook.where(
-          (element) => element.address == address.address.toString(),
+          (element) => element.address == addressStr,
         );
         if (contain.isEmpty)
           addresses.add(
             Address(
-              address: address.address.toString(),
+              address: addressStr,
               index: address.index,
               kind: AddressKind.change,
               state: AddressStatus.unused,
+              isLiquid: wallet.baseWalletType == BaseWalletType.Liquid,
             ),
           );
         else {
           // migration for existing users so their change index is updated
           // index used to be null
-          final index = wallet.myAddressBook
-              .indexWhere((element) => element.address == address.address.toString());
+          final index = wallet.myAddressBook.indexWhere(
+            (element) => element.address == addressStr,
+          );
           final change = addresses.removeAt(index);
           addresses.add(change.copyWith(index: i));
         }
@@ -158,7 +165,9 @@ class BDKAddress {
       for (final addr in myAddresses) {
         AddressStatus addressStatus = addr.state;
         int balance = 0;
-        final matches = utxos.where((utxo) => utxo.address.address == addr.address).toList();
+        final matches = utxos
+            .where((utxo) => utxo.address.address == addr.address)
+            .toList();
         if (matches.isEmpty) {
           if (addr.state == AddressStatus.active) {
             addressStatus = AddressStatus.used;
@@ -167,7 +176,8 @@ class BDKAddress {
           addressStatus = AddressStatus.active;
           balance = matches.fold(0, (sum, utxo) => sum + utxo.value);
         }
-        updatedAddresses.add(addr.copyWith(state: addressStatus, balance: balance));
+        updatedAddresses
+            .add(addr.copyWith(state: addressStatus, balance: balance));
       }
       final w = wallet.copyWith(
         myAddressBook: updatedAddresses,

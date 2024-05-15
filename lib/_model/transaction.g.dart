@@ -8,18 +8,18 @@ part of 'transaction.dart';
 
 _$TransactionImpl _$$TransactionImplFromJson(Map<String, dynamic> json) =>
     _$TransactionImpl(
-      timestamp: json['timestamp'] as int,
+      timestamp: (json['timestamp'] as num).toInt(),
       txid: json['txid'] as String,
-      received: json['received'] as int?,
-      sent: json['sent'] as int?,
-      fee: json['fee'] as int?,
-      height: json['height'] as int?,
+      received: (json['received'] as num?)?.toInt(),
+      sent: (json['sent'] as num?)?.toInt(),
+      fee: (json['fee'] as num?)?.toInt(),
+      height: (json['height'] as num?)?.toInt(),
       label: json['label'] as String?,
       toAddress: json['toAddress'] as String?,
       psbt: json['psbt'] as String?,
       rbfEnabled: json['rbfEnabled'] as bool? ?? true,
       oldTx: json['oldTx'] as bool? ?? false,
-      broadcastTime: json['broadcastTime'] as int?,
+      broadcastTime: (json['broadcastTime'] as num?)?.toInt(),
       outAddrs: (json['outAddrs'] as List<dynamic>?)
               ?.map((e) => Address.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -31,6 +31,7 @@ _$TransactionImpl _$$TransactionImplFromJson(Map<String, dynamic> json) =>
       swapTx: json['swapTx'] == null
           ? null
           : SwapTx.fromJson(json['swapTx'] as Map<String, dynamic>),
+      isLiquid: json['isLiquid'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$TransactionImplToJson(_$TransactionImpl instance) =>
@@ -51,12 +52,13 @@ Map<String, dynamic> _$$TransactionImplToJson(_$TransactionImpl instance) =>
       'wallet': instance.wallet,
       'isSwap': instance.isSwap,
       'swapTx': instance.swapTx,
+      'isLiquid': instance.isLiquid,
     };
 
 _$SwapTxImpl _$$SwapTxImplFromJson(Map<String, dynamic> json) => _$SwapTxImpl(
       id: json['id'] as String,
       txid: json['txid'] as String?,
-      keyIndex: json['keyIndex'] as int?,
+      keyIndex: (json['keyIndex'] as num?)?.toInt(),
       isSubmarine: json['isSubmarine'] as bool,
       network: $enumDecode(_$BBNetworkEnumMap, json['network']),
       walletType: $enumDecode(_$BaseWalletTypeEnumMap, json['walletType']),
@@ -65,18 +67,21 @@ _$SwapTxImpl _$$SwapTxImplFromJson(Map<String, dynamic> json) => _$SwapTxImpl(
       sha256: json['sha256'] as String?,
       hash160: json['hash160'] as String?,
       redeemScript: json['redeemScript'] as String,
+      boltzPubkey: json['boltzPubkey'] as String?,
+      locktime: (json['locktime'] as num?)?.toInt(),
       invoice: json['invoice'] as String,
-      outAmount: json['outAmount'] as int,
+      outAmount: (json['outAmount'] as num).toInt(),
       scriptAddress: json['scriptAddress'] as String,
       electrumUrl: json['electrumUrl'] as String,
       boltzUrl: json['boltzUrl'] as String,
       status: json['status'] == null
           ? null
-          : SwapStatusResponse.fromJson(json['status'] as Map<String, dynamic>),
+          : SwapStreamStatus.fromJson(json['status'] as Map<String, dynamic>),
       blindingKey: json['blindingKey'] as String?,
-      boltzFees: json['boltzFees'] as int?,
-      lockupFees: json['lockupFees'] as int?,
-      claimFees: json['claimFees'] as int?,
+      boltzFees: (json['boltzFees'] as num?)?.toInt(),
+      lockupFees: (json['lockupFees'] as num?)?.toInt(),
+      claimFees: (json['claimFees'] as num?)?.toInt(),
+      claimAddress: json['claimAddress'] as String?,
     );
 
 Map<String, dynamic> _$$SwapTxImplToJson(_$SwapTxImpl instance) =>
@@ -92,6 +97,8 @@ Map<String, dynamic> _$$SwapTxImplToJson(_$SwapTxImpl instance) =>
       'sha256': instance.sha256,
       'hash160': instance.hash160,
       'redeemScript': instance.redeemScript,
+      'boltzPubkey': instance.boltzPubkey,
+      'locktime': instance.locktime,
       'invoice': instance.invoice,
       'outAmount': instance.outAmount,
       'scriptAddress': instance.scriptAddress,
@@ -102,6 +109,7 @@ Map<String, dynamic> _$$SwapTxImplToJson(_$SwapTxImpl instance) =>
       'boltzFees': instance.boltzFees,
       'lockupFees': instance.lockupFees,
       'claimFees': instance.claimFees,
+      'claimAddress': instance.claimAddress,
     };
 
 const _$BBNetworkEnumMap = {
@@ -124,6 +132,10 @@ _$SwapTxSensitiveImpl _$$SwapTxSensitiveImplFromJson(
       sha256: json['sha256'] as String,
       hash160: json['hash160'] as String,
       redeemScript: json['redeemScript'] as String,
+      boltzPubkey: json['boltzPubkey'] as String?,
+      isSubmarine: json['isSubmarine'] as bool?,
+      scriptAddress: json['scriptAddress'] as String?,
+      locktime: (json['locktime'] as num?)?.toInt(),
       blindingKey: json['blindingKey'] as String?,
     );
 
@@ -137,19 +149,24 @@ Map<String, dynamic> _$$SwapTxSensitiveImplToJson(
       'sha256': instance.sha256,
       'hash160': instance.hash160,
       'redeemScript': instance.redeemScript,
+      'boltzPubkey': instance.boltzPubkey,
+      'isSubmarine': instance.isSubmarine,
+      'scriptAddress': instance.scriptAddress,
+      'locktime': instance.locktime,
       'blindingKey': instance.blindingKey,
     };
 
 _$InvoiceImpl _$$InvoiceImplFromJson(Map<String, dynamic> json) =>
     _$InvoiceImpl(
-      msats: json['msats'] as int,
-      expiry: json['expiry'] as int,
-      expiresIn: json['expiresIn'] as int,
-      expiresAt: json['expiresAt'] as int,
+      msats: (json['msats'] as num).toInt(),
+      expiry: (json['expiry'] as num).toInt(),
+      expiresIn: (json['expiresIn'] as num).toInt(),
+      expiresAt: (json['expiresAt'] as num).toInt(),
       isExpired: json['isExpired'] as bool,
       network: json['network'] as String,
-      cltvExpDelta: json['cltvExpDelta'] as int,
+      cltvExpDelta: (json['cltvExpDelta'] as num).toInt(),
       invoice: json['invoice'] as String,
+      bip21: json['bip21'] as String?,
     );
 
 Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
@@ -162,4 +179,5 @@ Map<String, dynamic> _$$InvoiceImplToJson(_$InvoiceImpl instance) =>
       'network': instance.network,
       'cltvExpDelta': instance.cltvExpDelta,
       'invoice': instance.invoice,
+      'bip21': instance.bip21,
     };

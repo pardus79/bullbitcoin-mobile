@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bb_mobile/_model/wallet.dart';
 import 'package:bb_mobile/_pkg/wallet/repository/storage.dart';
-import 'package:bb_mobile/home/bloc/state.dart';
+import 'package:bb_mobile/home/bloc/home_state.dart';
+import 'package:bb_mobile/wallet/bloc/event.dart';
 import 'package:bb_mobile/wallet/bloc/wallet_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,13 +29,16 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
 
-    final blocs = state.createWalletBlocs(wallets);
+    // final blocs = state.createWalletBlocs(wallets);
     await Future.delayed(const Duration(milliseconds: 300));
+
+    // print('Wallets: $wallets');
 
     emit(
       state.copyWith(
-        // wallets: wallets,
-        walletBlocs: blocs,
+        tempwallets: wallets,
+        // walletBlocs: blocs,
+        walletBlocs: null,
         loadingWallets: false,
       ),
     );
@@ -44,13 +49,63 @@ class HomeCubit extends Cubit<HomeState> {
     //   );
   }
 
+  void clearWallets() => emit(state.copyWith(tempwallets: null));
+
   void updateErrDeepLink(String err) async {
     emit(state.copyWith(errDeepLinking: err));
     await Future.delayed(const Duration(seconds: 5));
     emit(state.copyWith(errDeepLinking: ''));
   }
 
-  // void updateWalletBlocs(List<WalletBloc> blocs) => emit(state.copyWith(walletBlocs: blocs));
+  // void updateWalletBloc(WalletBloc bloc) {
+  //   final walletBlocs = state.walletBlocs != null
+  //       ? state.walletBlocs!.toList()
+  //       : <WalletBloc>[];
+  //   final idx = walletBlocs
+  //       .indexWhere((wB) => wB.state.wallet!.id == bloc.state.wallet!.id);
+  //   walletBlocs[idx] = bloc;
+
+  //   emit(state.copyWith(walletBlocs: walletBlocs));
+  // }
+
+  void updateWalletBlocs(List<WalletBloc> blocs) =>
+      emit(state.copyWith(walletBlocs: blocs));
+
+  void updateWalletBloc(WalletBloc bloc) {
+    final walletBlocs = state.walletBlocs != null
+        ? state.walletBlocs!.toList()
+        : <WalletBloc>[];
+    final idx = walletBlocs
+        .indexWhere((wB) => wB.state.wallet!.id == bloc.state.wallet!.id);
+    walletBlocs[idx] = bloc;
+
+    emit(state.copyWith(walletBlocs: walletBlocs));
+
+    updatedNotifier();
+  }
+
+  void updatedNotifier() async {
+    emit(state.copyWith(updated: true));
+    await Future.delayed(const Duration(seconds: 2));
+    emit(state.copyWith(updated: false));
+  }
+
+  void loadWalletsForNetwork(BBNetwork network) {
+    print('::::::1');
+    final blocs = state.walletBlocsFromNetwork(network);
+    print('::::::2');
+
+    if (blocs.isEmpty) return;
+    print('::::::3');
+
+    for (final bloc in blocs) {
+      print('::::::4');
+
+      final w = bloc.state.wallet!;
+      bloc.add(LoadWallet(w.getWalletStorageString()));
+    }
+    print('::::::5');
+  }
 
   // void addWallets(List<Wallet> wallets) {
   //   emit(state.copyWith(loadingWallets: true));
@@ -144,8 +199,12 @@ class HomeCubit extends Cubit<HomeState> {
   void removeWallet(WalletBloc walletBloc) {
     // final wallets = state.wallets != null ? state.wallets!.toList() : <Wallet>[];
     // wallets.removeWhere((w) => w.id == walletBloc.state.wallet!.id);
-    final walletBlocs = state.walletBlocs != null ? state.walletBlocs!.toList() : <WalletBloc>[];
-    walletBlocs.removeWhere((wB) => wB.state.wallet!.id == walletBloc.state.wallet!.id);
+    final walletBlocs = state.walletBlocs != null
+        ? state.walletBlocs!.toList()
+        : <WalletBloc>[];
+    walletBlocs.removeWhere(
+      (wB) => wB.state.wallet!.id == walletBloc.state.wallet!.id,
+    );
 
     emit(
       state.copyWith(

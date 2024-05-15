@@ -126,12 +126,16 @@ class BDKTransactions {
 
     final swapsToDelete = <SwapTx>[
       for (final s in swapTxs)
-        if (s.paidSubmarine() || s.settledReverse() || s.settledSubmarine() || s.expiredReverse())
+        if (s.paidSubmarine() ||
+            s.settledReverse() ||
+            s.settledSubmarine() ||
+            s.expiredReverse())
           s,
     ];
 
     for (final s in swapsToDelete)
-      if (swapsToDelete.any((_) => _.id == s.id)) swapTxs.removeWhere((_) => _.id == s.id);
+      if (swapsToDelete.any((_) => _.id == s.id))
+        swapTxs.removeWhere((_) => _.id == s.id);
 
     final updatedWallet = wallet.copyWith(swaps: swapTxs);
 
@@ -200,9 +204,11 @@ class BDKTransactions {
         final idxUnsignedTx = unsignedTxs.indexWhere((t) => t.txid == tx.txid);
 
         Transaction? storedTx;
-        if (storedTxIdx != -1) storedTx = storedTxs.elementAtOrNull(storedTxIdx);
+        if (storedTxIdx != -1)
+          storedTx = storedTxs.elementAtOrNull(storedTxIdx);
         if (idxUnsignedTx != -1) {
-          if (tx.txid == unsignedTxs[idxUnsignedTx].txid) unsignedTxs.removeAt(idxUnsignedTx);
+          if (tx.txid == unsignedTxs[idxUnsignedTx].txid)
+            unsignedTxs.removeAt(idxUnsignedTx);
         }
         var txObj = Transaction(
           txid: tx.txid,
@@ -220,11 +226,12 @@ class BDKTransactions {
         // var outAddrs;
         // var inAddres;
         final SerializedTx sTx = SerializedTx.fromJson(
-          jsonDecode(txObj.bdkTx!.transaction.toString()) as Map<String, dynamic>,
+          jsonDecode(txObj.bdkTx!.transaction!.inner) as Map<String, dynamic>,
         );
         if (storedTxIdx != -1 &&
             storedTxs[storedTxIdx].label != null &&
-            storedTxs[storedTxIdx].label!.isNotEmpty) label = storedTxs[storedTxIdx].label;
+            storedTxs[storedTxIdx].label!.isNotEmpty)
+          label = storedTxs[storedTxIdx].label;
 
         Address? externalAddress;
         Address? changeAddress;
@@ -246,7 +253,8 @@ class BDKTransactions {
           final amountSentToExternal = tx.sent - (tx.received + (tx.fee ?? 0));
 
           if (externalAddress != null) {
-            if (externalAddress.label != null && externalAddress.label!.isNotEmpty)
+            if (externalAddress.label != null &&
+                externalAddress.label!.isNotEmpty)
               label = externalAddress.label;
             else
               externalAddress = externalAddress.copyWith(label: label);
@@ -272,9 +280,10 @@ class BDKTransactions {
                 script: scriptPubKey,
                 network: bdkNetwork,
               );
+              final addressStr = await addressStruct.asString();
 
               (externalAddress, _) = await walletAddress.addAddressToWallet(
-                address: (null, addressStruct.toString()),
+                address: (null, addressStr),
                 wallet: wallet,
                 spentTxId: tx.txid,
                 kind: AddressKind.external,
@@ -293,7 +302,8 @@ class BDKTransactions {
             toAddress: externalAddress != null ? externalAddress.address : '',
             // fromAddress: '',
           );
-          if (externalAddress != null) txObj = addOutputAddresses(externalAddress, txObj);
+          if (externalAddress != null)
+            txObj = addOutputAddresses(externalAddress, txObj);
           //
           //
           // HANDLE CHANGE
@@ -317,8 +327,9 @@ class BDKTransactions {
           } else {
             try {
               if (sTx.output == null) throw 'No output object';
-              final scriptPubkeyString =
-                  sTx.output?.firstWhere((output) => output.value == amountChange).scriptPubkey;
+              final scriptPubkeyString = sTx.output
+                  ?.firstWhere((output) => output.value == amountChange)
+                  .scriptPubkey;
 
               if (scriptPubkeyString == null) {
                 throw 'No script pubkey';
@@ -332,9 +343,10 @@ class BDKTransactions {
                 script: scriptPubKey,
                 network: bdkNetwork,
               );
+              final addressStr = await addressStruct.asString();
 
               (changeAddress, _) = await walletAddress.addAddressToWallet(
-                address: (null, addressStruct.toString()),
+                address: (null, addressStr),
                 wallet: wallet,
                 spentTxId: tx.txid,
                 kind: AddressKind.change,
@@ -348,7 +360,8 @@ class BDKTransactions {
               // print(e);
             }
           }
-          if (changeAddress != null) txObj = addOutputAddresses(changeAddress, txObj);
+          if (changeAddress != null)
+            txObj = addOutputAddresses(changeAddress, txObj);
         } else if (txObj.isReceived()) {
           depositAddress = wallet.getAddressFromAddresses(
             txObj.txid,
@@ -358,15 +371,17 @@ class BDKTransactions {
           final amountReceived = tx.received;
 
           if (depositAddress != null) {
-            if (depositAddress.label != null && depositAddress.label!.isNotEmpty)
+            if (depositAddress.label != null &&
+                depositAddress.label!.isNotEmpty)
               label = depositAddress.label;
             else
               depositAddress = depositAddress.copyWith(label: label);
           } else {
             try {
               if (sTx.output == null) throw 'No output object';
-              final scriptPubkeyString =
-                  sTx.output?.firstWhere((output) => output.value == amountReceived).scriptPubkey;
+              final scriptPubkeyString = sTx.output
+                  ?.firstWhere((output) => output.value == amountReceived)
+                  .scriptPubkey;
 
               if (scriptPubkeyString == null) {
                 throw 'No script pubkey';
@@ -379,8 +394,10 @@ class BDKTransactions {
                 script: scriptPubKey,
                 network: bdkNetwork,
               );
+              final addressStr = await addressStruct.asString();
+
               (depositAddress, _) = await walletAddress.addAddressToWallet(
-                address: (null, addressStruct.toString()),
+                address: (null, addressStr),
                 wallet: wallet,
                 spentTxId: tx.txid,
                 kind: AddressKind.deposit,
@@ -407,13 +424,20 @@ class BDKTransactions {
 
         if (storedTxIdx != -1 &&
             storedTxs[storedTxIdx].label != null &&
-            storedTxs[storedTxIdx].label!.isNotEmpty) label = storedTxs[storedTxIdx].label;
+            storedTxs[storedTxIdx].label!.isNotEmpty)
+          label = storedTxs[storedTxIdx].label;
 
         transactions.add(txObj.copyWith(label: label));
         // Future.delayed(const Duration(milliseconds: 100));
       }
 
       // Future.delayed(const Duration(milliseconds: 200));
+
+      for (final tx in storedTxs) {
+        if (transactions.any((t) => t.txid == tx.txid)) continue;
+        transactions.add(tx);
+      }
+
       final w = wallet.copyWith(
         transactions: transactions,
         unsignedTxs: unsignedTxs,
@@ -585,7 +609,10 @@ class BDKTransactions {
         );
       }
       var txBuilder = bdk.TxBuilder();
-      final bdkAddress = await bdk.Address.fromString(s: address, network: wallet.getBdkNetwork()!);
+      final bdkAddress = await bdk.Address.fromString(
+        s: address,
+        network: wallet.getBdkNetwork()!,
+      );
       final script = await bdkAddress.scriptPubkey();
       if (sendAllCoin) {
         txBuilder = txBuilder.drainWallet().drainTo(script);
@@ -594,7 +621,8 @@ class BDKTransactions {
       }
 
       for (final address in wallet.allFreezedAddresses())
-        for (final unspendable in address.getUnspentUtxosOutpoints(wallet.utxos))
+        for (final unspendable
+            in address.getUnspentUtxosOutpoints(wallet.utxos))
           txBuilder = txBuilder.addUnSpendable(unspendable);
 
       if (isManualSend) {
@@ -626,10 +654,12 @@ class BDKTransactions {
 
       final outAddrsFutures = outputs.map((txOut) async {
         final scriptAddress = await bdk.Address.fromScript(
-          script: await bdk.ScriptBuf.fromHex(txOut.scriptPubkey.toString()),
+          script: bdk.ScriptBuf(bytes: txOut.scriptPubkey.bytes),
           network: bdkNetwork,
         );
-        if (txOut.value == amount! && !sendAllCoin && scriptAddress.toString() == address) {
+        if (txOut.value == amount! &&
+            !sendAllCoin &&
+            scriptAddress.toString() == address) {
           return Address(
             address: scriptAddress.toString(),
             kind: AddressKind.external,
@@ -653,6 +683,8 @@ class BDKTransactions {
 
       final List<Address> outAddrs = await Future.wait(outAddrsFutures);
       final feeAmt = await txResult.$1.feeAmount();
+      final psbtStr = await psbt.serialize();
+
       final Transaction tx = Transaction(
         txid: txDetails.txid,
         rbfEnabled: enableRbf,
@@ -660,13 +692,14 @@ class BDKTransactions {
         sent: txDetails.sent,
         fee: feeAmt ?? 0,
         height: txDetails.confirmationTime?.height,
-        timestamp: txDetails.confirmationTime?.timestamp ?? 0,
+        timestamp: 0,
+        // txDetails.confirmationTime?.timestamp ?? 0,
         label: note,
         toAddress: address,
         outAddrs: outAddrs,
-        psbt: psbt.toString(),
+        psbt: psbtStr,
       );
-      return ((tx, feeAmt, psbt.toString()), null);
+      return ((tx, feeAmt, psbtStr), null);
     } on Exception catch (e) {
       return (
         null,
@@ -708,7 +741,7 @@ class BDKTransactions {
     try {
       final psbtStruct = await bdk.PartiallySignedTransaction.fromString(psbt);
       final tx = await psbtStruct.extractTx();
-      final finalized = await bdkWallet.sign(
+      final _ = await bdkWallet.sign(
         psbt: psbtStruct,
         signOptions: const bdk.SignOptions(
           multiSig: false,
@@ -721,8 +754,9 @@ class BDKTransactions {
         ),
       );
       // final extracted = await finalized;
+      final psbtStr = await psbtStruct.serialize();
 
-      return ((tx, psbtStruct.toString()), null);
+      return ((tx, psbtStr), null);
     } on Exception catch (e) {
       return (
         null,

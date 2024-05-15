@@ -29,7 +29,8 @@ class LWKAddress {
 
       final List<Address> addresses = [...wallet.myAddressBook];
 
-      for (var i = 0; i <= addressLastUnused.index; i++) {
+      // for (var i = 0; i <= addressLastUnused.index; i++) {
+      for (var i = 0; i <= 3; i++) {
         final address = await lwkWallet.address(index: i);
         final contain = wallet.myAddressBook.where(
           (element) => element.address == address.confidential,
@@ -42,6 +43,7 @@ class LWKAddress {
               index: address.index,
               kind: AddressKind.deposit,
               state: AddressStatus.unused,
+              isLiquid: true,
             ),
           );
       }
@@ -54,8 +56,7 @@ class LWKAddress {
 
       Wallet w;
 
-      if (wallet.lastGeneratedAddress == null ||
-          addressLastUnused.index >= wallet.lastGeneratedAddress!.index!)
+      if (wallet.lastGeneratedAddress == null || addressLastUnused.index >= wallet.lastGeneratedAddress!.index!)
         w = wallet.copyWith(
           myAddressBook: addresses,
           lastGeneratedAddress: Address(
@@ -64,6 +65,7 @@ class LWKAddress {
             index: addressLastUnused.index,
             kind: AddressKind.deposit,
             state: AddressStatus.unused,
+            isLiquid: true,
           ),
         );
       else

@@ -1,7 +1,7 @@
 name: bb_mobile
 description: Bull Bitcoin Mobile Wallet
 publish_to: 'none' 
-version: 0.2.0+18
+version: 0.2.0-4+14
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -10,13 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  bdk_flutter: 
-      # ^0.31.1-dev
+  bdk_flutter: ^0.31.2-dev
       # ^0.28.3
       # path: ../bdk-flutter
-    git:
-      url: https://github.com/LtbLightning/bdk-flutter
-      ref: pre-compiled-binaries
+    # git:
+    #   url: https://github.com/LtbLightning/bdk-flutter
+    #   ref: pre-compiled-binaries
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.1.5
   freezed: ^2.4.5
@@ -25,9 +24,9 @@ dependencies:
   flextras: ^1.0.0
   flutter_animate: ^4.1.0
   gap: ^3.0.1
-  go_router: ^13.2.2
+  go_router: ^14.0.2
   google_fonts: 6.1.0
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ^9.1.0
   json_annotation: ^4.7.0
   flutter_hooks: ^0.20.3
   flutter_barcode_scanner: ^2.0.0
@@ -44,7 +43,7 @@ dependencies:
   dio: ^5.2.1+1
   timeago: ^3.3.0
   pattern_formatter: ^3.0.0
-  flutter_native_splash: ^2.2.17
+  flutter_native_splash: ^2.4.0
   url_launcher: ^6.1.10
   file_picker: ^6.1.1
   loading_animation_widget: ^1.2.0+4
@@ -76,6 +75,8 @@ dependencies:
     git:
       url: https://github.com/SatoshiPortal/lwk-dart.git
       ref: trunk
+  oktoast: ^3.4.0
+  lottie: ^3.1.0
       
   
   
@@ -90,7 +91,7 @@ dev_dependencies:
   json_serializable: ^6.5.4
   bloc_test: ^9.1.7
   mocktail: ^1.0.1
-  # flutter_launcher_icons: 
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
@@ -114,14 +115,16 @@ flutter_native_splash:
   background_image: "assets/splash.png"
   android_12:
     color: "#C50909"
-    image: assets/iconlarge.png
+    image: assets/bb-logo-white-splash.png
     # icon_background_color: "#C50909"
-    icon_background_color: "#000000"
+    icon_background_color: "#C50909"
 
   color_android: "#C50909"
 
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon.png"
+  image_path: "assets/iconnew.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_background: "#FBFBFB"
+  adaptive_icon_foreground: "assets/iconnew-red.png"

@@ -1,5 +1,6 @@
 import 'package:bb_mobile/_model/transaction.dart';
 import 'package:bb_mobile/_model/wallet.dart';
+import 'package:boltz_dart/boltz_dart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'swap_state.freezed.dart';
@@ -12,12 +13,24 @@ class SwapState with _$SwapState {
     @Default('') String errCreatingSwapInv,
     @Default(false) bool generatingSwapInv,
     SwapTx? swapTx,
-    Invoice? invoice,
+    // Invoice? invoice,
     @Default(false) bool errSmallAmt,
-    int? errHighFees,
+    double? errHighFees,
     Wallet? updatedWallet,
+    AllFees? allFees,
+    String? errAllFees,
   }) = _SwapState;
   const SwapState._();
 
-  bool showWarning() => errSmallAmt || errHighFees != null;
+  bool showWarning() {
+    final errH = errHighFees;
+    final errSA = errSmallAmt;
+    return errH != null || errSA;
+  }
+
+  String err() {
+    if (errCreatingSwapInv.isNotEmpty) return errCreatingSwapInv;
+    if (errCreatingInvoice.isNotEmpty) return errCreatingInvoice;
+    return '';
+  }
 }
