@@ -131,6 +131,8 @@ Future<Map<String, dynamic>> updateWalletObj(
 
 // Some issue in old build(s), cause some indexes to be null.
 // Skipping some addresses. This funciton will fix that
+// TODO: Change address list count or max change address index.
+//  --> Doing max change address will be complex. So need to finalize if its necessary.
 Future<Map<String, dynamic>> updateAddressNullIssue(
   Map<String, dynamic> walletObj,
 ) async {
