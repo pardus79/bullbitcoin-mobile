@@ -60,19 +60,19 @@ Future<void> doMigration0_1to0_2(
     print('Save wallet as:');
     // print(jsonEncode(walletObj));
 
-    // final _ = await hiveStorage.saveValue(
-    //   key: walletId,
-    //   value: jsonEncode(
-    //     walletObj,
-    //   ),
-    // );
+    final _ = await hiveStorage.saveValue(
+      key: walletId,
+      value: jsonEncode(
+        walletObj,
+      ),
+    );
   }
 
   // Change 4: create a new Liquid wallet, based on the Bitcoin wallet
-  // await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
+  await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
 
   // Finally update version number to next version
-  // await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
+  await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
 }
 
 Future<Map<String, dynamic>> updateWalletObj(
