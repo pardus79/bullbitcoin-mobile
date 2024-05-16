@@ -42,7 +42,7 @@ Future<void> doMigration0_1to0_2(
       WalletSensitiveStorageRepository(secureStorage: secureStorage);
 
   for (final walletId in walletIdsJson) {
-    print('walletId: $walletId');
+    // print('walletId: $walletId');
     final (jsn, err) = await hiveStorage.getValue(walletId as String);
     if (err != null) throw err;
 
@@ -60,22 +60,22 @@ Future<void> doMigration0_1to0_2(
     walletObj =
         await updateAddressNullIssue(walletObj, mainBlockchain, testBlockchain);
 
-    print('Save wallet as:');
+    // print('Save wallet as:');
     // print(jsonEncode(walletObj));
 
-    // final _ = await hiveStorage.saveValue(
-    //   key: walletId,
-    //   value: jsonEncode(
-    //     walletObj,
-    //   ),
-    // );
+    final _ = await hiveStorage.saveValue(
+      key: walletId,
+      value: jsonEncode(
+        walletObj,
+      ),
+    );
   }
 
   // Change 4: create a new Liquid wallet, based on the Bitcoin wallet
-  // await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
+  await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
 
   // Finally update version number to next version
-  // await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
+  await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
 }
 
 Future<Map<String, dynamic>> updateWalletObj(
@@ -189,11 +189,11 @@ Future<Map<String, dynamic>> updateAddressNullIssue(
 
     final matchIndex =
         myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
-    print('matchIndex $matchIndex $i $nativeAddrStr');
+    // print('matchIndex $matchIndex $i $nativeAddrStr');
     if (matchIndex != -1) {
-      print(
-        'myAddressbook.deposit index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
-      );
+      // print(
+      //   'myAddressbook.deposit index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
+      // );
       final newAddr =
           myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
       myAddressBook[matchIndex] = newAddr;
@@ -223,11 +223,11 @@ Future<Map<String, dynamic>> updateAddressNullIssue(
 
     final matchIndex =
         myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
-    print('matchIndex $matchIndex $i');
+    // print('matchIndex $matchIndex $i');
     if (matchIndex != -1) {
-      print(
-        'myAddressbook.change index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
-      );
+      // print(
+      //   'myAddressbook.change index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
+      // );
 
       final newAddr =
           myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
@@ -246,12 +246,12 @@ Future<Map<String, dynamic>> updateAddressNullIssue(
   }
   myAddressBook.addAll(toAdd);
 
-  print('After patch:');
-  for (int i = 0; i < myAddressBook.length; i++) {
-    print(
-      'myAddressbook[$i] : ${myAddressBook[i].index} ${myAddressBook[i].kind} : (${myAddressBook[i].address})',
-    );
-  }
+  // print('After patch:');
+  // for (int i = 0; i < myAddressBook.length; i++) {
+  // print(
+  //   'myAddressbook[$i] : ${myAddressBook[i].index} ${myAddressBook[i].kind} : (${myAddressBook[i].address})',
+  // );
+  // }
 
   return w.copyWith(myAddressBook: myAddressBook).toJson();
 }
