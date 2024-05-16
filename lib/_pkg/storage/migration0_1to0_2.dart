@@ -143,28 +143,34 @@ Future<Map<String, dynamic>> updateAddressNullIssue(
 
   final myAddressBook = [...w.myAddressBook].toList();
 
-  int changeAddressCount = 0;
-  int depositAddressCount = 0;
-  int ivar = 0;
-  w.myAddressBook.map((addr) {
-    if (addr.kind == AddressKind.change) {
-      changeAddressCount++;
-    } else if (addr.kind == AddressKind.deposit) {
-      depositAddressCount++;
-    }
-    print(
-      'myAddressbook[$ivar] : ${addr.index} ${addr.kind} : (${addr.address})',
-    );
-    ivar++;
-    return addr;
-  }).toList();
+  final bdk.AddressInfo lastDepositAddr = await bdkWallet!
+      .getAddress(addressIndex: const bdk.AddressIndex.lastUnused());
+  final int depositAddressCount = lastDepositAddr.index;
+
+  final bdk.AddressInfo lastChangeAddr = await bdkWallet.getInternalAddress(
+    addressIndex: const bdk.AddressIndex.lastUnused(),
+  );
+  final int changeAddressCount = lastChangeAddr.index;
+  //int ivar = 0;
+  //w.myAddressBook.map((addr) {
+  //  if (addr.kind == AddressKind.change) {
+  //    changeAddressCount++;
+  //  } else if (addr.kind == AddressKind.deposit) {
+  //    depositAddressCount++;
+  //  }
+  //  print(
+  //    'myAddressbook[$ivar] : ${addr.index} ${addr.kind} : (${addr.address})',
+  //  );
+  //  ivar++;
+  //  return addr;
+  //}).toList();
 
   final List<Address> toAdd = [];
   for (int i = 0; i < depositAddressCount; i++) {
     bdk.AddressInfo nativeAddr;
     String nativeAddrStr;
 
-    nativeAddr = await bdkWallet!.getAddress(
+    nativeAddr = await bdkWallet.getAddress(
       addressIndex: bdk.AddressIndex.peek(index: i),
     );
     nativeAddrStr = await nativeAddr.address.asString();
@@ -198,7 +204,7 @@ Future<Map<String, dynamic>> updateAddressNullIssue(
     bdk.AddressInfo nativeAddr;
     String nativeAddrStr;
 
-    nativeAddr = await bdkWallet!.getInternalAddress(
+    nativeAddr = await bdkWallet.getInternalAddress(
       addressIndex: bdk.AddressIndex.peek(index: i),
     );
     nativeAddrStr = await nativeAddr.address.asString();
