@@ -27,6 +27,8 @@ Seed? liquidTestnetSeed;
 Future<void> doMigration0_1to0_2(
   SecureStorage secureStorage,
   HiveStorage hiveStorage,
+  bdk.Blockchain mainBlockchain,
+  bdk.Blockchain testBlockchain,
 ) async {
   print('Migration: 0.1 to 0.2');
 
@@ -55,24 +57,25 @@ Future<void> doMigration0_1to0_2(
     walletObj = await addIsLiquid(walletObj);
 
     // Change 4: Update change address Index
-    walletObj = await updateAddressNullIssue(walletObj);
+    walletObj =
+        await updateAddressNullIssue(walletObj, mainBlockchain, testBlockchain);
 
     print('Save wallet as:');
     // print(jsonEncode(walletObj));
 
-    final _ = await hiveStorage.saveValue(
-      key: walletId,
-      value: jsonEncode(
-        walletObj,
-      ),
-    );
+    // final _ = await hiveStorage.saveValue(
+    //   key: walletId,
+    //   value: jsonEncode(
+    //     walletObj,
+    //   ),
+    // );
   }
 
   // Change 4: create a new Liquid wallet, based on the Bitcoin wallet
-  await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
+  // await createLiquidWallet(liquidMainnetSeed, liquidTestnetSeed, hiveStorage);
 
   // Finally update version number to next version
-  await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
+  // await secureStorage.saveValue(key: StorageKeys.version, value: '0.2');
 }
 
 Future<Map<String, dynamic>> updateWalletObj(
@@ -135,16 +138,25 @@ Future<Map<String, dynamic>> updateWalletObj(
 //  --> Doing max change address will be complex. So need to finalize if its necessary.
 Future<Map<String, dynamic>> updateAddressNullIssue(
   Map<String, dynamic> walletObj,
+  bdk.Blockchain mainBlockchain,
+  bdk.Blockchain testBlockchain,
 ) async {
   final Wallet w = Wallet.fromJson(walletObj);
   final WalletsRepository walletRepo = WalletsRepository();
   final bdkCreate = BDKCreate(walletsRepository: walletRepo);
   final (bdkWallet, _) = await bdkCreate.loadPublicBdkWallet(w);
 
+  await bdkWallet!.sync(
+    blockchain: bdkWallet.network == BBNetwork.Mainnet
+        ? mainBlockchain
+        : testBlockchain,
+  );
+
   final myAddressBook = [...w.myAddressBook].toList();
 
-  final bdk.AddressInfo lastDepositAddr = await bdkWallet!
-      .getAddress(addressIndex: const bdk.AddressIndex.lastUnused());
+  final bdk.AddressInfo lastDepositAddr = await bdkWallet.getAddress(
+    addressIndex: const bdk.AddressIndex.lastUnused(),
+  );
   final int depositAddressCount = lastDepositAddr.index;
 
   final bdk.AddressInfo lastChangeAddr = await bdkWallet.getInternalAddress(
