@@ -55,7 +55,7 @@ Future<void> doMigration0_1to0_2(
     walletObj = await addIsLiquid(walletObj);
 
     // Change 4: Update change address Index
-    walletObj = await updateChangeAddressIndex(walletObj);
+    walletObj = await updateAddressNullIssue(walletObj);
 
     print('Save wallet as:');
     // print(jsonEncode(walletObj));
@@ -129,78 +129,107 @@ Future<Map<String, dynamic>> updateWalletObj(
   return walletObj;
 }
 
-Future<Map<String, dynamic>> updateChangeAddressIndex(
+// Some issue in old build(s), cause some indexes to be null.
+// Skipping some addresses. This funciton will fix that
+Future<Map<String, dynamic>> updateAddressNullIssue(
   Map<String, dynamic> walletObj,
 ) async {
-  int changeAddressCount = 0;
-  int depositAddressCount = 0;
-  int ivar = 0;
-  if (walletObj['myAddressBook'] != null) {
-    walletObj['myAddressBook'] = walletObj['myAddressBook']
-        .map((addr) => addr as Map<String, dynamic>)
-        .map((addr) {
-      ivar++;
-      // if (addr['index'] == null) {
-      //   print(
-      //     'change address: ${addr['address']} : ${addr['index']} : ${addr['kind']} $ivar',
-      //   );
-      // }
-      if (addr['kind'] == 'change') {
-        changeAddressCount++;
-      } else if (addr['kind'] == 'deposit') {
-        depositAddressCount++;
-      }
-      return addr;
-    }).toList();
-  }
-
   final Wallet w = Wallet.fromJson(walletObj);
   final WalletsRepository walletRepo = WalletsRepository();
   final bdkCreate = BDKCreate(walletsRepository: walletRepo);
   final (bdkWallet, _) = await bdkCreate.loadPublicBdkWallet(w);
 
-  final myAddressBook = w.myAddressBook.toList();
-  final toAdd = [];
+  final myAddressBook = [...w.myAddressBook].toList();
 
-  int depositCounter = 0;
-  int changeCounter = 0;
-  for (int i = 0; i < myAddressBook.length; i++) {
+  int changeAddressCount = 0;
+  int depositAddressCount = 0;
+  int ivar = 0;
+  w.myAddressBook.map((addr) {
+    if (addr.kind == AddressKind.change) {
+      changeAddressCount++;
+    } else if (addr.kind == AddressKind.deposit) {
+      depositAddressCount++;
+    }
+    print(
+      'myAddressbook[$ivar] : ${addr.index} ${addr.kind} : (${addr.address})',
+    );
+    ivar++;
+    return addr;
+  }).toList();
+
+  final List<Address> toAdd = [];
+  for (int i = 0; i < depositAddressCount; i++) {
     bdk.AddressInfo nativeAddr;
     String nativeAddrStr;
 
-    if (myAddressBook[i].kind == AddressKind.deposit) {
-      nativeAddr = await bdkWallet!.getAddress(
-        addressIndex: bdk.AddressIndex.peek(index: depositCounter),
-      );
-      nativeAddrStr = await nativeAddr.address.asString();
-      print(
-        'myAddressbook.depost index $i : $depositCounter : ${myAddressBook[i].index} ${nativeAddr.index} (${myAddressBook[i].address.substring(0, 8)}, ${nativeAddrStr.substring(0, 8)})',
-      );
-      depositCounter++;
-    } else {
-      nativeAddr = await bdkWallet!.getInternalAddress(
-        addressIndex: bdk.AddressIndex.peek(index: changeCounter),
-      );
-      nativeAddrStr = await nativeAddr.address.asString();
-      print(
-        'myAddressbook.change index $i : $changeCounter : ${myAddressBook[i].index} ${nativeAddr.index} (${myAddressBook[i].address.substring(0, 8)}, ${nativeAddrStr.substring(0, 8)})',
-      );
-      changeCounter++;
-    }
+    nativeAddr = await bdkWallet!.getAddress(
+      addressIndex: bdk.AddressIndex.peek(index: i),
+    );
+    nativeAddrStr = await nativeAddr.address.asString();
 
     final matchIndex =
         myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
-    print('matchIndex $matchIndex');
+    print('matchIndex $matchIndex $i $nativeAddrStr');
     if (matchIndex != -1) {
-      myAddressBook[matchIndex] =
+      print(
+        'myAddressbook.deposit index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
+      );
+      final newAddr =
           myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
+      myAddressBook[matchIndex] = newAddr;
+    } else {
+      toAdd.add(
+        Address(
+          address: nativeAddrStr,
+          kind: AddressKind.deposit,
+          state: AddressStatus.unused,
+          index: nativeAddr.index,
+          // balance: 0, // TODO: Balance and other fields?
+        ),
+      );
     }
   }
+  myAddressBook.addAll(toAdd);
+
+  toAdd.clear();
+  for (int i = 0; i < changeAddressCount; i++) {
+    bdk.AddressInfo nativeAddr;
+    String nativeAddrStr;
+
+    nativeAddr = await bdkWallet!.getInternalAddress(
+      addressIndex: bdk.AddressIndex.peek(index: i),
+    );
+    nativeAddrStr = await nativeAddr.address.asString();
+
+    final matchIndex =
+        myAddressBook.indexWhere((a) => a.address == nativeAddrStr);
+    print('matchIndex $matchIndex $i');
+    if (matchIndex != -1) {
+      print(
+        'myAddressbook.change index $i : ${nativeAddr.index} (${myAddressBook[matchIndex].address}, $nativeAddrStr)',
+      );
+
+      final newAddr =
+          myAddressBook[matchIndex].copyWith(index: nativeAddr.index);
+      myAddressBook[matchIndex] = newAddr;
+    } else {
+      toAdd.add(
+        Address(
+          address: nativeAddrStr,
+          kind: AddressKind.change,
+          state: AddressStatus.unused,
+          index: nativeAddr.index,
+          // balance: 0, // TODO: Balance and other fields?
+        ),
+      );
+    }
+  }
+  myAddressBook.addAll(toAdd);
 
   print('After patch:');
   for (int i = 0; i < myAddressBook.length; i++) {
     print(
-      'myAddressbook[$i] : ${myAddressBook[i].index} ${myAddressBook[i].kind} : (${myAddressBook[i].address.substring(0, 8)})',
+      'myAddressbook[$i] : ${myAddressBook[i].index} ${myAddressBook[i].kind} : (${myAddressBook[i].address})',
     );
   }
 
