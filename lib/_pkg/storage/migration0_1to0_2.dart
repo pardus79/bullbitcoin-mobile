@@ -132,27 +132,27 @@ Future<Map<String, dynamic>> updateWalletObj(
 Future<Map<String, dynamic>> updateChangeAddressIndex(
   Map<String, dynamic> walletObj,
 ) async {
-  // int changeAddressCount = 0;
-  // int depositAddressCount = 0;
-  // int ivar = 0;
-  // if (walletObj['myAddressBook'] != null) {
-  //   walletObj['myAddressBook'] = walletObj['myAddressBook']
-  //       .map((addr) => addr as Map<String, dynamic>)
-  //       .map((addr) {
-  //     ivar++;
-  //     if (addr['index'] == null) {
-  //       print(
-  //         'change address: ${addr['address']} : ${addr['index']} : ${addr['kind']} $ivar',
-  //       );
-  //     }
-  //     if (addr['kind'] == 'change') {
-  //       changeAddressCount++;
-  //     } else if (addr['kind'] == 'change') {
-  //       depositAddressCount++;
-  //     }
-  //     return addr;
-  //   }).toList();
-  // }
+  int changeAddressCount = 0;
+  int depositAddressCount = 0;
+  int ivar = 0;
+  if (walletObj['myAddressBook'] != null) {
+    walletObj['myAddressBook'] = walletObj['myAddressBook']
+        .map((addr) => addr as Map<String, dynamic>)
+        .map((addr) {
+      ivar++;
+      // if (addr['index'] == null) {
+      //   print(
+      //     'change address: ${addr['address']} : ${addr['index']} : ${addr['kind']} $ivar',
+      //   );
+      // }
+      if (addr['kind'] == 'change') {
+        changeAddressCount++;
+      } else if (addr['kind'] == 'deposit') {
+        depositAddressCount++;
+      }
+      return addr;
+    }).toList();
+  }
 
   final Wallet w = Wallet.fromJson(walletObj);
   final WalletsRepository walletRepo = WalletsRepository();
